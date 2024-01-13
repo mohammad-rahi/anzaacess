@@ -26,12 +26,13 @@ export default function FormAuth({ type }: FormProps) {
         confirmPassword,
         setConfirmPassword,
         authLoading,
+        error,
+        setError,
         handleSupabaseLogin,
         handleEmailExists
     } = useAuth(type);
 
     const [showPasswordField, setShowPasswordField] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [emailCheckLoading, setEmailCheckLoading] = useState(false);
 
 
@@ -46,27 +47,28 @@ export default function FormAuth({ type }: FormProps) {
                 if (exists) {
                     if (type == "signup") {
                         setError('Email already exists');
-                        setEmailCheckLoading(false);
                     }
                     else if (type == "login") {
                         setError(null);
-                        setEmailCheckLoading(false);
                         setShowPasswordField(true);
+                    }
+                    else if(type == "forgotpassword"){
+                        handleSubmit();
                     }
                 }
                 else {
                     if (type == "signup") {
                         setError(null);
                         setShowPasswordField(true);
-                        setEmailCheckLoading(false);
                     }
-                    else if (type == "login") {
+                    else if (type == "login" || type == "forgotpassword") {
                         setError("Email does not exist");
-                        setEmailCheckLoading(false);
                         setShowPasswordField(false);
                     }
                 }
-            });
+            }).finally(() => {
+                setEmailCheckLoading(false);
+            })
         }
     }
 
@@ -97,7 +99,7 @@ export default function FormAuth({ type }: FormProps) {
             <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
                 <div className='flex items-center'>
                     {
-                        (type == "signup" && showPasswordField) && (
+                        (showPasswordField) && (
                             <button onClick={handleBackToSignUp} className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
                                 <FaChevronLeft />
                             </button>
@@ -105,13 +107,13 @@ export default function FormAuth({ type }: FormProps) {
                     }
 
                     <h2 className="text-3xl font-extrabold text-center text-gray-800 flex-1">
-                        {type === 'signup' ? 'Sign up' : 'Log in'}
+                        {type === 'signup' ? 'Sign up' : type == "login" ? 'Log in' : "Forgot Password"}
                     </h2>
                 </div>
 
                 <div className="space-y-6 mt-6">
                     {
-                        !showPasswordField && (
+                        (!showPasswordField && type != "forgotpassword") && (
                             <div>
                                 <div className="space-y-4">
                                     <button
@@ -160,7 +162,7 @@ export default function FormAuth({ type }: FormProps) {
 
                                     {
                                         type == "login" && (
-                                            <Link href="#" className="text-sm text-gray-700 hover:underline">
+                                            <Link href="/forgot-password" className="text-sm text-gray-700 hover:underline">
                                                 Forgot password?
                                             </Link>
                                         )
@@ -209,7 +211,7 @@ export default function FormAuth({ type }: FormProps) {
                                     className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer`}
                                 >
                                     {
-                                        emailCheckLoading ? <BarLoader color='white' /> : "Continue with Email"
+                                        emailCheckLoading ? <BarLoader color='white' /> : type == "forgotpassword" ? "Reset Password" : "Continue with Email"
                                     }
                                 </button>
                             )

@@ -2,7 +2,7 @@ import { supabase } from '@/config/supabase';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
-export type AuthType = 'login' | 'signup';
+export type AuthType = 'login' | 'signup' | 'forgotpassword';
 
 interface AuthHook {
     email: string;
@@ -12,7 +12,8 @@ interface AuthHook {
     confirmPassword: string;
     setConfirmPassword: React.Dispatch<React.SetStateAction<string>>;
     authLoading: boolean;
-
+    error: string | null,
+    setError: React.Dispatch<React.SetStateAction<string | null>>
     handleSupabaseLogin: (provider: 'google' | 'apple') => Promise<void>;
     handleSubmit: () => Promise<void>;
     handleEmailExists: () => Promise<boolean>;
@@ -23,6 +24,7 @@ export default function useAuth(type: AuthType): AuthHook {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [authLoading, setAuthLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const router = useRouter();
 
@@ -47,11 +49,10 @@ export default function useAuth(type: AuthType): AuthHook {
             if (data) {
                 return true;
             }
+
+            return false;
         } catch (error) {
             console.error('Error checking if email exists:', error);
-            return false;
-        }
-        finally {
             return false;
         }
     }
@@ -59,6 +60,7 @@ export default function useAuth(type: AuthType): AuthHook {
     const handleSubmit = async () => {
         try {
             setAuthLoading(true);
+            setError(null);
 
             if (type === 'signup') {
                 const { data: { user }, error } = await supabase.auth.signUp({ email, password });
@@ -81,16 +83,25 @@ export default function useAuth(type: AuthType): AuthHook {
                     setAuthLoading(false);
                 }
             } else if (type === 'login') {
-                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
                 if (error) {
                     throw error;
                 } else {
+                    router.push('/');
                     console.log('Supabase login successful');
                 }
             }
-        } catch (error) {
+            else if (type == "forgotpassword") {
+                const { error } = await supabase.auth.resetPasswordForEmail(email);
+                if (error) {
+                    setAuthLoading(false);
+                    throw error;
+                }
+            }
+        } catch (error: any) {
             console.error('Authentication error:', error);
-
+            setError(error.message || 'Authentication error');
             setAuthLoading(false);
         }
         finally {
@@ -106,6 +117,8 @@ export default function useAuth(type: AuthType): AuthHook {
         confirmPassword,
         setConfirmPassword,
         authLoading,
+        error,
+        setError,
         handleSupabaseLogin,
         handleSubmit,
         handleEmailExists
