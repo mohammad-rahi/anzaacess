@@ -1,9 +1,16 @@
+"use client";
+
 import Link from 'next/link';
 import React from 'react';
 import { FaSignInAlt } from 'react-icons/fa';
 import { Button } from '..';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
+    const pathname = usePathname();
+
+    const isAuthPage = pathname.includes("/login") || pathname.includes("/signup");
+
     return (
         <header className='bg-gradient-to-r from-blue-500 to-purple-500'>
             <nav className="wrapper p-4">
@@ -12,19 +19,22 @@ export default function Header() {
                         <Link href="/" className="flex items-center text-white text-3xl font-bold">
                             AnzaAccess
                         </Link>
-
-                        <ul className="flex items-center text-white text-lg">
-                            <li className="mr-4">
-                                <Link href="/" className="hover:text-gray-300 transition duration-300">
-                                    Home
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/events" className="hover:text-gray-300 transition duration-300">
-                                    Events
-                                </Link>
-                            </li>
-                        </ul>
+                        {
+                            !isAuthPage && (
+                                <ul className="flex items-center text-white text-lg">
+                                    <li className="mr-4">
+                                        <Link href="/" className="hover:text-gray-300 transition duration-300">
+                                            Home
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/events" className="hover:text-gray-300 transition duration-300">
+                                            Events
+                                        </Link>
+                                    </li>
+                                </ul>
+                            )
+                        }
                     </div>
 
                     <div>

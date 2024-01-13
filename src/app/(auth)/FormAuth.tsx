@@ -2,13 +2,19 @@
 
 import React, { useState } from 'react';
 import { FcGoogle } from "react-icons/fc";
-import { FaApple } from "react-icons/fa6";
+import { FaPhone, FaChevronLeft } from "react-icons/fa6";
 import useAuth, { AuthType } from './useAuth';
 import Link from 'next/link';
+import { BarLoader } from 'react-spinners';
 
 type FormProps = {
     type: AuthType;
 }
+
+const isValidEmail = (email: string) => {
+    const emailRegex = /\S+@\S+\.\S+/;
+    return emailRegex.test(email);
+};
 
 export default function FormAuth({ type }: FormProps) {
     const {
@@ -17,38 +23,115 @@ export default function FormAuth({ type }: FormProps) {
         setEmail,
         password,
         setPassword,
+        confirmPassword,
+        setConfirmPassword,
         handleSupabaseLogin,
+        handleEmailExists
     } = useAuth(type);
 
     const [showPasswordField, setShowPasswordField] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [emailCheckLoading, setEmailCheckLoading] = useState(false);
+
+
+    const handleCheckEmail = () => {
+        if (!isValidEmail(email)) {
+            setError('Please enter a valid email address');
+        } else {
+            setError(null);
+            setEmailCheckLoading(true);
+
+            handleEmailExists().then((exists) => {
+                if (exists) {
+                    if (type == "signup") {
+                        setError('Email already exists');
+                        setEmailCheckLoading(false);
+                    }
+                    else if (type == "login") {
+                        setEmailCheckLoading(false);
+                        setShowPasswordField(true);
+                    }
+                }
+                else {
+                    if (type == "signup") {
+                        setError(null);
+                        setShowPasswordField(true);
+                        setEmailCheckLoading(false);
+                    }
+                    else if (type == "login") {
+                        setError("Email does not exist");
+                        setEmailCheckLoading(false);
+                        setShowPasswordField(false);
+                    }
+                }
+            });
+        }
+    }
+
+    const handleValidateSubmit = () => {
+        if (type == "signup") {
+            if (password) {
+                if (password !== confirmPassword) {
+                    setError('Passwords do not match');
+                } else {
+                    setError(null);
+                    handleSubmit();
+                }
+            } else {
+                setError('Please enter a password');
+            }
+        } else {
+            handleSubmit();
+        }
+    }
+
+    const handleBackToSignUp = () => {
+        setShowPasswordField(false);
+        setError(null);
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500">
             <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-                <h2 className="text-3xl font-extrabold mb-6 text-center text-gray-800">
-                    {type === 'signup' ? 'Sign up' : 'Log in'}
-                </h2>
+                <div className='flex items-center'>
+                    {
+                        (type == "signup" && showPasswordField) && (
+                            <button onClick={handleBackToSignUp} className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
+                                <FaChevronLeft />
+                            </button>
+                        )
+                    }
 
-                <form className="space-y-6" onSubmit={handleSubmit}>
-                    <div className="space-y-4">
-                        <button
-                            className="flex items-center justify-center w-full bg-white border border-gray-300 font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                            onClick={() => handleSupabaseLogin('google')}
-                        >
-                            <FcGoogle className="mr-2 text-2xl" />
-                            Continue with Google
-                        </button>
-                        <button
-                            className="flex items-center justify-center w-full bg-black text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
-                            onClick={() => handleSupabaseLogin('apple')}
-                        >
-                            <FaApple className="mr-2 text-2xl" />
-                            Continue with Apple
-                        </button>
-                    </div>
+                    <h2 className="text-3xl font-extrabold text-center text-gray-800 flex-1">
+                        {type === 'signup' ? 'Sign up' : 'Log in'}
+                    </h2>
+                </div>
 
-                    <p className="h-[1px] bg-gray-300"></p>
+                <div className="space-y-6 mt-6">
+                    {
+                        !showPasswordField && (
+                            <div>
+                                <div className="space-y-4">
+                                    <button
+                                        className="flex items-center justify-center w-full bg-white border border-gray-300 font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+                                        onClick={() => handleSupabaseLogin('google')}
+                                    >
+                                        <FcGoogle className="mr-2 text-2xl" />
+                                        Continue with Google
+                                    </button>
+                                    <button
+                                        className="flex items-center justify-center w-full bg-black text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
+                                        onClick={() => handleSupabaseLogin('apple')}
+                                    >
+                                        <FaPhone className="mr-2 text-2xl" />
+                                        Continue with Phone
+                                    </button>
+                                </div>
+
+                                <p className="h-[1px] bg-gray-300"></p>
+                            </div>
+                        )
+                    }
 
                     <div className='space-y-4'>
                         <div>
@@ -60,17 +143,28 @@ export default function FormAuth({ type }: FormProps) {
                                 id="email"
                                 name="email"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => setEmail(e.target.value.trim())}
                                 placeholder="Enter your email address..."
                                 className="w-full border-b-2 border-blue-500 focus:outline-none focus:border-purple-500 px-3 py-2 text-gray-700 transition duration-300"
                             />
                         </div>
 
-                        {(type == "login" || showPasswordField) && (
+                        {showPasswordField && (
                             <div>
-                                <label htmlFor="password" className="block text-gray-700 text-sm font-semibold mb-2">
-                                    Password
-                                </label>
+                                <div className='flex items-center justify-between gap-8'>
+                                    <label htmlFor="password" className="block text-gray-700 text-sm font-semibold mb-2">
+                                        Password
+                                    </label>
+
+                                    {
+                                        type == "login" && (
+                                            <Link href="#" className="text-sm text-gray-700 hover:underline">
+                                                Forgot password?
+                                            </Link>
+                                        )
+                                    }
+                                </div>
+
                                 <input
                                     type="password"
                                     id="password"
@@ -83,26 +177,55 @@ export default function FormAuth({ type }: FormProps) {
                             </div>
                         )}
 
-                        {error && (
-                            <div className="text-red-500">{error}</div>
-                        )}
-
-                        <button
-                            type="submit"
-                            className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105 ${type === 'login' && 'mt-4'}`}
-                        >
-                            {type === 'signup' ? 'Sign Up' : 'Log In'}
-                        </button>
-
-                        {type === "login" && (
-                            <div className='text-center'>
-                                <Link href="#" className="text-sm text-gray-700">
-                                    Forgot password?
-                                </Link>
+                        {(type == "signup" && showPasswordField) && (
+                            <div>
+                                <label htmlFor="confirmPassword" className="block text-gray-700 text-sm font-semibold mb-2">
+                                    Confirm Password
+                                </label>
+                                <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Confirm your password..."
+                                    className="w-full border-b-2 border-blue-500 focus:outline-none focus:border-purple-500 px-3 py-2 text-gray-700 transition duration-300"
+                                />
                             </div>
                         )}
+
+                        {error && (
+                            <div className="text-red-500 text-sm">{error}</div>
+                        )}
+
+                        {
+                            (!showPasswordField) && (
+                                <button
+                                    onClick={handleCheckEmail}
+                                    disabled={emailCheckLoading}
+                                    type="button"
+                                    className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105 cursor-pointer`}
+                                >
+                                    {
+                                        emailCheckLoading ? <BarLoader color='white' /> : "Continue with Email"
+                                    }
+                                </button>
+                            )
+                        }
+
+                        {
+                            (showPasswordField) && (
+                                <button
+                                    type="button"
+                                    onClick={handleValidateSubmit}
+                                    className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105`}
+                                >
+                                    {type === 'signup' ? 'Sign up' : 'Log in'}
+                                </button>
+                            )
+                        }
                     </div>
-                </form>
+                </div>
 
                 <div className="mt-8">
                     <p className="text-sm text-gray-700 text-center">
