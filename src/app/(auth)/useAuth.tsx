@@ -1,4 +1,5 @@
 import { supabase } from '@/config/supabase';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 export type AuthType = 'login' | 'signup';
@@ -10,7 +11,8 @@ interface AuthHook {
     setPassword: React.Dispatch<React.SetStateAction<string>>;
     confirmPassword: string;
     setConfirmPassword: React.Dispatch<React.SetStateAction<string>>;
-    
+    authLoading: boolean;
+
     handleSupabaseLogin: (provider: 'google' | 'apple') => Promise<void>;
     handleSubmit: () => Promise<void>;
     handleEmailExists: () => Promise<boolean>;
@@ -20,6 +22,9 @@ export default function useAuth(type: AuthType): AuthHook {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [authLoading, setAuthLoading] = useState(false);
+
+    const router = useRouter();
 
     const handleSupabaseLogin = async (provider: 'google' | 'apple') => {
         try {
@@ -53,23 +58,43 @@ export default function useAuth(type: AuthType): AuthHook {
 
     const handleSubmit = async () => {
         try {
+            setAuthLoading(true);
+
             if (type === 'signup') {
-                const { error } = await supabase.auth.signUp({ email, password });
+                const { data: { user }, error } = await supabase.auth.signUp({ email, password });
                 if (error) {
-                    console.error('Supabase signup error:', error);
+                    throw error;
                 } else {
-                    console.log('Supabase signup successful');
+                    const { data, error: profileError } = await supabase.from("profiles").insert({
+                        name: "",
+                        user_id: user?.id,
+                        email,
+                        avatar_url: ""
+                    });
+
+                    if (profileError) {
+                        throw profileError;
+                    }
+
+                    localStorage.setItem('email', email);
+                    router.push(`/signup/success?email=${email}`);
+                    setAuthLoading(false);
                 }
             } else if (type === 'login') {
                 const { error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) {
-                    console.error('Supabase login error:', error);
+                    throw error;
                 } else {
                     console.log('Supabase login successful');
                 }
             }
         } catch (error) {
             console.error('Authentication error:', error);
+
+            setAuthLoading(false);
+        }
+        finally {
+            setAuthLoading(false);
         }
     };
 
@@ -80,6 +105,7 @@ export default function useAuth(type: AuthType): AuthHook {
         setPassword,
         confirmPassword,
         setConfirmPassword,
+        authLoading,
         handleSupabaseLogin,
         handleSubmit,
         handleEmailExists

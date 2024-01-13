@@ -25,6 +25,7 @@ export default function FormAuth({ type }: FormProps) {
         setPassword,
         confirmPassword,
         setConfirmPassword,
+        authLoading,
         handleSupabaseLogin,
         handleEmailExists
     } = useAuth(type);
@@ -48,6 +49,7 @@ export default function FormAuth({ type }: FormProps) {
                         setEmailCheckLoading(false);
                     }
                     else if (type == "login") {
+                        setError(null);
                         setEmailCheckLoading(false);
                         setShowPasswordField(true);
                     }
@@ -218,9 +220,14 @@ export default function FormAuth({ type }: FormProps) {
                                 <button
                                     type="button"
                                     onClick={handleValidateSubmit}
+                                    disabled={authLoading}
                                     className={`w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105`}
                                 >
-                                    {type === 'signup' ? 'Sign up' : 'Log in'}
+                                    {
+                                        authLoading ? <BarLoader color='white' /> : <>
+                                            {type === 'signup' ? 'Sign up' : 'Log in'}
+                                        </>
+                                    }
                                 </button>
                             )
                         }
