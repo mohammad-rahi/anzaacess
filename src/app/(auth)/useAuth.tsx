@@ -30,7 +30,11 @@ export default function useAuth(type: AuthType): AuthHook {
 
     const handleSupabaseLogin = async (provider: 'google' | 'apple') => {
         try {
-            const { data: { url } } = await supabase.auth.signInWithOAuth({ provider });
+            const { data: { url } } = await supabase.auth.signInWithOAuth({
+                provider, options: {
+                    redirectTo: `${window.location.origin}/`,
+                }
+            });
             console.log('Supabase login successful:', url);
         } catch (error) {
             console.error('Supabase login error:', error);
