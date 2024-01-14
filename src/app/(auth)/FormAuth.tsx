@@ -52,7 +52,7 @@ export default function FormAuth({ type }: FormProps) {
                         setError(null);
                         setShowPasswordField(true);
                     }
-                    else if(type == "forgotpassword"){
+                    else if (type == "forgotpassword") {
                         handleSubmit();
                     }
                 }
@@ -238,7 +238,28 @@ export default function FormAuth({ type }: FormProps) {
 
                 <div className="mt-8">
                     <p className="text-sm text-gray-700 text-center">
-                        By {type === 'signup' ? 'signing up' : 'logging in'}, you agree to AnzaAccess&apos;s <Link href="#" className="text-blue-500">Terms</Link> and <Link href="#" className="text-blue-500">Privacy Policy</Link>.
+                        {type === 'signup' ? 'Already have an account?' : type === 'login' ? "Don't have an account?" : 'Remember your password?'}
+                        {type === 'signup' && (
+                            <Link href="/login" className="text-blue-500 ml-1 hover:underline">
+                                Log in
+                            </Link>
+                        )}
+                        {type === 'login' && (
+                            <Link href="/signup" className="text-blue-500 ml-1 hover:underline">
+                                Sign up
+                            </Link>
+                        )}
+                        {type === 'forgotpassword' && (
+                            <Link href="/login" className="text-blue-500 ml-1 hover:underline">
+                                Log in
+                            </Link>
+                        )}
+                    </p>
+                </div>
+
+                <div className="mt-8">
+                    <p className="text-sm text-gray-700 text-center">
+                        By {type === 'signup' ? 'signing up' : 'logging in'}, you agree to AnzaAccess&apos;s <Link href="#" className="text-blue-500 hover:underline">Terms</Link> and <Link href="#" className="text-blue-500 hover:underline">Privacy Policy</Link>.
                     </p>
                 </div>
             </div>

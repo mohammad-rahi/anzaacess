@@ -46,6 +46,8 @@ export default function useAuth(type: AuthType): AuthHook {
                 return false;
             }
 
+            console.log({ data, error })
+
             if (data) {
                 return true;
             }
