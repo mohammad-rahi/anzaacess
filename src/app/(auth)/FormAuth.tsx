@@ -115,7 +115,7 @@ export default function FormAuth({ type }: FormProps) {
                     {
                         (!showPasswordField && type != "forgotpassword") && (
                             <div>
-                                <div className="space-y-4">
+                                <div className="space-y-4 mb-4">
                                     <button
                                         className="flex items-center justify-center w-full bg-white border border-gray-300 font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
                                         onClick={() => handleSupabaseLogin('google')}
@@ -123,16 +123,20 @@ export default function FormAuth({ type }: FormProps) {
                                         <FcGoogle className="mr-2 text-2xl" />
                                         Continue with Google
                                     </button>
-                                    <button
+                                    {/* <button
                                         className="flex items-center justify-center w-full bg-black text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-300 ease-in-out transform hover:scale-105"
                                         onClick={() => handleSupabaseLogin('apple')}
                                     >
                                         <FaPhone className="mr-2 text-2xl" />
                                         Continue with Phone
-                                    </button>
+                                    </button> */}
                                 </div>
 
-                                <p className="h-[1px] bg-gray-300"></p>
+                                <div className='flex items-center gap-2'>
+                                    <p className="h-[1px] flex-1 bg-gray-300"></p>
+                                    <p className='texxt-sm text-gray-400'>Or</p>
+                                    <p className="h-[1px] flex-1 bg-gray-300"></p>
+                                </div>
                             </div>
                         )
                     }
@@ -160,13 +164,13 @@ export default function FormAuth({ type }: FormProps) {
                                         Password
                                     </label>
 
-                                    {
+                                    {/* {
                                         type == "login" && (
                                             <Link href="/forgot-password" className="text-sm text-gray-700 hover:underline">
                                                 Forgot password?
                                             </Link>
                                         )
-                                    }
+                                    } */}
                                 </div>
 
                                 <input

@@ -6,10 +6,13 @@ import { FaSignInAlt } from 'react-icons/fa';
 import { Button } from '..';
 import { usePathname } from 'next/navigation';
 import AnzaAccessLogo from './AnzaAccessLogo';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Header() {
     const pathname = usePathname();
     const isAuthPage = pathname.includes("/login") || pathname.includes("/signup") || pathname.includes("/success") || pathname.includes("/forgot-password");
+
+    const { user, authLoading } = useAuth();
 
     return (
         <header className='bg-gradient-to-r from-blue-500 to-purple-500'>
@@ -40,26 +43,35 @@ export default function Header() {
                     </div>
 
                     {
-                        !isAuthPage && (
+                        (!isAuthPage && !authLoading) && (
                             <div>
-                                <ul className="flex items-center gap-4 text-white">
-                                    <li>
-                                        <Link href="/login" className="text-white flex items-center hover:text-gray-300 transition duration-300 text-lg">
-                                            <FaSignInAlt className="mr-2" />
-                                            Login
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link href="/signup">
-                                            <Button>Get Started</Button>
-                                        </Link>
-                                    </li>
-                                </ul>
+                                {
+                                    (user && user.email) ? <ul className="flex items-center gap-4 text-white">
+                                        <li>
+                                            <Link href="/logout" className="text-white flex items-center hover:text-gray-300 transition duration-300 text-lg">
+                                                <FaSignInAlt className="mr-2" />
+                                                Log out
+                                            </Link>
+                                        </li>
+                                    </ul> : <ul className="flex items-center gap-4 text-white">
+                                        <li>
+                                            <Link href="/login" className="text-white flex items-center hover:text-gray-300 transition duration-300 text-lg">
+                                                <FaSignInAlt className="mr-2" />
+                                                Log in
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link href="/signup">
+                                                <Button>Get Started</Button>
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                }
                             </div>
                         )
                     }
                 </div>
             </nav>
-        </header>
+        </header >
     );
 }
