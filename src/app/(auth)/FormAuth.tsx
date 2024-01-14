@@ -62,7 +62,7 @@ export default function FormAuth({ type }: FormProps) {
                         setShowPasswordField(true);
                     }
                     else if (type == "login" || type == "forgotpassword") {
-                        setError("Email does not exist");
+                        setError("User not found");
                         setShowPasswordField(false);
                     }
                 }

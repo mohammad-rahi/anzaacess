@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '@/config/supabase';
 import { Profile } from '@/app/(auth)/profile.types';
+import { useRouter } from 'next/navigation';
 
 interface AuthContextType {
     user: Profile | null;
@@ -27,6 +28,8 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<Profile | null>(null);
     const [authLoading, setAuthLoading] = useState(true);
+
+    const router = useRouter()
 
     useEffect(() => {
         const updateUserData = async (session: Session | null) => {
@@ -93,6 +96,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setUser(null);
         } catch (error) {
             console.error("Error logging out: ", error)
+        }
+        finally {
+            router.push("/login")
         }
     };
 
