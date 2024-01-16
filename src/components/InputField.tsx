@@ -4,7 +4,7 @@ import Select from 'react-select';
 type InputFieldProps = {
     value?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-    label: string;
+    label?: string;
     labelRight?: ReactNode;
     placeholder: string;
     type?: "text" | "password" | "email" | "datetime-local" | "file" | "select";
@@ -17,8 +17,8 @@ type InputFieldProps = {
 
 export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, multiple, options, setSelectChange }: InputFieldProps) {
     const inputProps = {
-        id: label.replace(/\s+/g, ''),
-        name: label.replace(/\s+/g, ''),
+        id: label?.replace(/\s+/g, ''),
+        name: label?.replace(/\s+/g, ''),
         value,
         onChange,
         placeholder,
@@ -62,8 +62,8 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                             (
                                 <input
                                     type="file"
-                                    id={label.replace(/\s+/g, '')}
-                                    name={label.replace(/\s+/g, '')}
+                                    id={label?.replace(/\s+/g, '')}
+                                    name={label?.replace(/\s+/g, '')}
                                     value={value}
                                     onChange={onChange}
                                     placeholder={placeholder}
@@ -77,8 +77,8 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                             type ? (
                                 <input
                                     type={type}
-                                    id={label.replace(/\s+/g, '')}
-                                    name={label.replace(/\s+/g, '')}
+                                    id={label?.replace(/\s+/g, '')}
+                                    name={label?.replace(/\s+/g, '')}
                                     value={value}
                                     onChange={onChange}
                                     placeholder={placeholder}
@@ -86,8 +86,8 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                                 />
                             ) : (
                                 <textarea
-                                    id={label.replace(/\s+/g, '')}
-                                    name={label.replace(/\s+/g, '')}
+                                    id={label?.replace(/\s+/g, '')}
+                                    name={label?.replace(/\s+/g, '')}
                                     value={value}
                                     onChange={onChange}
                                     placeholder={placeholder}

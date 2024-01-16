@@ -2,7 +2,7 @@
 
 import { EventTypes } from '@/app/events/event.types';
 import React, { createContext, useReducer, useContext, ReactNode } from 'react';
-import { useAuth } from './AuthContext';
+import { useAuthContext } from './AuthContext';
 
 
 type EventAction =
@@ -57,7 +57,7 @@ const EventContext = createContext<EventContextValue | undefined>(undefined);
 
 // Create provider component
 const EventProvider: React.FC<EventContextProps> = ({ children }) => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
   const [state, dispatch] = useReducer(
     eventReducer,

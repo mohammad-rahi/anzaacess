@@ -3,17 +3,11 @@
 import InputField from '@/components/InputField';
 import Button from '@/components/Button';
 import { useEventContext } from '@/contexts/EventContext';
-import { useState } from 'react';
-import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote, FaImages, FaTimes } from 'react-icons/fa';
-import { supabase } from '@/config/supabase';
-import { EventTypes } from '../event.types';
-import { useAuth } from '@/contexts/AuthContext';
+import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote, FaImages, FaTimes, FaSpinner } from 'react-icons/fa';
 import Image from 'next/image';
+import useEvent from './useEvent';
 
 export default function AddEvents() {
-    const { user } = useAuth();
-
-    const [step, setStep] = useState(1);
     const { state: {
         event_name,
         event_description,
@@ -24,136 +18,7 @@ export default function AddEvents() {
         ticket_types
     }, setEventName, setEventDescription, setEventDateTime, setEventVenue, setTicketTypes, setEventCategory, setEventImage } = useEventContext();
 
-    const steps = ['Event Name', 'Date, Time, Venue', 'Ticket Types'];
-
-    const eventCategories = [
-        {
-            value: 'Concerts',
-            label: 'Concerts'
-        },
-        {
-            value: 'Sports Events',
-            label: 'Sports Events'
-        },
-        {
-            value: 'Theater Performances',
-            label: 'Theater Performances'
-        },
-        {
-            value: 'Festivals',
-            label: 'Festivals'
-        },
-        {
-            value: "Conferences",
-            label: "Conferences"
-        },
-        {
-            value: "Comedy Shows",
-            label: "Comedy Shows"
-        },
-        {
-            value: "Exhibitions",
-            label: "Exhibitions"
-        },
-        {
-            value: "Workshops",
-            label: "Workshops"
-        },
-        {
-            value: "Film Screenings",
-            label: "Film Screenings"
-        },
-        {
-            value: "Charity Events",
-            label: "Charity Events"
-        },
-        {
-            value: "Art Galleries",
-            label: "Art Galleries"
-        },
-        {
-            value: "Networking Events",
-            label: "Networking Events"
-        },
-        {
-            value: "Food and Drink Tastings",
-            label: "Food and Drink Tastings"
-        },
-        {
-            value: "Fashion Shows",
-            label: "Fashion Shows"
-        },
-        {
-            value: "Educational Seminars",
-            label: "Educational Seminars"
-        }
-    ]
-
-    // Function to handle next step
-    const handleNextStep = () => {
-        if (step < 3) {
-            setStep(step + 1);
-        }
-    };
-
-    // Function to handle previous step
-    const handlePrevStep = () => {
-        if (step > 1) {
-            setStep(step - 1);
-        }
-    };
-
-    const handleStepClick = (clickedStep: number) => {
-        setStep(clickedStep);
-    };
-
-    const handleEventImageChange = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const files = (ev.target as HTMLInputElement).files;
-
-        if (files) {
-            const eventImage = files[0];
-
-            if (eventImage) {
-                const previewURL = URL.createObjectURL(eventImage);
-                setEventImage(previewURL);
-            }
-        }
-    }
-
-    // Function to handle form submission
-    const handleAddEvent = async () => {
-        try {
-            if (user?.id) {
-                const event: EventTypes = {
-                    profile_id: user.id,
-                    event_name,
-                    event_description,
-                    event_category,
-                    event_image,
-                    event_date_time,
-                    event_venue,
-                    ticket_types
-                };
-
-                const { data, error } = await supabase.from("events").insert(event);
-
-                if (error) {
-                    throw error;
-                }
-                else {
-                    setStep(1);
-                    setEventName('');
-                    setEventDescription('');
-                    setEventCategory('');
-                    setEventDateTime('');
-                    setEventVenue('');
-                    setTicketTypes('');
-                }
-            }
-        } catch (error) {
-            console.error({ error })
-        }
-    };
+    const { eventCategories, handleEventImageChange, handleAddEvent, eventImageUploadLoading } = useEvent();
 
     return (
         <main className="bg-blue-50 min-h-screen">
@@ -259,15 +124,16 @@ export default function AddEvents() {
                                     placeholder='Upload Event Image'
                                 />
 
-
                                 {
                                     event_image && (
                                         <div className='relative aspect-video w-full rounded-md overflow-hidden border text-sm'>
                                             <Image src={event_image} alt="Event Image Preview" fill objectFit='cover' />
 
                                             {/* Here will be loading and remove button */}
-                                            <button title='Remove' onClick={() => setEventImage('')} className="absolute top-2 right-2 bg-white/60 hover:bg-white/80 flex items-center justify-center p-1 rounded-full overflow-hidden cursor-pointer">
-                                                <FaTimes />
+                                            <button title={eventImageUploadLoading ? "Uploading..." : "Remove"} disabled={eventImageUploadLoading} onClick={() => setEventImage('')} className="absolute top-2 right-2 bg-white/60 hover:bg-white/80 flex items-center justify-center p-1 rounded-full overflow-hidden cursor-pointer disabled:cursor-default">
+                                                {
+                                                    eventImageUploadLoading ? <FaSpinner className="animate-spin" /> : <FaTimes />
+                                                }
                                             </button>
                                         </div>
                                     )
