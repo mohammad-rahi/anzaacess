@@ -20,7 +20,7 @@ export default function SignUpSuccessPage() {
   }, [email]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500">
+    <div className="min-h-screen flex items-center justify-center bg-blue-100">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
         {storageEmail ? (
           <div className="text-center">

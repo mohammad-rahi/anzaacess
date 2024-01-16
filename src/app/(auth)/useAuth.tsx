@@ -1,5 +1,5 @@
 import { supabase } from '@/config/supabase';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 
 export type AuthType = 'login' | 'signup' | 'forgotpassword';
@@ -27,6 +27,8 @@ export default function useAuth(type: AuthType): AuthHook {
     const [error, setError] = useState<string | null>(null);
 
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const destination = searchParams.get('destination');
 
     const handleSupabaseLogin = async (provider: 'google' | 'apple') => {
         try {
@@ -94,7 +96,7 @@ export default function useAuth(type: AuthType): AuthHook {
                 if (error) {
                     throw error;
                 } else {
-                    router.push('/');
+                    router.push(destination ? destination : '/');
                     console.log('Supabase login successful');
                 }
             }

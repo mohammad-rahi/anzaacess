@@ -8,13 +8,13 @@ const AnzaAccessLogo = () => {
       height="40"
       viewBox="0 0 40 40"
       fill="none"
-      stroke="white"
+      stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
       <circle cx="20" cy="20" r="18" />
-      <text x="13" y="26" fill="white" fontSize="16" fontWeight="bold">AA</text>
+      <text x="13" y="26" fill="currentColor" fontSize="16" fontWeight="bold">AA</text>
     </svg>
   );
 };

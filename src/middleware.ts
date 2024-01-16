@@ -14,16 +14,14 @@ export async function middleware(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  console.log({ user })
-
   // if user is signed in and the current path is auth-pages redirect the user to /app
   if (user && ['/login', '/signup', '/forgot-password'].includes(req.nextUrl.pathname)) {
     return NextResponse.redirect(new URL('/', req.url))
   }
 
   // if user is not signed in and the current path is not /app redirect the user to /login
-  if (!user && req.nextUrl.pathname.startsWith('/app')) {
-    return NextResponse.redirect(new URL('/login', req.url))
+  if (!user && req.nextUrl.pathname == "/events/new") {
+    return NextResponse.redirect(new URL('/login?destination=/events/new', req.url))
   }
 
   // if user is not signed in and the current path is not /logout redirect the user to /login
@@ -35,5 +33,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/login', '/signup', '/forgot-password', '/logout', '/app/:path*'],
+  matcher: ['/', '/login', '/signup', '/forgot-password', '/logout', '/events/new', '/app/:path*'],
 }

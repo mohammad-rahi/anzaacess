@@ -9,7 +9,7 @@ export default function LogoutPage() {
     const { signOut } = useAuth();
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500">
+        <div className="min-h-screen flex items-center justify-center bg-blue-100">
             <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold mb-4">Log out</h1>
