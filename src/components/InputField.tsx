@@ -20,9 +20,11 @@ type InputFieldProps = {
 };
 
 export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, multiple, options, setSelectChange, ref }: InputFieldProps) {
+    const name = label?.toLowerCase().replace(/\s+/g, '_');
+
     const inputProps = {
-        id: label?.toLowerCase().replace(/\s+/g, '_'),
-        name: label?.toLowerCase().replace(/\s+/g, '_'),
+        id: name,
+        name,
         value,
         onChange,
         placeholder,
@@ -58,9 +60,9 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                 {
                     type == "select" ? (
                         <Select
-                            id={id}
+                            id={name}
                             options={options}
-                            onChange={(opt) => opt?.value && setSelectChange && setSelectChange(opt.value)}
+                            onChange={(opt) => opt?.value && setSelectChange && setSelectChange(opt)}
                         />
                     )
                         :
@@ -80,8 +82,8 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                                 />
                             ) : (
                                 <textarea
-                                    id={label?.replace(/\s+/g, '')}
-                                    name={label?.replace(/\s+/g, '')}
+                                    id={name}
+                                    name={name}
                                     value={value}
                                     onChange={onChange}
                                     placeholder={placeholder}
