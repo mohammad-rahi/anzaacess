@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import React from 'react';
-import { FaSignInAlt, FaPlus, FaUser } from 'react-icons/fa';
+import { FaSignInAlt, FaPlus, FaUser, FaLock } from 'react-icons/fa';
 import { Button } from '..';
 import { usePathname } from 'next/navigation';
 import AnzaAccessLogo from './AnzaAccessLogo';
@@ -17,9 +17,11 @@ export default function Header() {
 
     const { user, authLoading } = useAuthContext();
 
+    const isAdminPath = pathname.startsWith("/admin");
+
     return (
-        <header className='bg-blue-100'>
-            <nav className="wrapper p-4">
+        <header className='bg-blue-100 fixed top-0 inset-x-0'>
+            <nav className={`${isAdminPath ? 'w-11/12 mx-auto' : 'wrapper'} p-4`}>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-12">
                         <Link href="/" className="flex items-center gap-1 text-blue-600 text-3xl font-bold">
@@ -65,6 +67,12 @@ export default function Header() {
                                                 <Link href="/profile" className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
                                                     <FaUser className="mr-2" />
                                                     Profile
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link href="/admin" className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
+                                                    <FaLock className="mr-2" />
+                                                    Admin
                                                 </Link>
                                             </li>
                                             <li>

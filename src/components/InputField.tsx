@@ -18,11 +18,13 @@ type InputFieldProps = {
 
 export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, multiple, options, setSelectChange, ref }: InputFieldProps) {
     const inputProps = {
-        id: label?.replace(/\s+/g, ''),
-        name: label?.replace(/\s+/g, ''),
+        id: label?.toLowerCase().replace(/\s+/g, '_'),
+        name: label?.toLowerCase().replace(/\s+/g, '_'),
         value,
         onChange,
         placeholder,
+        type,
+        ref,
         className: `w-full ${inputLeft ? "pl-10" : "pl-4"} pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300`,
     };
 
@@ -77,14 +79,7 @@ export default function InputField({ value, onChange, label, labelRight, placeho
 
                             type ? (
                                 <input
-                                    type={type}
-                                    id={label?.replace(/\s+/g, '')}
-                                    name={label?.replace(/\s+/g, '')}
-                                    value={value}
-                                    onChange={onChange}
-                                    placeholder={placeholder}
-                                    className={`w-full ${inputLeft ? "pl-10" : "pl-4"} pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300`}
-                                    ref={ref}
+                                    {...inputProps}
                                 />
                             ) : (
                                 <textarea

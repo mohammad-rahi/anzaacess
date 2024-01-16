@@ -10,6 +10,7 @@ import useEvent from './useEvent';
 export default function AddEvents() {
     const { state: {
         event_name,
+        event_slug,
         event_description,
         event_category,
         event_image,
@@ -67,7 +68,7 @@ export default function AddEvents() {
                             <div>
                                 <InputField
                                     type="select"
-                                    value={event_category}
+                                    value={event_category.category_name}
                                     setSelectChange={(value) => setEventCategory(value)}
                                     label='Select Event Category'
                                     placeholder='Select Event Category'

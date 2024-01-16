@@ -1,7 +1,8 @@
 export type EventCategory = {
-    id: string;
+    id?: string;
     category_name: string;
     category_slug: string;
+    created_at?: string;
 }
 
 export type EventTypes = {

@@ -8,7 +8,12 @@ import { useAuthContext } from './AuthContext';
 type EventAction =
   | { type: 'SET_EVENT_NAME'; payload: string }
   | { type: 'SET_EVENT_DESCRIPTION'; payload: string }
-  | { type: 'SET_EVENT_CATEGORY'; payload: string }
+  | {
+    type: 'SET_EVENT_CATEGORY'; payload: {
+      name: string;
+      slug: string
+    }
+  }
   | { type: 'SET_EVENT_IMAGE'; payload: string }
   | { type: 'SET_EVENT_DATE_TIME'; payload: string }
   | { type: 'SET_EVENT_VENUE'; payload: string }

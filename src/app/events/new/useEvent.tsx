@@ -97,6 +97,7 @@ export default function useEvent() {
 
     const { state: {
         event_name,
+        event_slug,
         event_description,
         event_category,
         event_image,
@@ -128,6 +129,7 @@ export default function useEvent() {
                 const event: EventTypes = {
                     profile_id: user.id,
                     event_name,
+                    event_slug,
                     event_description,
                     event_category,
                     event_image,
