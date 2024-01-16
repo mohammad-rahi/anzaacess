@@ -1,10 +1,11 @@
 "use client";
 
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { EventTypes } from './event.types';
 import EventCard from './EventCard';
 import InputField from '@/components/InputField';
+import FilterOptions from './FilterOptions';
 
 const events: EventTypes[] = [
   {
@@ -42,46 +43,71 @@ const events: EventTypes[] = [
   }
 ];
 
+const ticketTypeOptions = ['Free', 'Paid'];
+
 export default function EventsPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const searchElementRef = useRef<HTMLInputElement>(null);
 
   // State for selected category filter
   const [selectedCategory, setSelectedCategory] = useState('');
 
-  // Filter events based on search query and selected category
+  // State for selected ticket type filter
+  const [selectedTicketType, setSelectedTicketType] = useState('');
+
+  // Filter events based on search query, selected category, and selected ticket type
   const filteredEvents = events.filter((event) => {
     const matchesSearch = event.event_name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory ? event.event_category === selectedCategory : true;
-    return matchesSearch && matchesCategory;
+    const matchesTicketType = selectedTicketType ? event.ticket_types === selectedTicketType : true;
+    return matchesSearch && matchesCategory && matchesTicketType;
   });
 
-  return (
-    <main className='bg-blue-50'>
-      <div className="wrapper min-h-screen py-16">
-        <div className='flex gap-8'>
-          <div className='space-y-4 w-64'>
-            <h2 className='text-3xl font-bold'>Categories</h2>
+  useEffect(() => {
+    window.addEventListener('keydown', (ev) => {
+      if (ev.key === '/') {
+        searchElementRef.current?.focus();
+      }
+    });
+  }, []);
 
-            <div>
-              <ul>
-                <li>
-                  <Link href="#" className='hover:text-blue-800 font-bold hover:bg-blue-100 transition duration-300 px-4 py-2 rounded-md overflow-hidden block' title='Category 1'>
-                    Category 1
+  return (
+    <main className='bg-gray-100 min-h-screen'>
+      <div className='container mx-auto py-16'>
+        <div className='flex gap-8'>
+          <div className='w-64'>
+            <h2 className='text-3xl font-bold mb-6'>Categories</h2>
+            <ul>
+              {['Category 1', 'Category 2', 'Category 3'].map((category) => (
+                <li key={category} className='mb-2'>
+                  <Link href='#' className='block p-2 rounded-md transition duration-300 hover:text-blue-800 hover:bg-blue-100'>
+                    {category}
                   </Link>
                 </li>
-              </ul>
-            </div>
+              ))}
+            </ul>
           </div>
+
           <div className='flex-1'>
             {/* Search bar */}
-            <div className='mb-4'>
+            <div className='mb-8'>
               <InputField
+                ref={searchElementRef}
                 type='text'
                 placeholder='Search events...'
                 value={searchQuery}
                 onChange={(ev) => setSearchQuery(ev.target.value)}
               />
             </div>
+
+            {/* Filter options */}
+            <FilterOptions
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              ticketTypeOptions={ticketTypeOptions}
+              selectedTicketType={selectedTicketType}
+              setSelectedTicketType={setSelectedTicketType}
+            />
 
             {/* Event cards grid */}
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>

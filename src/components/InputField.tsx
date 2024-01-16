@@ -13,9 +13,10 @@ type InputFieldProps = {
     multiple?: boolean;
     options?: { value: string; label: string }[]
     setSelectChange?: (value: string) => void
+    ref?: React.RefObject<HTMLInputElement>
 };
 
-export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, multiple, options, setSelectChange }: InputFieldProps) {
+export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, multiple, options, setSelectChange, ref }: InputFieldProps) {
     const inputProps = {
         id: label?.replace(/\s+/g, ''),
         name: label?.replace(/\s+/g, ''),
@@ -83,6 +84,7 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                                     onChange={onChange}
                                     placeholder={placeholder}
                                     className={`w-full ${inputLeft ? "pl-10" : "pl-4"} pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300`}
+                                    ref={ref}
                                 />
                             ) : (
                                 <textarea
