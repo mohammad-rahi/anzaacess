@@ -66,7 +66,7 @@ export default function AddEvents() {
                         <InputField
                             type="select"
                             value={event_category.category_name}
-                            setSelectChange={(value) => setEventCategory(value)}
+                            setSelectChange={(option) => setEventCategory({category_name: option.label, category_slug: option.value})}
                             label='Select Event Category'
                             placeholder='Select Event Category'
                             options={eventCategories}
@@ -98,7 +98,7 @@ export default function AddEvents() {
                     <InputField
                         type="select"
                         value={ticket_types}
-                        setSelectChange={(value) => setTicketTypes(value)}
+                        setSelectChange={(option) => setTicketTypes(option.value)}
                         label='Select Ticket Types'
                         placeholder='Select Ticket Type'
                         options={[

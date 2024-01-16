@@ -10,8 +10,8 @@ type EventAction =
   | { type: 'SET_EVENT_DESCRIPTION'; payload: string }
   | {
     type: 'SET_EVENT_CATEGORY'; payload: {
-      name: string;
-      slug: string
+      category_name: string;
+      category_slug: string
     }
   }
   | { type: 'SET_EVENT_IMAGE'; payload: string }
@@ -50,7 +50,7 @@ interface EventContextValue {
   state: EventTypes;
   setEventName: (eventName: string) => void;
   setEventDescription: (eventDescription: string) => void;
-  setEventCategory: (eventCategory: string) => void;
+  setEventCategory: (eventCategory: {category_name: string; category_slug: string}) => void;
   setEventImage: (eventImage: string) => void;
   setEventDateTime: (eventDateTime: string) => void;
   setEventVenue: (eventVenue: string) => void;
@@ -69,8 +69,12 @@ const EventProvider: React.FC<EventContextProps> = ({ children }) => {
     {
       profile_id: user?.id || "",
       event_name: '',
+      event_slug: '',
       event_description: '',
-      event_category: '',
+      event_category: {
+        category_name: '',
+        category_slug: '',
+      },
       event_image: '',
       event_date_time: '',
       event_venue: '',

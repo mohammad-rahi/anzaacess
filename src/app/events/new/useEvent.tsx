@@ -8,63 +8,63 @@ import { supabase } from '@/config/supabase';
 
 const eventCategories = [
     {
-        value: 'Concerts',
+        value: 'concerts',
         label: 'Concerts'
     },
     {
-        value: 'Sports Events',
+        value: 'sports-events',
         label: 'Sports Events'
     },
     {
-        value: 'Theater Performances',
+        value: 'theater-performances',
         label: 'Theater Performances'
     },
     {
-        value: 'Festivals',
+        value: 'festivals',
         label: 'Festivals'
     },
     {
-        value: "Conferences",
+        value: "conferences",
         label: "Conferences"
     },
     {
-        value: "Comedy Shows",
+        value: "comedy-shows",
         label: "Comedy Shows"
     },
     {
-        value: "Exhibitions",
+        value: "exhibitions",
         label: "Exhibitions"
     },
     {
-        value: "Workshops",
+        value: "workshops",
         label: "Workshops"
     },
     {
-        value: "Film Screenings",
+        value: "film-screenings",
         label: "Film Screenings"
     },
     {
-        value: "Charity Events",
+        value: "charity-events",
         label: "Charity Events"
     },
     {
-        value: "Art Galleries",
+        value: "art-galleries",
         label: "Art Galleries"
     },
     {
-        value: "Networking Events",
+        value: "networking-events",
         label: "Networking Events"
     },
     {
-        value: "Food and Drink Tastings",
+        value: "food-and-drink-tastings",
         label: "Food and Drink Tastings"
     },
     {
-        value: "Fashion Shows",
+        value: "fashion-shows",
         label: "Fashion Shows"
     },
     {
-        value: "Educational Seminars",
+        value: "educational-seminars",
         label: "Educational Seminars"
     }
 ]
@@ -147,7 +147,10 @@ export default function useEvent() {
                     setStep(1);
                     setEventName('');
                     setEventDescription('');
-                    setEventCategory('');
+                    setEventCategory({
+                        category_name: '',
+                        category_slug: '',
+                    });
                     setEventDateTime('');
                     setEventVenue('');
                     setTicketTypes('');

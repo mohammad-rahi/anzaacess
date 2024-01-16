@@ -1,4 +1,4 @@
-import React, { Children, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import Select from 'react-select';
 
 type InputFieldProps = {
@@ -12,7 +12,10 @@ type InputFieldProps = {
     children?: ReactNode;
     multiple?: boolean;
     options?: { value: string; label: string }[]
-    setSelectChange?: (value: string) => void
+    setSelectChange?: (option: {
+        value: string;
+        label: string
+    }) => void
     ref?: React.RefObject<HTMLInputElement>
 };
 
@@ -55,7 +58,7 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                 {
                     type == "select" ? (
                         <Select
-                            id='event_category'
+                            id={id}
                             options={options}
                             onChange={(opt) => opt?.value && setSelectChange && setSelectChange(opt.value)}
                         />
@@ -64,13 +67,7 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                         type == "file" ?
                             (
                                 <input
-                                    type="file"
-                                    id={label?.replace(/\s+/g, '')}
-                                    name={label?.replace(/\s+/g, '')}
-                                    value={value}
-                                    onChange={onChange}
-                                    placeholder={placeholder}
-                                    className={`w-full ${inputLeft ? "pl-10" : "pl-4"} pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300`}
+                                    {...inputProps}
                                     multiple={multiple}
                                     accept='.png, .jpeg, .jpg'
                                 />
