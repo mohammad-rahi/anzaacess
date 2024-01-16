@@ -9,37 +9,52 @@ import FilterOptions from './FilterOptions';
 
 const events: EventTypes[] = [
   {
-    id: '1',
-    profile_id: 'user1',
-    event_name: 'Event 1',
-    event_description: 'Description for Event 1',
-    event_category: 'Category 1',
-    event_image: 'image1.jpg',
-    event_date_time: '2024-01-15T18:00:00',
-    event_venue: 'Venue 1',
-    ticket_types: 'Free',
+      id: '1',
+      profile_id: 'user1',
+      event_name: 'Event 1',
+      event_slug: 'event-1',
+      event_description: 'Description for Event 1',
+      event_category: {
+          id: '1',
+          category_name: 'Category 1',
+          category_slug: 'category-1',
+      },
+      event_image: 'image1.jpg',
+      event_date_time: '2024-01-15T18:00:00',
+      event_venue: 'Venue 1',
+      ticket_types: 'Free',
   },
   {
-    id: '2',
-    profile_id: 'user2',
-    event_name: 'Event 2',
-    event_description: 'Description for Event 2',
-    event_category: 'Category 2',
-    event_image: 'image2.jpg',
-    event_date_time: '2024-01-15T18:00:00',
-    event_venue: 'Venue 2',
-    ticket_types: 'Paid',
+      id: '2',
+      profile_id: 'user2',
+      event_name: 'Event 2',
+      event_slug: 'event-2',
+      event_description: 'Description for Event 2',
+      event_category: {
+          id: '2',
+          category_name: 'Category 2',
+          category_slug: 'category-2',
+      },
+      event_image: 'image2.jpg',
+      event_date_time: '2024-01-15T18:00:00',
+      event_venue: 'Venue 2',
+      ticket_types: 'Paid',
   },
   {
-    id: '3',
-    profile_id: 'user3',
-    event_name: 'Event 3',
-    event_description: 'Description for Event 3',
-    event_category: 'Category 3',
-    event_image: 'image3.jpg',
-    event_date_time: '2024-01-15T18:00:00',
-    event_venue: 'Venue 3',
-    ticket_types: 'Free',
+      id: '3',
+      profile_id: 'user3',
+      event_name: 'Event 3',
+      event_slug: 'event-3',
+      event_description: 'Description for Event 3',
+      event_category: {
+          id: '3',
+          category_name: 'Category 3',
+          category_slug: 'category-3',
+      },
+      event_image: 'image3.jpg',
+      event_date_time: '2024-01-15T18:00:00',
+      event_venue: 'Venue 3',
+      ticket_types: 'Free',
   }
 ];
 
@@ -58,7 +73,7 @@ export default function EventsPage() {
   // Filter events based on search query, selected category, and selected ticket type
   const filteredEvents = events.filter((event) => {
     const matchesSearch = event.event_name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory ? event.event_category === selectedCategory : true;
+    const matchesCategory = selectedCategory ? event.event_category.category_slug === selectedCategory : true;
     const matchesTicketType = selectedTicketType ? event.ticket_types === selectedTicketType : true;
     return matchesSearch && matchesCategory && matchesTicketType;
   });
@@ -112,7 +127,7 @@ export default function EventsPage() {
             {/* Event cards grid */}
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
               {filteredEvents.map((event) => (
-                <Link href={`/events/${event.id}`} key={event.id}>
+                <Link href={`/events/${event.event_category.category_slug}/${event.event_slug}`} key={event.id}>
                   <EventCard event={event} />
                 </Link>
               ))}

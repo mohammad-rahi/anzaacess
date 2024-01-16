@@ -18,7 +18,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
       <div>
         <h3 className="text-2xl font-bold mb-2">{event_name}</h3>
         <p className="text-gray-600 mb-2">{event_description}</p>
-        <p className="text-gray-500 mb-2">Category: {event_category}</p>
+        <p className="text-gray-500 mb-2">Category: {event_category.category_name}</p>
         <p className="text-gray-500 mb-2">Date & Time: {new Date(event_date_time).toLocaleString()}</p>
         <p className="text-gray-500 mb-2">Venue: {event_venue}</p>
         <p className="text-gray-500">Ticket Types: {ticket_types}</p>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import React from 'react';
-import { FaSignInAlt, FaPlus } from 'react-icons/fa';
+import { FaSignInAlt, FaPlus, FaUser } from 'react-icons/fa';
 import { Button } from '..';
 import { usePathname } from 'next/navigation';
 import AnzaAccessLogo from './AnzaAccessLogo';
@@ -56,19 +56,19 @@ export default function Header() {
                                     (user && user.email) ? <div className='relative group'>
                                         <button className='w-8 h-8 rounded-md overflow-hidden bg-blue-200 cursor-pointer'>
                                             {
-                                                user.avatar_url ? <Image src={user.avatar_url} alt={user.name || user.email.split("@")[0]} /> : <span className='text-xl font-bold'>{user.name.slice(0,1).toUpperCase() || user.email.split("@")[0].slice(0,1).toUpperCase()}</span>
+                                                user.avatar_url ? <Image src={user.avatar_url} alt={user.name || user.email.split("@")[0]} /> : <span className='text-xl font-bold'>{user.name.slice(0, 1).toUpperCase() || user.email.split("@")[0].slice(0, 1).toUpperCase()}</span>
                                             }
                                         </button>
 
                                         <ul className="text-blue-600 absolute top-full right-0 whitespace-nowrap bg-white shadow-md rounded-md overflow-hidden w-64 py-1 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto scale-y-0 group-hover:scale-y-100 origin-top transition duration-300">
                                             <li>
-                                                <Link href="/profile" className="text-blue-600 flex items-center hover:text-blue-800 hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
-                                                    <FaSignInAlt className="mr-2" />
-                                                    Log out
+                                                <Link href="/profile" className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
+                                                    <FaUser className="mr-2" />
+                                                    Profile
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link href="/logout" className="text-blue-600 flex items-center hover:text-blue-800 hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
+                                                <Link href="/profile" className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
                                                     <FaSignInAlt className="mr-2" />
                                                     Log out
                                                 </Link>
