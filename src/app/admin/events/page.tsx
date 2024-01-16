@@ -43,11 +43,11 @@ export default function AdminEventsPage() {
         <ul className='space-y-4'>
           {
             eventsLoading ? (
-              <Skeleton count={5} className='bg-blue-50 p-4 py-7 rounded-md shadow-sm mt-4' />
+              <Skeleton count={5} className='p-4 py-7 rounded-md shadow-sm mt-4' baseColor='white' />
             ) : (
               events.length > 0 ? (
                 events.map((event) => (
-                  <li key={event.id} className='bg-blue-50 p-4 rounded-md shadow-sm overflow-hidden flex items-center justify-between gap-8 group'>
+                  <li key={event.id} className='bg-white p-4 rounded-md shadow-sm overflow-hidden flex items-center justify-between gap-8 group'>
                     <span className='font-bold'>{event.event_name}</span>
 
                     <div className='group-hover:opacity-100 opacity-0 pointer-events-none group-hover:pointer-events-auto'>

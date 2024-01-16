@@ -44,11 +44,11 @@ export default function AdminUsersPage() {
         <ul className='space-y-4'>
           {
             profilesLoding ? (
-              <Skeleton count={5} className='bg-blue-50 p-4 py-7 rounded-md shadow-sm mt-4' />
+              <Skeleton count={5} className='p-4 py-7 rounded-md shadow-sm mt-4' baseColor='white' />
             ) : (
               profiles.length > 0 ? (
                 profiles.map((profile) => (
-                  <li key={profile.id} className='bg-blue-50 p-4 rounded-md shadow-sm overflow-hidden flex items-center justify-between gap-8 group'>
+                  <li key={profile.id} className='bg-white p-4 rounded-md shadow-sm overflow-hidden flex items-center justify-between gap-8 group'>
                     <span className='font-bold'>{profile.name}</span>
                     <span className='font-bold'>{profile.email}</span>
 

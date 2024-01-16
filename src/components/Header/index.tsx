@@ -20,7 +20,7 @@ export default function Header() {
     const isAdminPath = pathname.startsWith("/admin");
 
     return (
-        <header className='bg-blue-100 fixed top-0 inset-x-0'>
+        <header className='bg-blue-100 fixed top-0 inset-x-0 z-10'>
             <nav className={`${isAdminPath ? 'w-11/12 mx-auto' : 'wrapper'} p-4`}>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-12">

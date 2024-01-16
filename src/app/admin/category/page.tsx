@@ -42,11 +42,11 @@ export default function AdminCategoryPage() {
         <ul className='space-y-4'>
           {
             categoryLoading ? (
-              <Skeleton count={5} className='bg-blue-50 p-4 py-7 rounded-md shadow-sm mt-4' />
+              <Skeleton count={5} className='p-4 py-7 rounded-md shadow-sm mt-4' baseColor='white' />
             ) : (
               categories.length > 0 ? (
                 categories.map((category) => (
-                  <li key={category.id} className='bg-blue-50 p-4 rounded-md shadow-sm overflow-hidden flex items-center justify-between gap-8 group'>
+                  <li key={category.id} className='bg-white p-4 rounded-md shadow-sm overflow-hidden flex items-center justify-between gap-8 group'>
                     <span className='font-bold'>{category.category_name}</span>
 
                     <div className='group-hover:opacity-100 opacity-0 pointer-events-none group-hover:pointer-events-auto'>

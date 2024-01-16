@@ -23,7 +23,12 @@ export default function RootLayout({
         <AuthProvider>
           <EventProvider>
             <Header />
-            {children}
+
+            <main className='bg-blue-50 min-h-screen mt-[72px]'>
+              <div className='wrapper py-16'>
+                {children}
+              </div>
+            </main>
           </EventProvider>
         </AuthProvider>
       </body>

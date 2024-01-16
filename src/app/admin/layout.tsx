@@ -16,12 +16,12 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <main className='bg-white'>
+        <>
             <AdminSidebar />
 
-            <div className="wrapper min-h-screen p-8 ml-64 mt-[72px]">
+            <div className="ml-64">
                 {children}
             </div>
-        </main>
+        </>
     )
 }
