@@ -73,11 +73,11 @@ export default function useEvent() {
     const [step, setStep] = useState(1);
     const [eventImageUploadLoading, setEventImageUploadLoading] = useState(false);
 
-    const steps = ['Event Name', 'Date, Time, Venue', 'Ticket Types'];
+    const steps = ['Details', 'Date', 'Tickets', 'Image'];
 
     // Function to handle next step
     const handleNextStep = () => {
-        if (step < 3) {
+        if (step < 4) {
             setStep(step + 1);
         }
     };
@@ -103,7 +103,7 @@ export default function useEvent() {
         event_image,
         event_date_time,
         event_venue,
-        ticket_types
+        tickets
     }, setEventName, setEventDescription, setEventDateTime, setEventVenue, setTicketTypes, setEventCategory, setEventImage } = useEventContext();
 
     const handleEventImageChange = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -135,7 +135,7 @@ export default function useEvent() {
                     event_image,
                     event_date_time,
                     event_venue,
-                    ticket_types
+                    tickets
                 };
 
                 const { data, error } = await supabase.from("events").insert(event);
@@ -153,7 +153,7 @@ export default function useEvent() {
                     });
                     setEventDateTime('');
                     setEventVenue('');
-                    setTicketTypes('');
+                    setTicketTypes([]);
                 }
             }
         } catch (error) {
@@ -165,6 +165,11 @@ export default function useEvent() {
         eventCategories,
         handleEventImageChange,
         handleAddEvent,
-        eventImageUploadLoading
+        eventImageUploadLoading,
+        step,
+        steps,
+        handlePrevStep,
+        handleNextStep,
+        handleStepClick
     }
 }

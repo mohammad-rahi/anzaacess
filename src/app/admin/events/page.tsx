@@ -35,7 +35,7 @@ export default function AdminEventsPage() {
         <h1 className='text-3xl font-bold'>Events</h1>
 
         <div>
-          <Button href="/admin/category/new">New</Button>
+          <Button href="/events/new">New</Button>
         </div>
       </div>
 

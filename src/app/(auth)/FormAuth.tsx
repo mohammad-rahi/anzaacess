@@ -97,7 +97,7 @@ export default function FormAuth({ type }: FormProps) {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-blue-100">
+        <div className="min-h-screen flex items-center justify-center bg-blue-100 rounded-md">
             <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
                 <div className='flex items-center'>
                     {

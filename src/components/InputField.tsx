@@ -7,7 +7,7 @@ type InputFieldProps = {
     label?: string;
     labelRight?: ReactNode;
     placeholder: string;
-    type?: "text" | "password" | "email" | "datetime-local" | "file" | "select";
+    type?: "text" | "password" | "email" | "datetime-local" | "file" | "select" | 'number';
     inputLeft?: ReactNode;
     children?: ReactNode;
     multiple?: boolean;
@@ -34,7 +34,7 @@ export default function InputField({ value, onChange, label, labelRight, placeho
     };
 
     return (
-        <div className='mb-6'>
+        <div className='mb-4'>
             {label && (
                 <div className="flex items-center justify-between gap-4">
                     <label htmlFor={label.replace(/\s+/g, '')} className="text-gray-700 text-sm font-semibold flex items-center justify-between gap-8 w-full">

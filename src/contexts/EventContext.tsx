@@ -1,6 +1,6 @@
 "use client";
 
-import { EventTypes } from '@/app/events/event.types';
+import { EventTypes, TicketType } from '@/app/events/event.types';
 import React, { createContext, useReducer, useContext, ReactNode } from 'react';
 import { useAuthContext } from './AuthContext';
 
@@ -17,7 +17,7 @@ type EventAction =
   | { type: 'SET_EVENT_IMAGE'; payload: string }
   | { type: 'SET_EVENT_DATE_TIME'; payload: string }
   | { type: 'SET_EVENT_VENUE'; payload: string }
-  | { type: 'SET_TICKET_TYPES'; payload: string };
+  | { type: 'SET_TICKET_TYPES'; payload: TicketType[] };
 
 // Reducer function
 const eventReducer = (state: EventTypes, action: EventAction): EventTypes => {
@@ -35,7 +35,7 @@ const eventReducer = (state: EventTypes, action: EventAction): EventTypes => {
     case 'SET_EVENT_VENUE':
       return { ...state, event_venue: action.payload };
     case 'SET_TICKET_TYPES':
-      return { ...state, ticket_types: action.payload };
+      return { ...state, tickets: action.payload };
     default:
       return state;
   }
@@ -54,7 +54,7 @@ interface EventContextValue {
   setEventImage: (eventImage: string) => void;
   setEventDateTime: (eventDateTime: string) => void;
   setEventVenue: (eventVenue: string) => void;
-  setTicketTypes: (ticketTypes: string) => void;
+  setTicketTypes: (ticketTypes: TicketType[]) => void;
 }
 
 // Create context
@@ -78,7 +78,14 @@ const EventProvider: React.FC<EventContextProps> = ({ children }) => {
       event_image: '',
       event_date_time: '',
       event_venue: '',
-      ticket_types: ''
+      tickets: [
+        {
+          id: '',
+          name: '',
+          price: 0,
+          description: ''
+        }
+      ]
     },
   );
 

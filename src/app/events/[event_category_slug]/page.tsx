@@ -22,7 +22,20 @@ const events: EventTypes[] = [
         event_image: 'image1.jpg',
         event_date_time: '2024-01-15T18:00:00',
         event_venue: 'Venue 1',
-        ticket_types: 'Free',
+        tickets: [
+            {
+                id: '1',
+                name: 'VIP',
+                price: 100,
+                description: 'Description for VIP',
+            },
+            {
+                id: '2',
+                name: 'Standard',
+                price: 50,
+                description: 'Description for Standard',
+            }
+        ]
     },
     {
         id: '2',
@@ -38,7 +51,20 @@ const events: EventTypes[] = [
         event_image: 'image2.jpg',
         event_date_time: '2024-01-15T18:00:00',
         event_venue: 'Venue 2',
-        ticket_types: 'Paid',
+        tickets: [
+            {
+                id: '1',
+                name: 'VIP',
+                price: 100,
+                description: 'Description for VIP',
+            },
+            {
+                id: '2',
+                name: 'Standard',
+                price: 50,
+                description: 'Description for Standard',
+            }
+        ]
     },
     {
         id: '3',
@@ -54,9 +80,22 @@ const events: EventTypes[] = [
         event_image: 'image3.jpg',
         event_date_time: '2024-01-15T18:00:00',
         event_venue: 'Venue 3',
-        ticket_types: 'Free',
+        tickets: [
+            {
+                id: '1',
+                name: 'VIP',
+                price: 100,
+                description: 'Description for VIP',
+            },
+            {
+                id: '2',
+                name: 'Standard',
+                price: 50,
+                description: 'Description for Standard',
+            }
+        ]
     }
-  ];
+];
 
 const ticketTypeOptions = ['Free', 'Paid'];
 
@@ -74,7 +113,7 @@ export default function EventsCategoryPage({ params: { event_category } }: { par
     const filteredEvents = events.filter((event) => {
         const matchesSearch = event.event_name.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesCategory = selectedCategory ? event.event_category.category_slug === selectedCategory : true;
-        const matchesTicketType = selectedTicketType ? event.ticket_types === selectedTicketType : true;
+        const matchesTicketType = selectedTicketType ? event.tickets[0].name === selectedTicketType : true;
         return matchesSearch && matchesCategory && matchesTicketType;
     });
 
@@ -127,9 +166,9 @@ export default function EventsCategoryPage({ params: { event_category } }: { par
                         {/* Event cards grid */}
                         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
                             {filteredEvents.map((event) => (
-                                   <Link href={`/events/${event.event_category.category_slug}/${event.event_slug}`} key={event.id}>
-                                   <EventCard event={event} />
-                                 </Link>
+                                <Link href={`/events/${event.event_category.category_slug}/${event.event_slug}`} key={event.id}>
+                                    <EventCard event={event} />
+                                </Link>
                             ))}
                         </div>
                     </div>

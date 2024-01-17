@@ -5,6 +5,13 @@ export type EventCategory = {
     created_at?: string;
 }
 
+export type TicketType = {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+}
+
 export type EventTypes = {
     id?: string;
     created_at?: string;
@@ -16,5 +23,5 @@ export type EventTypes = {
     event_image: string;
     event_date_time: string;
     event_venue: string;
-    ticket_types: string;
+    tickets: TicketType[];
 }
