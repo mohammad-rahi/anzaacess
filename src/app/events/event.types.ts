@@ -21,7 +21,9 @@ export type EventTypes = {
     event_description: string;
     event_category: EventCategory;
     event_image: string;
-    event_date_time: string;
+    event_date: string;
+    event_time: string;
     event_venue: string;
+    venue_description: string;
     tickets: TicketType[];
 }

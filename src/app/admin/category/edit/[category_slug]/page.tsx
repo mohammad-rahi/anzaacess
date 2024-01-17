@@ -5,12 +5,11 @@ import { Button } from '@/components';
 import InputField from '@/components/InputField'
 import { supabase } from '@/config/supabase';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaChevronLeft } from 'react-icons/fa';
-import { v4 as uuidv4 } from 'uuid';
 import { BarLoader } from 'react-spinners';
 
-export default function AdminAddEventCategoryPage() {
+export default function AdminEditCategoryPage({ params: { category_slug } }: { params: { category_slug: string } }) {
     const router = useRouter();
 
     const [category, setCategory] = useState<EventCategory>({
@@ -18,26 +17,58 @@ export default function AdminAddEventCategoryPage() {
         category_slug: '',
     });
 
+    const [fetchedCategory, setFetchedCategory] = useState<EventCategory>({
+        category_name: '',
+        category_slug: '',
+    });
+
     const [categoryLoading, setCategoryLoading] = useState<boolean>(false);
+    const [fetchingLoading, setFetchingLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchCategory = async () => {
+            const { data, error } = await supabase.from('event_categories').select('*').eq('category_slug', category_slug);
+
+            if (error) {
+                console.log(error);
+            }
+
+            if (data) {
+                setCategory(data[0]);
+                setFetchedCategory(data[0]);
+                setFetchingLoading(false);
+            }
+        };
+
+        fetchCategory();
+    }, [category_slug]);
 
     const handleCategoryChange = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setCategory({
             ...category,
             category_name: ev.target.value,
-            category_slug: ev.target.value.trim() && `${ev.target.value.toLowerCase().replace(/\s+/g, '-')}-${uuidv4().replace(/-/g, '').slice(0, 5)}`,
         });
     }
 
-    const handleAddCategory = async () => {
-        if (!category.category_name || !category.category_slug) return;
+    const handleUpdateCategory = async () => {
+        if (!category.category_name || !fetchedCategory.category_slug) return;
+
+        if(category.category_name === fetchedCategory.category_name) {
+            router.push('/admin/category');
+            return;
+        }
 
         setCategoryLoading(true);
 
-        const { data, error } = await supabase.from('event_categories').insert([category]);
+        const { data, error } = await supabase.from('event_categories').update({
+            category_name: category.category_name,
+        }).eq('category_slug', fetchedCategory.category_slug);
 
         if (error) {
             console.log(error);
-        } else {
+        }
+
+        if (data) {
             router.push('/admin/category');
         }
 
@@ -52,7 +83,7 @@ export default function AdminAddEventCategoryPage() {
                 </button>
 
                 <div className='flex-1 text-center'>
-                    <h1 className="text-4xl font-bold text-center text-blue-600">Create Event Category</h1>
+                    <h1 className="text-4xl font-bold text-center text-blue-600">Edit Category: {category.category_name}</h1>
                 </div>
             </div>
 
@@ -70,7 +101,6 @@ export default function AdminAddEventCategoryPage() {
                         <InputField
                             type="text"
                             value={category.category_slug}
-                            onChange={handleCategoryChange}
                             placeholder="Enter category slug"
                             label='Category Slug'
                             readOnly
@@ -78,9 +108,9 @@ export default function AdminAddEventCategoryPage() {
                     </div>
 
                     <div className='flex items-center justify-center'>
-                        <Button onClick={handleAddCategory} disabled={categoryLoading}>
+                        <Button onClick={handleUpdateCategory} disabled={categoryLoading || fetchingLoading}>
                             {
-                                categoryLoading ? <BarLoader color="#fff" /> : 'Create Category'
+                                categoryLoading ? <BarLoader color="#fff" /> : 'Update Category'
                             }
                         </Button>
                     </div>

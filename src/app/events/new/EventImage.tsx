@@ -8,12 +8,16 @@ export default function EventImage({
     event_image,
     eventImageUploadLoading,
     handleEventImageChange,
-    setEventImage
+    setEventImage,
+    setEventImageUploadLoading,
+    uploadFile
 }: {
     event_image: string,
     eventImageUploadLoading: boolean,
     handleEventImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-    setEventImage: (image_url: string) => void
+    setEventImage: (image_url: string) => void,
+    setEventImageUploadLoading: (loading: boolean) => void,
+    uploadFile: (file: File) => Promise<string | undefined>
 }) {
     const [isDragging, setIsDragging] = useState(false);
 
@@ -29,6 +33,7 @@ export default function EventImage({
     const handleDrop = (e: React.DragEvent<HTMLDivElement | HTMLLabelElement>) => {
         e.preventDefault();
         setIsDragging(false);
+        setEventImageUploadLoading(true);
 
         const files = e.dataTransfer.files;
 

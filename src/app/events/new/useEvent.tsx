@@ -2,76 +2,41 @@
 
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useEventContext } from '@/contexts/EventContext';
-import React, { useState } from 'react';
-import { EventTypes } from '../event.types';
+import React, { useEffect, useState } from 'react';
+import { EventCategory, EventTypes } from '../event.types';
 import { supabase } from '@/config/supabase';
-
-const eventCategories = [
-    {
-        value: 'concerts',
-        label: 'Concerts'
-    },
-    {
-        value: 'sports-events',
-        label: 'Sports Events'
-    },
-    {
-        value: 'theater-performances',
-        label: 'Theater Performances'
-    },
-    {
-        value: 'festivals',
-        label: 'Festivals'
-    },
-    {
-        value: "conferences",
-        label: "Conferences"
-    },
-    {
-        value: "comedy-shows",
-        label: "Comedy Shows"
-    },
-    {
-        value: "exhibitions",
-        label: "Exhibitions"
-    },
-    {
-        value: "workshops",
-        label: "Workshops"
-    },
-    {
-        value: "film-screenings",
-        label: "Film Screenings"
-    },
-    {
-        value: "charity-events",
-        label: "Charity Events"
-    },
-    {
-        value: "art-galleries",
-        label: "Art Galleries"
-    },
-    {
-        value: "networking-events",
-        label: "Networking Events"
-    },
-    {
-        value: "food-and-drink-tastings",
-        label: "Food and Drink Tastings"
-    },
-    {
-        value: "fashion-shows",
-        label: "Fashion Shows"
-    },
-    {
-        value: "educational-seminars",
-        label: "Educational Seminars"
-    }
-]
+import { v4 as uuidv4 } from 'uuid';
 
 export default function useEvent() {
     const [step, setStep] = useState(1);
     const [eventImageUploadLoading, setEventImageUploadLoading] = useState(false);
+    const [createEventLoading, setCreateEventLoading] = useState(false);
+
+    const [eventCategories, setEventCategories] = useState<{ value: string; label: string }[]>([]);
+
+    useEffect(() => {
+        const fetchEventCategories = async () => {
+            try {
+                const { data, error } = await supabase.from('event_categories').select('*');
+
+                if (error) {
+                    console.error('Error fetching event categories:', error);
+                    return;
+                }
+
+                if (data) {
+                    setEventCategories(data.map((category: EventCategory) => ({
+                        value: category.category_slug,
+                        label: category.category_name,
+                    })))
+                }
+            } catch (error) {
+                console.error('Error fetching event categories:', error);
+            }
+        };
+
+        fetchEventCategories();
+    }, []);
 
     const steps = ['Details', 'Date', 'Venue', 'Tickets', 'Image'];
 
@@ -101,10 +66,27 @@ export default function useEvent() {
         event_description,
         event_category,
         event_image,
-        event_date_time,
+        event_date,
+        event_time,
         event_venue,
+        venue_description,
         tickets
-    }, setEventName, setEventDescription, setEventDateTime, setEventVenue, setTicketTypes, setEventCategory, setEventImage } = useEventContext();
+    }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setTickets, setEventCategory, setEventImage } = useEventContext();
+
+    const uploadFile = async (file: File) => {
+        const { data, error } = await supabase.storage.from('event-images').upload(`event-images/${file.name}-${uuidv4()}`, file);
+
+        if (error) {
+            console.log(error);
+            setEventImageUploadLoading(false);
+            return;
+        }
+        else if (data) {
+            setEventImageUploadLoading(false);
+            const { data: { publicUrl } } = supabase.storage.from('event-images').getPublicUrl(data.path);
+            return publicUrl;
+        }
+    }
 
     const handleEventImageChange = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const files = (ev.target as HTMLInputElement).files;
@@ -117,7 +99,7 @@ export default function useEvent() {
                 setEventImage(previewURL);
                 setEventImageUploadLoading(true);
 
-                
+                uploadFile(eventImage);
             }
         }
     }
@@ -126,6 +108,8 @@ export default function useEvent() {
     const handleAddEvent = async () => {
         try {
             if (user?.id) {
+                setCreateEventLoading(true);
+
                 const event: EventTypes = {
                     profile_id: user.id,
                     event_name,
@@ -133,17 +117,22 @@ export default function useEvent() {
                     event_description,
                     event_category,
                     event_image,
-                    event_date_time,
+                    event_date,
+                    event_time,
                     event_venue,
+                    venue_description,
                     tickets
                 };
 
                 const { data, error } = await supabase.from("events").insert(event);
 
                 if (error) {
+                    setCreateEventLoading(false);
                     throw error;
                 }
                 else {
+                    setCreateEventLoading(false);
+
                     setStep(1);
                     setEventName('');
                     setEventDescription('');
@@ -151,13 +140,20 @@ export default function useEvent() {
                         category_name: '',
                         category_slug: '',
                     });
-                    setEventDateTime('');
+                    setEventDate('');
+                    setEventTime('');
                     setEventVenue('');
-                    setTicketTypes([]);
+                    setVenueDescription('');
+                    setTickets([]);
+
+                    alert('Event created successfully!');
                 }
             }
+
+            console.log({ event_name, event_slug, event_description, event_category, event_image, event_date, event_time, event_venue, venue_description, tickets })
         } catch (error) {
-            console.error({ error })
+            console.error({ error });
+            setCreateEventLoading(false);
         }
     };
 
@@ -170,6 +166,9 @@ export default function useEvent() {
         steps,
         handlePrevStep,
         handleNextStep,
-        handleStepClick
+        handleStepClick,
+        setEventImageUploadLoading,
+        uploadFile,
+        createEventLoading
     }
 }

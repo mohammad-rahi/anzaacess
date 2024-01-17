@@ -2,6 +2,7 @@
 import { EventCategory } from '@/app/events/event.types';
 import { Button } from '@/components'
 import { supabase } from '@/config/supabase';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -9,6 +10,8 @@ import 'react-loading-skeleton/dist/skeleton.css'
 export default function AdminCategoryPage() {
   const [categories, setCategories] = useState<EventCategory[]>([]);
   const [categoryLoading, setCategoryLoading] = useState<boolean>(true);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -50,7 +53,7 @@ export default function AdminCategoryPage() {
                     <span className='font-bold'>{category.category_name}</span>
 
                     <div className='group-hover:opacity-100 opacity-0 pointer-events-none group-hover:pointer-events-auto'>
-                      <Button variant='outline'>Edit</Button>
+                      <Button variant='outline' onClick={() => router.push(`/admin/category/edit/${category.category_slug}`)}>Edit</Button>
                     </div>
                   </li>
                 ))

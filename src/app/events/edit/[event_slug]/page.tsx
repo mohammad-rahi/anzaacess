@@ -4,13 +4,15 @@ import InputField from '@/components/InputField';
 import Button from '@/components/Button';
 import { useEventContext } from '@/contexts/EventContext';
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote, FaDollarSign, FaUpload } from 'react-icons/fa';
-import useEvent from './useEvent';
 import { FaNoteSticky } from 'react-icons/fa6';
-import EventImage from './EventImage';
-import Tickets from './Tickets';
 import { BarLoader } from 'react-spinners';
+import useEvent from '../../new/useEvent';
+import Tickets from '../../new/Tickets';
+import EventImage from '../../new/EventImage';
+import { useEffect } from 'react';
+import { supabase } from '@/config/supabase';
 
-export default function AddEvents() {
+export default function EditEvents({ params: { event_slug } }: { params: { event_slug: string } }) {
     const { state: {
         event_name,
         event_description,
@@ -25,9 +27,38 @@ export default function AddEvents() {
 
     const { eventCategories, handleEventImageChange, handleAddEvent, eventImageUploadLoading, step, handleNextStep, handlePrevStep, handleStepClick, steps, setEventImageUploadLoading, uploadFile, createEventLoading } = useEvent();
 
+    useEffect(() => {
+        const fetchEvent = async () => {
+            try {
+                const { data, error } = await supabase.from('events').select('*').eq('event_slug', event_slug).single();
+
+                if (error) {
+                    console.error('Error fetching event:', error);
+                    return;
+                }
+
+                if (data) {
+                    setEventName(data.event_name);
+                    setEventDescription(data.event_description);
+                    setEventCategory(data.event_category);
+                    setEventImage(data.event_image);
+                    setEventDate(data.event_date);
+                    setEventTime(data.event_time);
+                    setEventVenue(data.event_venue);
+                    setVenueDescription(data.venue_description);
+                    setTickets(data.tickets);
+                }
+            } catch (error) {
+                console.error('Error fetching event:', error);
+            }
+        }
+
+        fetchEvent();
+    }, [event_slug, setEventCategory, setEventDate, setEventDescription, setEventImage, setEventName, setEventTime, setEventVenue, setTickets, setVenueDescription]);
+
     return (
         <div className="bg-blue-100 min-h-[650px] rounded-md py-12 mb-28 space-y-8">
-            <h1 className="text-4xl font-bold text-center text-blue-600">Create New Event</h1>
+            <h1 className="text-4xl font-bold text-center text-blue-600">Edit Event: {event_name}</h1>
 
             <div className="max-w-xl mx-auto w-full bg-white p-8 rounded-lg shadow-lg">
                 {/* Step Indicator as Tabs */}
@@ -177,7 +208,7 @@ export default function AddEvents() {
                             <div className='flex items-center justify-center'>
                                 <Button onClick={handleAddEvent} disabled={createEventLoading}>
                                     {
-                                        createEventLoading ? <BarLoader color='white' /> : "Create Event"
+                                        createEventLoading ? <BarLoader color='white' /> : "Update Event"
                                     }
                                 </Button>
                             </div>

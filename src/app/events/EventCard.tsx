@@ -7,7 +7,7 @@ interface EventCardProps {
 }
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  const { event_name, event_description, event_category, event_image, event_date_time, event_venue, tickets } = event;
+  const { event_name, event_description, event_category, event_image, event_date, event_time, event_venue, tickets } = event;
 
   return (
     <div className="bg-white p-6 rounded-md shadow-md space-y-4">
@@ -19,7 +19,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <h3 className="text-2xl font-bold mb-2">{event_name}</h3>
         <p className="text-gray-600 mb-2">{event_description}</p>
         <p className="text-gray-500 mb-2">Category: {event_category.category_name}</p>
-        <p className="text-gray-500 mb-2">Date & Time: {new Date(event_date_time).toLocaleString()}</p>
+        <p className="text-gray-500 mb-2">Date & Time: {new Date(event_date).toLocaleString()} at {event_time}</p>
         <p className="text-gray-500 mb-2">Venue: {event_venue}</p>
         
       </div>

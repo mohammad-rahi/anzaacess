@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 import Select from 'react-select';
 
 type InputFieldProps = {
-    value?: string;
+    value?: string | number;
     onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
     label?: string;
     labelRight?: ReactNode;
@@ -17,9 +17,10 @@ type InputFieldProps = {
         label: string
     }) => void
     ref?: React.RefObject<HTMLInputElement>
+    readOnly?: boolean
 };
 
-export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, multiple, options, setSelectChange, ref }: InputFieldProps) {
+export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, readOnly, multiple, options, setSelectChange, ref }: InputFieldProps) {
     const name = label?.toLowerCase().replace(/\s+/g, '_');
 
     const inputProps = {
@@ -30,7 +31,8 @@ export default function InputField({ value, onChange, label, labelRight, placeho
         placeholder,
         type,
         ref,
-        className: `w-full ${inputLeft ? "pl-10" : "pl-4"} pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300`,
+        readOnly,
+        className: `w-full ${inputLeft ? "pl-10" : "pl-4"} pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300 read-only:cursor-not-allowed read-only:opacity-50`,
     };
 
     return (
