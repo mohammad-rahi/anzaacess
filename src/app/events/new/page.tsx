@@ -3,9 +3,11 @@
 import InputField from '@/components/InputField';
 import Button from '@/components/Button';
 import { useEventContext } from '@/contexts/EventContext';
-import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote, FaImages, FaTimes, FaSpinner } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote, FaImages, FaTimes, FaSpinner, FaDollarSign, FaUpload } from 'react-icons/fa';
 import Image from 'next/image';
 import useEvent from './useEvent';
+import { FaNoteSticky } from 'react-icons/fa6';
+import EventImage from './EventImage';
 
 export default function AddEvents() {
     const { state: {
@@ -37,7 +39,7 @@ export default function AddEvents() {
     };
 
     return (
-        <div className="bg-blue-100 min-h-screen rounded-md py-12 mb-28 space-y-8">
+        <div className="bg-blue-100 min-h-[650px] rounded-md py-12 mb-28 space-y-8">
             <h1 className="text-4xl font-bold text-center text-blue-600">Create New Event</h1>
 
             <div className="max-w-xl mx-auto w-full bg-white p-8 rounded-lg shadow-lg">
@@ -94,24 +96,27 @@ export default function AddEvents() {
 
                     {
                         step == 2 && (
-                            <div className="space-y-4">
-                                <InputField
-                                    type="datetime-local"
-                                    value={event_date_time}
-                                    onChange={(e) => setEventDateTime(e.target.value)}
-                                    placeholder="Enter event date and time"
-                                    label='Event Date and Time'
-                                    inputLeft={<FaCalendarAlt className="text-gray-500" />}
-                                />
-
-                                <InputField
-                                    type="text"
-                                    value={event_venue}
-                                    onChange={(e) => setEventVenue(e.target.value)}
-                                    placeholder="Enter event venue"
-                                    label='Event Venue'
-                                    inputLeft={<FaMapMarkerAlt className="text-gray-500" />}
-                                />
+                            <div>
+                                <div>
+                                    <InputField
+                                        type="date"
+                                        value={event_date_time}
+                                        onChange={(e) => setEventDateTime(e.target.value)}
+                                        placeholder="Enter event date"
+                                        label='Event Date'
+                                        inputLeft={<FaCalendarAlt className="text-gray-500" />}
+                                    />
+                                </div>
+                                <div>
+                                    <InputField
+                                        type="time"
+                                        value={event_date_time}
+                                        onChange={(e) => setEventDateTime(e.target.value)}
+                                        placeholder="Enter event time"
+                                        label='Event Time'
+                                        inputLeft={<FaClock className="text-gray-500" />}
+                                    />
+                                </div>
                             </div>
                         )
                     }
@@ -119,16 +124,43 @@ export default function AddEvents() {
                     {
                         step == 3 && (
                             <div>
+                                <div>
+                                    <InputField
+                                        type="text"
+                                        value={event_venue}
+                                        onChange={(e) => setEventVenue(e.target.value)}
+                                        placeholder="Enter event venue"
+                                        label='Event Venue'
+                                        inputLeft={<FaMapMarkerAlt className="text-gray-500" />}
+                                    />
+                                </div>
+                                <div>
+                                    <InputField
+                                        value={event_venue}
+                                        onChange={(e) => setEventVenue(e.target.value)}
+                                        placeholder="Enter venue description..."
+                                        label='Venue Description'
+                                        inputLeft={<FaNoteSticky className="text-gray-500" />}
+                                    />
+                                </div>
+                            </div>
+                        )
+                    }
+
+                    {
+                        step == 4 && (
+                            <div>
                                 {tickets.map((ticket, index) => (
                                     <fieldset key={index} className='border rounded-md p-2 mb-4'>
                                         <legend className='font-bold text-sm'>Ticket {index + 1}</legend>
-                                        <div className='mb-2 flex items-center gap-8'>
+                                        <div className='mb-2 flex items-center gap-6'>
                                             <InputField
                                                 type="text"
                                                 label='Name'
                                                 placeholder='VIP, Regular, etc.'
                                                 value={ticket.name}
                                                 onChange={(e) => handleTicketChange(index, 'name', e.target.value)}
+                                                inputLeft={<FaTicketAlt className="text-gray-500" />}
                                             />
 
                                             <InputField
@@ -137,16 +169,17 @@ export default function AddEvents() {
                                                 placeholder='Enter Ticket Price'
                                                 value={ticket.name}
                                                 onChange={(e) => handleTicketChange(index, 'price', e.target.value)}
+                                                inputLeft={<FaDollarSign className="text-gray-500" />}
                                             />
                                         </div>
 
                                         <div className='mb-2'>
                                             <InputField
-                                                type="text"
                                                 label='Description'
-                                                placeholder='Enter Ticket Description'
+                                                placeholder='Enter Ticket Description...'
                                                 value={ticket.description}
                                                 onChange={(e) => handleTicketChange(index, 'description', e.target.value)}
+                                                inputLeft={<FaNoteSticky className="text-gray-500" />}
                                             />
                                         </div>
 
@@ -171,31 +204,13 @@ export default function AddEvents() {
                     }
 
                     {
-                        step == 4 && (
-                            <div>
-                                <InputField
-                                    type="file"
-                                    label='Upload Event Image'
-                                    inputLeft={<FaImages className="text-gray-500" />}
-                                    onChange={handleEventImageChange}
-                                    placeholder='Upload Event Image'
-                                />
-
-                                {
-                                    event_image && (
-                                        <div className='relative aspect-video w-full rounded-md overflow-hidden border text-sm'>
-                                            <Image src={event_image} alt="Event Image Preview" fill objectFit='cover' />
-
-                                            {/* Here will be loading and remove button */}
-                                            <button title={eventImageUploadLoading ? "Uploading..." : "Remove"} disabled={eventImageUploadLoading} onClick={() => setEventImage('')} className="absolute top-2 right-2 bg-white/60 hover:bg-white/80 flex items-center justify-center p-1 rounded-full overflow-hidden cursor-pointer disabled:cursor-default">
-                                                {
-                                                    eventImageUploadLoading ? <FaSpinner className="animate-spin" /> : <FaTimes />
-                                                }
-                                            </button>
-                                        </div>
-                                    )
-                                }
-                            </div>
+                        step == 5 && (
+                            <EventImage
+                                event_image={event_image}
+                                handleEventImageChange={handleEventImageChange}
+                                eventImageUploadLoading={eventImageUploadLoading}
+                                setEventImage={setEventImage}
+                            />
                         )
                     }
                 </form>
@@ -206,17 +221,17 @@ export default function AddEvents() {
                 <div className="wrapper flex justify-between">
                     <div>
                         {step > 1 && (
-                            <Button onClick={handlePrevStep}>Previous</Button>
+                            <Button onClick={handlePrevStep} variant='outline'>Previous</Button>
                         )}
                     </div>
-                    {step < 4 && (
+                    {step < 5 && (
                         <div className='flex items-center justify-center'>
-                            <Button onClick={handleNextStep}>Next</Button>
+                            <Button onClick={handleNextStep} variant='outline'>Next</Button>
                         </div>
                     )}
 
                     {
-                        step == 4 && (
+                        step == 5 && (
                             <div className='flex items-center justify-center'>
                                 <Button onClick={handleAddEvent}>
                                     Create Event

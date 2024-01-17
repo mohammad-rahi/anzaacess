@@ -73,11 +73,11 @@ export default function useEvent() {
     const [step, setStep] = useState(1);
     const [eventImageUploadLoading, setEventImageUploadLoading] = useState(false);
 
-    const steps = ['Details', 'Date', 'Tickets', 'Image'];
+    const steps = ['Details', 'Date', 'Venue', 'Tickets', 'Image'];
 
     // Function to handle next step
     const handleNextStep = () => {
-        if (step < 4) {
+        if (step < 5) {
             setStep(step + 1);
         }
     };
