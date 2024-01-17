@@ -19,7 +19,20 @@ const events: EventTypes[] = [
         event_image: 'image1.jpg',
         event_date_time: '2024-01-15T18:00:00',
         event_venue: 'Venue 1',
-        ticket_types: 'Free',
+        tickets: [
+            {
+                id: '1',
+                name: 'VIP',
+                price: 100,
+                description: 'Description for VIP',
+            },
+            {
+                id: '2',
+                name: 'Standard',
+                price: 50,
+                description: 'Description for Standard',
+            }
+        ]
     },
     {
         id: '2',
@@ -35,7 +48,20 @@ const events: EventTypes[] = [
         event_image: 'image2.jpg',
         event_date_time: '2024-01-15T18:00:00',
         event_venue: 'Venue 2',
-        ticket_types: 'Paid',
+        tickets: [
+            {
+                id: '1',
+                name: 'VIP',
+                price: 100,
+                description: 'Description for VIP',
+            },
+            {
+                id: '2',
+                name: 'Standard',
+                price: 50,
+                description: 'Description for Standard',
+            }
+        ]
     },
     {
         id: '3',
@@ -51,7 +77,20 @@ const events: EventTypes[] = [
         event_image: 'image3.jpg',
         event_date_time: '2024-01-15T18:00:00',
         event_venue: 'Venue 3',
-        ticket_types: 'Free',
+        tickets: [
+            {
+                id: '1',
+                name: 'VIP',
+                price: 100,
+                description: 'Description for VIP',
+            },
+            {
+                id: '2',
+                name: 'Standard',
+                price: 50,
+                description: 'Description for Standard',
+            }
+        ]
     }
 ];
 
@@ -67,7 +106,7 @@ const EventDetailsPage = ({ params: { event_category_slug, event_slug } }: { par
         return <div>Event not found</div>;
     }
 
-    const ticketTypes = selectedEvent.ticket_types.split(',');
+    const ticketTypes = selectedEvent.tickets[0].name.split(',');
 
     return (
         <main className="bg-blue-50">
