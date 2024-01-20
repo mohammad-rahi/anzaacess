@@ -21,10 +21,11 @@ type InputFieldProps = {
     defaultSelectedValue?: {
         value: string;
         label: string
-    }
+    },
+    autoFocus?: boolean
 };
 
-export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, readOnly, multiple, options, setSelectChange, ref, defaultSelectedValue }: InputFieldProps) {
+export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, readOnly, multiple, options, setSelectChange, ref, defaultSelectedValue, autoFocus }: InputFieldProps) {
     const name = label?.toLowerCase().replace(/\s+/g, '_');
 
     const inputProps = {
@@ -36,6 +37,7 @@ export default function InputField({ value, onChange, label, labelRight, placeho
         type,
         ref,
         readOnly,
+        autoFocus,
         className: `w-full ${inputLeft ? "pl-10" : "pl-4"} pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300 read-only:cursor-not-allowed read-only:opacity-50`,
     };
 

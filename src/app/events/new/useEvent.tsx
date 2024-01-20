@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { EventCategory, EventTypes } from '../event.types';
 import { supabase } from '@/config/supabase';
 import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/navigation';
 
 export default function useEvent() {
     const [step, setStep] = useState(1);
@@ -15,6 +16,8 @@ export default function useEvent() {
     const [eventCategories, setEventCategories] = useState<{ value: string; label: string }[]>([]);
 
     const [imageStoragePath, setImageStoragePath] = useState<string>();
+
+    const router = useRouter();
 
     useEffect(() => {
         const fetchEventCategories = async () => {
@@ -147,7 +150,6 @@ export default function useEvent() {
         }
     };
 
-
     const handleEventImageChange = async (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const files = (ev.target as HTMLInputElement).files;
 
@@ -199,26 +201,26 @@ export default function useEvent() {
                         setCreateEventLoading(false);
                         throw error;
                     }
-                    else {
-                        setCreateEventLoading(false);
 
-                        setStep(1);
-                        setEventName('');
-                        setEventDescription('');
-                        setEventCategory({
-                            category_name: '',
-                            category_slug: '',
-                        });
-                        setEventDate('');
-                        setEventTime('');
-                        setEventVenue('');
-                        setVenueDescription('');
-                        setTickets([]);
+                    setCreateEventLoading(false);
 
-                        setImageStoragePath('');
+                    setStep(1);
+                    setEventName('');
+                    setEventDescription('');
+                    setEventCategory({
+                        category_name: '',
+                        category_slug: '',
+                    });
+                    setEventDate('');
+                    setEventTime('');
+                    setEventVenue('');
+                    setVenueDescription('');
+                    setTickets([]);
 
-                        alert('Event udated successfully!');
-                    }
+                    setImageStoragePath('');
+
+                    alert('Event udated successfully!');
+                    router.back();
                 }
                 else {
                     const { data, error } = await supabase.from("events").insert(event);

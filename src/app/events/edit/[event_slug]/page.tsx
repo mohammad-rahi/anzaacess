@@ -49,7 +49,7 @@ export default function EditEvents({ params: { event_slug } }: { params: { event
         };
 
         fetchEvent();
-    }, [event_slug, setEventToEdit])
+    }, [event_slug])
 
     return (
         <div className="bg-blue-100 min-h-[650px] rounded-md py-12 mb-28 space-y-8">

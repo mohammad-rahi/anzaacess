@@ -50,7 +50,8 @@ export default function AdminEventsPage() {
                   <li key={event.id} className='bg-white p-4 rounded-md shadow-sm overflow-hidden flex items-center justify-between gap-8 group'>
                     <span className='font-bold'>{event.event_name}</span>
 
-                    <div className='group-hover:opacity-100 opacity-0 pointer-events-none group-hover:pointer-events-auto'>
+                    <div className='group-hover:opacity-100 opacity-0 pointer-events-none group-hover:pointer-events-auto flex items-center gap-4'>
+                      <Button variant='outline' href={`/events/${event.event_category.category_slug}/${event.event_slug}`}>View</Button>
                       <Button variant='outline' href={`/events/edit/${event.event_slug}`}>Edit</Button>
                     </div>
                   </li>

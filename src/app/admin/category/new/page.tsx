@@ -65,6 +65,7 @@ export default function AdminAddEventCategoryPage() {
                             onChange={handleCategoryChange}
                             placeholder="Enter category name"
                             label='Category Name'
+                            autoFocus
                         />
 
                         <InputField
