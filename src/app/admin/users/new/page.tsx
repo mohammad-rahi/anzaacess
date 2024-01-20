@@ -4,8 +4,6 @@ import React from 'react';
 import CreateUserForm from './CreateUserForm';
 import { useRouter } from 'next/navigation';
 import { FaChevronLeft } from 'react-icons/fa';
-import { Button } from '@/components';
-import InputField from '@/components/InputField';
 
 export default function CreateUserPage() {
   const router = useRouter();
