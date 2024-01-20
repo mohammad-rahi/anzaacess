@@ -3,7 +3,7 @@
 import InputField from '@/components/InputField';
 import Button from '@/components/Button';
 import { useEventContext } from '@/contexts/EventContext';
-import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote, FaDollarSign, FaUpload } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote } from 'react-icons/fa';
 import useEvent from './useEvent';
 import { FaNoteSticky } from 'react-icons/fa6';
 import EventImage from './EventImage';
@@ -23,7 +23,7 @@ export default function AddEvents() {
         tickets
     }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setTickets, setEventCategory, setEventImage } = useEventContext();
 
-    const { eventCategories, handleEventImageChange, handleAddEvent, eventImageUploadLoading, step, handleNextStep, handlePrevStep, handleStepClick, steps, setEventImageUploadLoading, uploadFile, createEventLoading } = useEvent();
+    const { eventCategories, handleEventImageChange, handleAddEvent, eventImageUploadLoading, step, handleNextStep, handlePrevStep, handleStepClick, steps, setEventImageUploadLoading, uploadFile, createEventLoading, handleRemoveImage } = useEvent();
 
     return (
         <div className="bg-blue-100 min-h-[650px] rounded-md py-12 mb-28 space-y-8">
@@ -75,6 +75,10 @@ export default function AddEvents() {
                                         label='Select Event Category'
                                         placeholder='Select Event Category'
                                         options={eventCategories}
+                                        defaultSelectedValue={{
+                                            value: event_category.category_slug,
+                                            label: event_category.category_name
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -152,6 +156,7 @@ export default function AddEvents() {
                                 setEventImage={setEventImage}
                                 setEventImageUploadLoading={setEventImageUploadLoading}
                                 uploadFile={uploadFile}
+                                handleRemoveImage={handleRemoveImage}
                             />
                         )
                     }
@@ -177,7 +182,7 @@ export default function AddEvents() {
                             <div className='flex items-center justify-center'>
                                 <Button onClick={handleAddEvent} disabled={createEventLoading}>
                                     {
-                                        createEventLoading ? <BarLoader color='white' /> : "Create Event"
+                                        createEventLoading ? <BarLoader color='white' /> : "Update Event"
                                     }
                                 </Button>
                             </div>

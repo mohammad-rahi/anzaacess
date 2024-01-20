@@ -10,14 +10,16 @@ export default function EventImage({
     handleEventImageChange,
     setEventImage,
     setEventImageUploadLoading,
-    uploadFile
+    uploadFile,
+    handleRemoveImage
 }: {
     event_image: string,
     eventImageUploadLoading: boolean,
     handleEventImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
     setEventImage: (image_url: string) => void,
     setEventImageUploadLoading: (loading: boolean) => void,
-    uploadFile: (file: File) => Promise<string | undefined>
+    uploadFile: (file: File) => Promise<string | undefined>,
+    handleRemoveImage: (imagePath?: string) => void
 }) {
     const [isDragging, setIsDragging] = useState(false);
 
@@ -40,9 +42,12 @@ export default function EventImage({
         if (files.length > 0) {
             const reader = new FileReader();
 
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 if (e.target?.result) {
                     setEventImage(e.target.result.toString());
+
+                    const eventImage = files[0];
+                    await uploadFile(eventImage);
                 }
             };
 
@@ -83,7 +88,7 @@ export default function EventImage({
                         <button
                             title={eventImageUploadLoading ? 'Uploading...' : 'Remove'}
                             disabled={eventImageUploadLoading}
-                            onClick={() => setEventImage('')}
+                            onClick={() => handleRemoveImage(event_image)}
                             className="absolute top-2 right-2 bg-white/60 hover:bg-white/80 flex items-center justify-center p-1 rounded-full overflow-hidden cursor-pointer disabled:cursor-default"
                         >
                             {eventImageUploadLoading ? <FaSpinner className="animate-spin" /> : <FaTimes />}

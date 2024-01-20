@@ -3,7 +3,7 @@
 import InputField from '@/components/InputField';
 import Button from '@/components/Button';
 import { useEventContext } from '@/contexts/EventContext';
-import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote, FaDollarSign, FaUpload } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote } from 'react-icons/fa';
 import { FaNoteSticky } from 'react-icons/fa6';
 import { BarLoader } from 'react-spinners';
 import useEvent from '../../new/useEvent';
@@ -11,9 +11,11 @@ import Tickets from '../../new/Tickets';
 import EventImage from '../../new/EventImage';
 import { useEffect } from 'react';
 import { supabase } from '@/config/supabase';
+import { EventCategory } from '../../event.types';
 
 export default function EditEvents({ params: { event_slug } }: { params: { event_slug: string } }) {
     const { state: {
+        id: eventID,
         event_name,
         event_description,
         event_category,
@@ -23,9 +25,9 @@ export default function EditEvents({ params: { event_slug } }: { params: { event
         event_venue,
         venue_description,
         tickets
-    }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setTickets, setEventCategory, setEventImage } = useEventContext();
+    }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setTickets, setEventCategory, setEventImage, setEventToEdit } = useEventContext();
 
-    const { eventCategories, handleEventImageChange, handleAddEvent, eventImageUploadLoading, step, handleNextStep, handlePrevStep, handleStepClick, steps, setEventImageUploadLoading, uploadFile, createEventLoading } = useEvent();
+    const { eventCategories, handleEventImageChange, handleAddEvent, eventImageUploadLoading, step, handleNextStep, handlePrevStep, handleStepClick, steps, setEventImageUploadLoading, uploadFile, createEventLoading, handleRemoveImage } = useEvent();
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -38,23 +40,16 @@ export default function EditEvents({ params: { event_slug } }: { params: { event
                 }
 
                 if (data) {
-                    setEventName(data.event_name);
-                    setEventDescription(data.event_description);
-                    setEventCategory(data.event_category);
-                    setEventImage(data.event_image);
-                    setEventDate(data.event_date);
-                    setEventTime(data.event_time);
-                    setEventVenue(data.event_venue);
-                    setVenueDescription(data.venue_description);
-                    setTickets(data.tickets);
+                    setEventToEdit(data);
                 }
+
             } catch (error) {
                 console.error('Error fetching event:', error);
             }
-        }
+        };
 
         fetchEvent();
-    }, [event_slug, setEventCategory, setEventDate, setEventDescription, setEventImage, setEventName, setEventTime, setEventVenue, setTickets, setVenueDescription]);
+    }, [event_slug, setEventToEdit])
 
     return (
         <div className="bg-blue-100 min-h-[650px] rounded-md py-12 mb-28 space-y-8">
@@ -106,6 +101,10 @@ export default function EditEvents({ params: { event_slug } }: { params: { event
                                         label='Select Event Category'
                                         placeholder='Select Event Category'
                                         options={eventCategories}
+                                        defaultSelectedValue={{
+                                            value: event_category.category_slug,
+                                            label: event_category.category_name
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -183,6 +182,7 @@ export default function EditEvents({ params: { event_slug } }: { params: { event
                                 setEventImage={setEventImage}
                                 setEventImageUploadLoading={setEventImageUploadLoading}
                                 uploadFile={uploadFile}
+                                handleRemoveImage={handleRemoveImage}
                             />
                         )
                     }
@@ -206,7 +206,7 @@ export default function EditEvents({ params: { event_slug } }: { params: { event
                     {
                         step == 5 && (
                             <div className='flex items-center justify-center'>
-                                <Button onClick={handleAddEvent} disabled={createEventLoading}>
+                                <Button onClick={() => handleAddEvent(eventID)} disabled={createEventLoading}>
                                     {
                                         createEventLoading ? <BarLoader color='white' /> : "Update Event"
                                     }

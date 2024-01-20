@@ -17,10 +17,14 @@ type InputFieldProps = {
         label: string
     }) => void
     ref?: React.RefObject<HTMLInputElement>
-    readOnly?: boolean
+    readOnly?: boolean;
+    defaultSelectedValue?: {
+        value: string;
+        label: string
+    }
 };
 
-export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, readOnly, multiple, options, setSelectChange, ref }: InputFieldProps) {
+export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, readOnly, multiple, options, setSelectChange, ref, defaultSelectedValue }: InputFieldProps) {
     const name = label?.toLowerCase().replace(/\s+/g, '_');
 
     const inputProps = {
@@ -65,6 +69,7 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                             id={name}
                             options={options}
                             onChange={(opt) => opt?.value && setSelectChange && setSelectChange(opt)}
+                            value={defaultSelectedValue}
                         />
                     )
                         :

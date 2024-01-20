@@ -32,13 +32,22 @@ export default function Button({ children, onClick, disabled, variant = "primary
                     )
                 ) : (
                     variant == "outline" ? (
-                        <button
-                            onClick={onClick}
-                            disabled={disabled}
-                            className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium hover:text-white border border-blue-600 bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out text-blue-600"
-                        >
-                            {children}
-                        </button>
+                        href ? (
+                            <Link
+                                href={href}
+                                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium hover:text-white border border-blue-600 bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out text-blue-600"
+                            >
+                                {children}
+                            </Link>
+                        ) : (
+                            <button
+                                onClick={onClick}
+                                disabled={disabled}
+                                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium hover:text-white border border-blue-600 bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out text-blue-600"
+                            >
+                                {children}
+                            </button>
+                        )
                     ) :
                         (
                             <button

@@ -51,7 +51,7 @@ export default function AdminEventsPage() {
                     <span className='font-bold'>{event.event_name}</span>
 
                     <div className='group-hover:opacity-100 opacity-0 pointer-events-none group-hover:pointer-events-auto'>
-                      <Button variant='outline'>Edit</Button>
+                      <Button variant='outline' href={`/events/edit/${event.event_slug}`}>Edit</Button>
                     </div>
                   </li>
                 ))

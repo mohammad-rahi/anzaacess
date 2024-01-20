@@ -1,9 +1,19 @@
 import React from 'react';
 import { TicketType } from '../event.types';
 import InputField from '@/components/InputField';
-import { FaDollarSign, FaTicketAlt } from 'react-icons/fa';
+import { FaTicketAlt } from 'react-icons/fa';
 import { FaNoteSticky } from 'react-icons/fa6';
 import { v4 as uuid4 } from 'uuid';
+
+const KesIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="blue" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="16" x2="12" y2="12" />
+        <line x1="12" y1="8" x2="12" y2="8" />
+        <line x1="16" y1="12" x2="16" y2="12" />
+        <line x1="8" y1="12" x2="8" y2="12" />
+    </svg>
+);
 
 type TicketsProps = {
     tickets: TicketType[];
@@ -48,7 +58,9 @@ export default function Tickets({ tickets, setTickets }: TicketsProps) {
                             placeholder='Enter Ticket Price'
                             value={ticket.price}
                             onChange={(e) => handleTicketChange(index, 'price', e.target.value)}
-                            inputLeft={<FaDollarSign className="text-gray-500" />}
+                            inputLeft={
+                                <KesIcon />
+                            }
                         />
                     </div>
 

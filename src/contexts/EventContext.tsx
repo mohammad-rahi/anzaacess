@@ -19,7 +19,8 @@ type EventAction =
   | { type: 'SET_EVENT_TIME'; payload: string }
   | { type: 'SET_EVENT_VENUE'; payload: string }
   | { type: 'SET_VENUE_DESCRIPTION'; payload: string }
-  | { type: 'SET_TICKETS'; payload: TicketType[] };
+  | { type: 'SET_TICKETS'; payload: TicketType[] }
+  | { type: 'SET_EVENT_TO_EDIT'; payload: EventTypes };
 
 // Reducer function
 const eventReducer = (state: EventTypes, action: EventAction): EventTypes => {
@@ -42,6 +43,8 @@ const eventReducer = (state: EventTypes, action: EventAction): EventTypes => {
       return { ...state, venue_description: action.payload };
     case 'SET_TICKETS':
       return { ...state, tickets: action.payload };
+    case 'SET_EVENT_TO_EDIT':
+      return action.payload;
     default:
       return state;
   }
@@ -63,6 +66,7 @@ interface EventContextValue {
   setEventVenue: (eventVenue: string) => void;
   setVenueDescription: (venueDescription: string) => void;
   setTickets: (tickets: TicketType[]) => void;
+  setEventToEdit: (event: EventTypes) => void;
 }
 
 // Create context
@@ -111,6 +115,7 @@ const EventProvider: React.FC<EventContextProps> = ({ children }) => {
     setEventVenue: (eventVenue) => dispatch({ type: 'SET_EVENT_VENUE', payload: eventVenue }),
     setVenueDescription: (venueDescription) => dispatch({ type: 'SET_VENUE_DESCRIPTION', payload: venueDescription }),
     setTickets: (tickets) => dispatch({ type: 'SET_TICKETS', payload: tickets }),
+    setEventToEdit: (event) => dispatch({ type: 'SET_EVENT_TO_EDIT', payload: event }),
   };
 
   return <EventContext.Provider value={contextValue}>{children}</EventContext.Provider>;

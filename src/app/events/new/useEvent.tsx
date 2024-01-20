@@ -14,6 +14,8 @@ export default function useEvent() {
 
     const [eventCategories, setEventCategories] = useState<{ value: string; label: string }[]>([]);
 
+    const [imageStoragePath, setImageStoragePath] = useState<string>();
+
     useEffect(() => {
         const fetchEventCategories = async () => {
             try {
@@ -88,7 +90,65 @@ export default function useEvent() {
         }
     }
 
-    const handleEventImageChange = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const deleteImage = async (path: string) => {
+        try {
+            const { error } = await supabase.storage.from('event-images').remove([path]);
+
+            if (error) {
+                console.error('Error deleting image:', error);
+                return false;
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error deleting image:', error);
+            return false;
+        }
+    };
+
+    const handleRemoveImage = async (editImagePath?: string) => {
+        if (editImagePath) {
+            setEventImageUploadLoading(true);
+
+            try {
+                const isDeleted = await deleteImage(editImagePath);
+
+                if (isDeleted) {
+                    setEventImage('');
+                    setEventImageUploadLoading(false);
+                } else {
+                    // Handle deletion failure
+                    setEventImageUploadLoading(false);
+                    console.error('Failed to delete the image.');
+                }
+            } catch (error) {
+                console.error('Error extracting path or deleting image:', error);
+                setEventImageUploadLoading(false);
+            }
+        }
+        else if (imageStoragePath) {
+            setEventImageUploadLoading(true);
+
+            try {
+                const isDeleted = await deleteImage(imageStoragePath);
+
+                if (isDeleted) {
+                    setEventImage('');
+                    setEventImageUploadLoading(false);
+                } else {
+                    // Handle deletion failure
+                    setEventImageUploadLoading(false);
+                    console.error('Failed to delete the image.');
+                }
+            } catch (error) {
+                console.error('Error extracting path or deleting image:', error);
+                setEventImageUploadLoading(false);
+            }
+        }
+    };
+
+
+    const handleEventImageChange = async (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const files = (ev.target as HTMLInputElement).files;
 
         if (files) {
@@ -99,13 +159,21 @@ export default function useEvent() {
                 setEventImage(previewURL);
                 setEventImageUploadLoading(true);
 
-                uploadFile(eventImage);
+                const imageUrl = await uploadFile(eventImage);
+                setImageStoragePath(imageUrl || "");
+
+
+                if (!imageUrl) {
+                    // Handle upload failure
+                    setEventImageUploadLoading(false);
+                    console.error('Failed to upload the image.');
+                }
             }
         }
     }
 
     // Function to handle form submission
-    const handleAddEvent = async () => {
+    const handleAddEvent = async (eventId?: string) => {
         try {
             if (user?.id) {
                 setCreateEventLoading(true);
@@ -124,33 +192,63 @@ export default function useEvent() {
                     tickets
                 };
 
-                const { data, error } = await supabase.from("events").insert(event);
+                if (eventId) {
+                    const { data, error } = await supabase.from("events").update(event).eq("id", eventId);
 
-                if (error) {
-                    setCreateEventLoading(false);
-                    throw error;
+                    if (error) {
+                        setCreateEventLoading(false);
+                        throw error;
+                    }
+                    else {
+                        setCreateEventLoading(false);
+
+                        setStep(1);
+                        setEventName('');
+                        setEventDescription('');
+                        setEventCategory({
+                            category_name: '',
+                            category_slug: '',
+                        });
+                        setEventDate('');
+                        setEventTime('');
+                        setEventVenue('');
+                        setVenueDescription('');
+                        setTickets([]);
+
+                        setImageStoragePath('');
+
+                        alert('Event udated successfully!');
+                    }
                 }
                 else {
-                    setCreateEventLoading(false);
+                    const { data, error } = await supabase.from("events").insert(event);
 
-                    setStep(1);
-                    setEventName('');
-                    setEventDescription('');
-                    setEventCategory({
-                        category_name: '',
-                        category_slug: '',
-                    });
-                    setEventDate('');
-                    setEventTime('');
-                    setEventVenue('');
-                    setVenueDescription('');
-                    setTickets([]);
+                    if (error) {
+                        setCreateEventLoading(false);
+                        throw error;
+                    }
+                    else {
+                        setCreateEventLoading(false);
 
-                    alert('Event created successfully!');
+                        setStep(1);
+                        setEventName('');
+                        setEventDescription('');
+                        setEventCategory({
+                            category_name: '',
+                            category_slug: '',
+                        });
+                        setEventDate('');
+                        setEventTime('');
+                        setEventVenue('');
+                        setVenueDescription('');
+                        setTickets([]);
+
+                        setImageStoragePath('');
+
+                        alert('Event created successfully!');
+                    }
                 }
             }
-
-            console.log({ event_name, event_slug, event_description, event_category, event_image, event_date, event_time, event_venue, venue_description, tickets })
         } catch (error) {
             console.error({ error });
             setCreateEventLoading(false);
@@ -169,6 +267,7 @@ export default function useEvent() {
         handleStepClick,
         setEventImageUploadLoading,
         uploadFile,
-        createEventLoading
+        createEventLoading,
+        handleRemoveImage
     }
 }
