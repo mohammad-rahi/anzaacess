@@ -2,138 +2,65 @@
 
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
-import { EventTypes } from './event.types';
 import EventCard from './EventCard';
 import InputField from '@/components/InputField';
-import FilterOptions from './FilterOptions';
-
-const events: EventTypes[] = [
-  {
-    id: '1',
-    profile_id: 'user1',
-    event_name: 'Event 1',
-    event_slug: 'event-1',
-    event_description: 'Description for Event 1',
-    event_category: {
-      id: '1',
-      category_name: 'Category 1',
-      category_slug: 'category-1',
-    },
-    event_image: 'image1.jpg',
-    event_date_time: '2024-01-15T18:00:00',
-    event_venue: 'Venue 1',
-    tickets: [
-      {
-        id: '1',
-        name: 'VIP',
-        price: 100,
-        description: 'Description for VIP',
-      },
-      {
-        id: '2',
-        name: 'Standard',
-        price: 50,
-        description: 'Description for Standard',
-      }
-    ]
-  },
-  {
-    id: '2',
-    profile_id: 'user2',
-    event_name: 'Event 2',
-    event_slug: 'event-2',
-    event_description: 'Description for Event 2',
-    event_category: {
-      id: '2',
-      category_name: 'Category 2',
-      category_slug: 'category-2',
-    },
-    event_image: 'image2.jpg',
-    event_date_time: '2024-01-15T18:00:00',
-    event_venue: 'Venue 2',
-    tickets: [
-      {
-        id: '1',
-        name: 'VIP',
-        price: 100,
-        description: 'Description for VIP',
-      },
-      {
-        id: '2',
-        name: 'Standard',
-        price: 50,
-        description: 'Description for Standard',
-      }
-    ]
-  },
-  {
-    id: '3',
-    profile_id: 'user3',
-    event_name: 'Event 3',
-    event_slug: 'event-3',
-    event_description: 'Description for Event 3',
-    event_category: {
-      id: '3',
-      category_name: 'Category 3',
-      category_slug: 'category-3',
-    },
-    event_image: 'image3.jpg',
-    event_date_time: '2024-01-15T18:00:00',
-    event_venue: 'Venue 3',
-    tickets: [
-      {
-        id: '1',
-        name: 'VIP',
-        price: 100,
-        description: 'Description for VIP',
-      },
-      {
-        id: '2',
-        name: 'Standard',
-        price: 50,
-        description: 'Description for Standard',
-      }
-    ]
-  }
-];
-
-const ticketTypeOptions = ['Free', 'Paid'];
+import { EventCategory, EventTypes } from './event.types';
+import { supabase } from '@/config/supabase';
 
 export default function EventsPage() {
   const [searchQuery, setSearchQuery] = useState('');
-  const searchElementRef = useRef<HTMLInputElement>(null);
-
-  // State for selected category filter
-  const [selectedCategory, setSelectedCategory] = useState('');
-
-  // State for selected ticket type filter
-  const [selectedTicketType, setSelectedTicketType] = useState('');
-
-  // Filter events based on search query, selected category, and selected ticket type
-  const filteredEvents = events.filter((event) => {
-    const matchesSearch = event.event_name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory ? event.event_category.category_slug === selectedCategory : true;
-    const matchesTicketType = selectedTicketType ? event.tickets[0].name === selectedTicketType : true;
-    return matchesSearch && matchesCategory && matchesTicketType;
-  });
+  const [events, setEvents] = useState<EventTypes[]>([]);
+  const [categories, setCategories] = useState<EventCategory[]>([]);
 
   useEffect(() => {
-    window.addEventListener('keydown', (ev) => {
-      if (ev.key === '/') {
-        searchElementRef.current?.focus();
+    const fetchEvents = async () => {
+      try {
+        const { data, error } = await supabase.from('events').select('*');
+
+        if (error) {
+          console.error('Error fetching events:', error);
+        }
+
+        if (data) {
+          setEvents([...data, ...data, ...data, ...data, ...data, ...data]);
+        }
+
+      } catch (error) {
+        console.error('Error fetching events:', error);
       }
-    });
-  }, []);
+    }
+
+    const fetchCategories = async () => {
+      try {
+        const { data, error } = await supabase.from('event_categories').select('*');
+
+        if (error) {
+          console.error('Error fetching categories:', error);
+        }
+
+        if (data) {
+          setCategories(data);
+        }
+
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    }
+
+    fetchEvents();
+    fetchCategories();
+  }, [])
+
 
   return (
     <div className='flex gap-8'>
       <div className='w-64'>
-        <h2 className='text-3xl font-bold mb-6'>Categories</h2>
+        <h2 className='text-2xl font-bold mb-6'>Categories</h2>
         <ul>
-          {['Category 1', 'Category 2', 'Category 3'].map((category) => (
-            <li key={category} className='mb-2'>
-              <Link href='#' className='block p-2 rounded-md transition duration-300 hover:text-blue-800 hover:bg-blue-100'>
-                {category}
+          {categories.map((category) => (
+            <li key={category.id}>
+              <Link href={`/events/${category.category_slug}`} className='block p-2 px-4 rounded-md transition duration-300 hover:text-blue-800 hover:bg-blue-100'>
+                {category.category_name}
               </Link>
             </li>
           ))}
@@ -144,7 +71,6 @@ export default function EventsPage() {
         {/* Search bar */}
         <div className='mb-8'>
           <InputField
-            ref={searchElementRef}
             type='text'
             placeholder='Search events...'
             value={searchQuery}
@@ -152,21 +78,10 @@ export default function EventsPage() {
           />
         </div>
 
-        {/* Filter options */}
-        <FilterOptions
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          ticketTypeOptions={ticketTypeOptions}
-          selectedTicketType={selectedTicketType}
-          setSelectedTicketType={setSelectedTicketType}
-        />
-
         {/* Event cards grid */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-          {filteredEvents.map((event) => (
-            <Link href={`/events/${event.event_category.category_slug}/${event.event_slug}`} key={event.id}>
-              <EventCard event={event} />
-            </Link>
+          {events.map((event) => (
+            <EventCard key={event.id} event={event} />
           ))}
         </div>
       </div>
