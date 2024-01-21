@@ -10,7 +10,7 @@ export default function AdminSidebar() {
 
     return (
         <aside className="bg-blue-50 fixed inset-y-0 top-[72px] left-0 w-64 border-r border-blue-200">
-            <Link href="/admin" className="block p-4 text-center border-b border-blue-200">
+            <Link href="/admin/events" className="block p-4 text-center border-b border-blue-200">
                 <h2 className="text-2xl font-bold text-blue-800">Admin Panel</h2>
             </Link>
             <ul className="py-4">
