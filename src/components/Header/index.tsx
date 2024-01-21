@@ -70,7 +70,7 @@ export default function Header() {
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link href="/admin" className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
+                                                <Link href="/admin/events" className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
                                                     <FaLock className="mr-2" />
                                                     Admin
                                                 </Link>

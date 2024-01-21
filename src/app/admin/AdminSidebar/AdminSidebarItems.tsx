@@ -7,12 +7,6 @@ type AdminSidebarItemType = {
 
 export const AdminSidebarItems: AdminSidebarItemType[] = [
     {
-        id: 'users',
-        name: 'Users',
-        path: '/admin/users',
-        icon: <></>
-    },
-    {
         id: 'events',
         name: 'Events',
         path: '/admin/events',
@@ -23,5 +17,11 @@ export const AdminSidebarItems: AdminSidebarItemType[] = [
         name: 'Category',
         path: '/admin/category',
         icon: <></>
-    }
+    },
+    {
+        id: 'users',
+        name: 'Users',
+        path: '/admin/users',
+        icon: <></>
+    },
 ]

@@ -4,6 +4,7 @@ import React from 'react';
 import CreateUserForm from './CreateUserForm';
 import { useRouter } from 'next/navigation';
 import { FaChevronLeft } from 'react-icons/fa';
+import FormAuth from '@/app/(auth)/FormAuth';
 
 export default function CreateUserPage() {
   const router = useRouter();

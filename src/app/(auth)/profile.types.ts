@@ -4,5 +4,9 @@ export interface Profile {
     name: string
     email: string
     avatar_url: string
+    roles: {
+        isAdmin: boolean
+        isUser: boolean
+    }
     created_at?: string
 }

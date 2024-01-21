@@ -1,9 +1,12 @@
-import React from 'react'
+"use client";
+import { useRouter } from 'next/navigation';
 
 export default function AdminPage() {
+    const router = useRouter();
+
+    router.replace('/admin/events');
+
     return (
-        <div>
-            <h1 className='text-3xl'>Admin</h1>
-        </div>
+        null
     )
 }
