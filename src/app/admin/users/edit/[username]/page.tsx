@@ -3,7 +3,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { FaChevronLeft } from 'react-icons/fa';
-import FormAuth from '@/app/(auth)/FormAuth';
 import CreateUserForm from '../../new/CreateUserForm';
 
 export default function EditUserPage({ params: { username } }: { params: { username: string } }) {

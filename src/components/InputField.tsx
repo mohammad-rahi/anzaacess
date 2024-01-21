@@ -96,7 +96,7 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                                     value={value}
                                     onChange={onChange}
                                     placeholder={placeholder}
-                                    className={`w-full ${inputLeft ? "pl-10" : "pl-4"} pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300 resize-none`} rows={2}>
+                                    className={`w-full ${inputLeft ? "pl-10" : "pl-4"} pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300`} rows={2}>
                                 </textarea>
                             )
                 }

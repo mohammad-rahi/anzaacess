@@ -7,11 +7,15 @@ import EventCard from './EventCard';
 import InputField from '@/components/InputField';
 import { EventCategory, EventTypes } from './event.types';
 import { supabase } from '@/config/supabase';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function EventsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [events, setEvents] = useState<EventTypes[]>([]);
   const [categories, setCategories] = useState<EventCategory[]>([]);
+  const [categoryLoading, setCategoryLoading] = useState<boolean>(true);
+  const [eventLoading, setEventLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const initialEvents = async () => {
@@ -30,6 +34,9 @@ export default function EventsPage() {
       } catch (error) {
         console.error('Error fetching events:', error);
       }
+      finally {
+        setEventLoading(false);
+      }
     };
 
     const fetchCategories = async () => {
@@ -45,6 +52,9 @@ export default function EventsPage() {
         }
       } catch (error) {
         console.error('Error fetching categories:', error);
+      }
+      finally {
+        setCategoryLoading(false);
       }
     };
 
@@ -69,6 +79,9 @@ export default function EventsPage() {
     } catch (error) {
       console.error('Error fetching events:', error);
     }
+    finally {
+      setEventLoading(false);
+    }
   };
 
   const debouncedFetchEvents = _debounce(fetchEvents, 300);
@@ -86,13 +99,23 @@ export default function EventsPage() {
       <div className='w-64'>
         <h2 className='text-2xl font-bold mb-6'>Categories</h2>
         <ul>
-          {categories.map((category) => (
-            <li key={category.id}>
-              <Link href={`/events/${category.category_slug}`} className='block p-2 px-4 rounded-md transition duration-300 hover:text-blue-800 hover:bg-blue-100'>
-                {category.category_name}
-              </Link>
-            </li>
-          ))}
+          {
+            categoryLoading ? (
+              <Skeleton count={10} className='h-8 w-full rounded-md' baseColor='white' />
+            ) : (
+              categories.length > 0 ? (
+                categories.map((category) => (
+                  <li key={category.id}>
+                    <Link href={`/events/${category.category_slug}`} className={`block p-2 px-4 rounded-md transition duration-300 hover:text-blue-800 hover:bg-blue-100`}>
+                      {category.category_name}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <p>No categories found.</p>
+              )
+            )
+          }
         </ul>
       </div>
 
@@ -108,11 +131,35 @@ export default function EventsPage() {
         </div>
 
         {/* Event cards grid */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-          {events.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </div>
+        {
+          eventLoading ? (
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+              {
+                Array.from({ length: 6 }).map((_, index) => (
+                  <div className='w-full block' key={index}>
+                    <Skeleton className='h-96 rounded-md' baseColor='white' />
+                  </div>
+                ))
+              }
+            </div>
+          ) : (
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+              {
+                eventLoading ? (
+                  <Skeleton className='h-96 rounded-md' baseColor='white' count={10} />
+                ) : (
+                  events.length > 0 ? (
+                    events.map((event) => (
+                      <EventCard key={event.id} event={event} />
+                    ))
+                  ) : (
+                    <p>No events found.</p>
+                  )
+                )
+              }
+            </div>
+          )
+        }
       </div>
     </div>
   )

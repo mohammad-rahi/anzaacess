@@ -12,7 +12,7 @@ import Image from 'next/image';
 import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation';
 
-export default function CreateUserForm({ username }: { username?: string }) {
+export default function CreateUserForm({ username, isEditOwnProfile }: { username?: string, isEditOwnProfile?: boolean }) {
     const [profileID, setProfileID] = useState<string | null>(null);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -149,20 +149,38 @@ export default function CreateUserForm({ username }: { username?: string }) {
 
         try {
             if (profileID) {
-                const { data, error: profileError } = await supabase
-                    .from('profiles')
-                    .update(
-                        [
-                            {
-                                name,
-                                avatar_url: imageStoragePath,
-                                roles,
-                            },
-                        ]
-                    ).eq('id', profileID);
+                if (isEditOwnProfile) {
+                    const { data, error: profileError } = await supabase
+                        .from('profiles')
+                        .update(
+                            [
+                                {
+                                    name,
+                                    avatar_url: imageStoragePath,
+                                },
+                            ]
+                        ).eq('id', profileID);
 
-                if (profileError) {
-                    throw profileError;
+                    if (profileError) {
+                        throw profileError;
+                    }
+                }
+                else {
+                    const { data, error: profileError } = await supabase
+                        .from('profiles')
+                        .update(
+                            [
+                                {
+                                    name,
+                                    avatar_url: imageStoragePath,
+                                    roles,
+                                },
+                            ]
+                        ).eq('id', profileID);
+
+                    if (profileError) {
+                        throw profileError;
+                    }
                 }
             }
         } catch (error: any) {
@@ -361,33 +379,39 @@ export default function CreateUserForm({ username }: { username?: string }) {
                         }
                     </div>
 
-                    <div>
-                        <label className="block text-sm text-gray-700 font-semibold">Roles</label>
+                    {
+                        isEditOwnProfile ? (
+                            null
+                        ) : (
+                            <div>
+                                <label className="block text-sm text-gray-700 font-semibold">Roles</label>
 
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center select-none hover:bg-blue-50 rounded-md overflow-hidden">
-                                <input
-                                    type="checkbox"
-                                    id="isAdmin"
-                                    checked={roles.isAdmin}
-                                    onChange={() => setRoles({ ...roles, isAdmin: !roles.isAdmin })}
-                                    className="form-checkbox text-blue-500 h-5 w-5"
-                                />
-                                <label htmlFor="isAdmin" className="ml-2 text-sm text-gray-700">Admin</label>
-                            </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center select-none hover:bg-blue-50 rounded-md overflow-hidden">
+                                        <input
+                                            type="checkbox"
+                                            id="isAdmin"
+                                            checked={roles.isAdmin}
+                                            onChange={() => setRoles({ ...roles, isAdmin: !roles.isAdmin })}
+                                            className="form-checkbox text-blue-500 h-5 w-5"
+                                        />
+                                        <label htmlFor="isAdmin" className="ml-2 text-sm text-gray-700">Admin</label>
+                                    </div>
 
-                            <div className="flex items-center select-none hover:bg-blue-50 rounded-md overflow-hidden">
-                                <input
-                                    type="checkbox"
-                                    id="isUser"
-                                    checked={roles.isUser}
-                                    onChange={() => setRoles({ ...roles, isUser: !roles.isUser })}
-                                    className="form-checkbox text-blue-500 h-5 w-5"
-                                />
-                                <label htmlFor="isUser" className="ml-2 text-sm text-gray-700">User</label>
+                                    <div className="flex items-center select-none hover:bg-blue-50 rounded-md overflow-hidden">
+                                        <input
+                                            type="checkbox"
+                                            id="isUser"
+                                            checked={roles.isUser}
+                                            onChange={() => setRoles({ ...roles, isUser: !roles.isUser })}
+                                            className="form-checkbox text-blue-500 h-5 w-5"
+                                        />
+                                        <label htmlFor="isUser" className="ml-2 text-sm text-gray-700">User</label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        )
+                    }
                 </div >
 
                 <div>

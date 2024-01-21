@@ -4,6 +4,7 @@ import './globals.css'
 import { Header } from '@/components'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { EventProvider } from '@/contexts/EventContext'
+import MainWrapper from './MainWrapper'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,12 +24,9 @@ export default function RootLayout({
         <AuthProvider>
           <EventProvider>
             <Header />
-
-            <main className='bg-blue-50 min-h-screen mt-[72px]'>
-              <div className='wrapper py-16'>
-                {children}
-              </div>
-            </main>
+            <MainWrapper>
+              {children}
+            </MainWrapper>
           </EventProvider>
         </AuthProvider>
       </body>
