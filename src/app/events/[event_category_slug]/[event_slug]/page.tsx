@@ -1,3 +1,4 @@
+import React from 'react';
 import { EventTypes } from '../../event.types';
 import Image from 'next/image';
 import TicketCard from './TicketCard';
@@ -7,7 +8,7 @@ import { notFound } from 'next/navigation';
 
 const fetchEvent: (event_category_slug: string, event_slug: string) => Promise<EventTypes> = async (event_category_slug: string, event_slug: string) => {
     try {
-        const { data, error } = await supabase.from('events').select('*').eq('category->>slug', event_category_slug).eq('event_slug', event_slug).single();
+        const { data, error } = await supabase.from('events').select('*').eq('event_category->>category_slug', event_category_slug).eq('event_slug', event_slug).single();
 
         if (error) {
             throw new Error(error.message);
@@ -33,13 +34,15 @@ const EventDetailsPage = async ({ params: { event_category_slug, event_slug } }:
         <main className="bg-blue-50">
             <div className='wrapper py-16 min-h-screen'>
                 <div className="max-w-4xl mx-auto bg-white p-8 rounded-md shadow-md">
-                    <div className="mb-8 relative aspect-video overflow-hidden rounded-md bg-blue-50">
+                    <div className="mb-8 relative aspect-w-16 aspect-h-9 overflow-hidden rounded-md bg-blue-50">
                         {
-                            !event.event_image && (
+                            event.event_image && (
                                 <Image
-                                    src={`/images/${event.event_image}`}
+                                    src={event.event_image}
                                     alt={event.event_name}
-                                    fill />
+                                    objectFit="cover"
+                                    layout="fill"
+                                />
                             )
                         }
                     </div>

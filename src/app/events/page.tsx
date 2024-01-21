@@ -1,7 +1,8 @@
 "use client";
 
 import Link from 'next/link'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import _debounce from 'lodash/debounce';
 import EventCard from './EventCard';
 import InputField from '@/components/InputField';
 import { EventCategory, EventTypes } from './event.types';
@@ -13,22 +14,23 @@ export default function EventsPage() {
   const [categories, setCategories] = useState<EventCategory[]>([]);
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const initialEvents = async () => {
       try {
-        const { data, error } = await supabase.from('events').select('*');
+        let { data, error } = await supabase
+          .from('events')
+          .select('*')
 
         if (error) {
           console.error('Error fetching events:', error);
         }
 
         if (data) {
-          setEvents([...data, ...data, ...data, ...data, ...data, ...data]);
+          setEvents(data);
         }
-
       } catch (error) {
         console.error('Error fetching events:', error);
       }
-    }
+    };
 
     const fetchCategories = async () => {
       try {
@@ -41,16 +43,43 @@ export default function EventsPage() {
         if (data) {
           setCategories(data);
         }
-
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
-    }
+    };
 
-    fetchEvents();
+    initialEvents();
     fetchCategories();
-  }, [])
+  }, [searchQuery]);
 
+  const fetchEvents = async () => {
+    try {
+      let { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .textSearch('event_name', `"${searchQuery}"`, { type: 'plain', config: 'english' })
+
+      if (error) {
+        console.error('Error fetching events:', error);
+      }
+
+      if (data) {
+        setEvents(data);
+      }
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
+  const debouncedFetchEvents = _debounce(fetchEvents, 300);
+
+  const handleSearchChange = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { value } = ev.target;
+
+    setSearchQuery(value);
+
+    debouncedFetchEvents();
+  };
 
   return (
     <div className='flex gap-8'>
@@ -74,7 +103,7 @@ export default function EventsPage() {
             type='text'
             placeholder='Search events...'
             value={searchQuery}
-            onChange={(ev) => setSearchQuery(ev.target.value)}
+            onChange={handleSearchChange} // Use the debounced function here
           />
         </div>
 
