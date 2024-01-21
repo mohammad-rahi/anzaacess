@@ -7,6 +7,6 @@ export default function AdminPage() {
     router.replace('/admin/events');
 
     return (
-        null
+        <></>
     )
 }
