@@ -48,8 +48,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                             const defaultProfile: Profile = {
                                 user_id: session.user.id,
                                 email: session.user.email,
+                                username: session.user.email?.split('@')[0],
                                 name: '',
                                 avatar_url: '',
+                                roles: {
+                                    isAdmin: false,
+                                    isUser: true,
+                                },
                                 created_at: new Date().toISOString(),
                             };
 

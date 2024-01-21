@@ -79,7 +79,7 @@ export default function EventImage({
                 onDragOver={(e) => e.preventDefault()}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`relative aspect-video w-full rounded-md overflow-hidden border text-sm ${isDragging ? 'bg-blue-100' : ''}`}
+                className={`relative aspect-video w-full text-sm border-2 border-gray-300 border-dashed rounded-md overflow-hidden ${isDragging ? 'bg-blue-100' : ''}`}
             >
                 {event_image ? (
                     <>
@@ -96,20 +96,14 @@ export default function EventImage({
                     </>
                 ) : (
                     <div className="absolute inset-x-0 inset-y-0">
-                        <div className="flex items-center justify-center h-full gap-4 cursor-default">
-                            <label htmlFor="event_image" className='flex items-center gap-2 group cursor-pointer' onDragOver={(ev) => ev.stopPropagation()}>
-                                <FaUpload className="text-blue-500 cursor-pointer" />
-                                <span className='text-blue-500 group-hover:underline cursor-pointer'>Browse</span>
-                            </label>
-
-                            <div className='text-gray-500'>
-                                or
+                        <label htmlFor="event_image">
+                            <div className="aspect-video flex flex-col items-center justify-center cursor-pointer">
+                                <div className="flex flex-col items-center justify-center">
+                                    <FaUpload className="w-12 h-12 text-gray-400" />
+                                    <p className="mt-2 text-sm text-gray-500">Upload avatar</p>
+                                </div>
                             </div>
-
-                            <div className='text-gray-500'>
-                                Drop
-                            </div>
-                        </div>
+                        </label>
                     </div>
                 )}
             </div>

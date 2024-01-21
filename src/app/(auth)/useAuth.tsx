@@ -79,7 +79,12 @@ export default function useAuth(type: AuthType): AuthHook {
                         name: "",
                         user_id: user?.id,
                         email,
-                        avatar_url: ""
+                        username: email.split("@")[0],
+                        avatar_url: "",
+                        roles: {
+                            isAdmin: false,
+                            isUser: true
+                        }
                     });
 
                     if (profileError) {

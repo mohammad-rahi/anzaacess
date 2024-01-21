@@ -1,26 +1,52 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import InputField from '@/components/InputField';
 import Button from '@/components/Button';
 import { BarLoader } from 'react-spinners';
 import { supabase } from '@/config/supabase';
 import { Profile } from '@/app/(auth)/profile.types';
+import { FaUpload } from 'react-icons/fa';
 
-export default function CreateUserForm() {
+export default function CreateUserForm({ username }: { username?: string }) {
+    const [profileID, setProfileID] = useState<string | null>(null);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [role, setRole] = useState<Profile['roles']>({
+    const [avatarURL, setAvatarURL] = useState('');
+    const [roles, setRoles] = useState<Profile['roles']>({
         isAdmin: false,
         isUser: true,
     });
     const [userCreateLoading, setUserCreateLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (username) {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('username', username)
+                    .single();
+                if (error) {
+                    console.error('Error fetching profile:', error);
+                }
+                if (data) {
+                    setProfileID(data.id);
+                    setName(data.name);
+                    setEmail(data.email);
+                    setRoles(data.roles);
+                }
+            }
+        }
+
+        fetchProfile();
+    }, [username]);
+
     const validateForm = () => {
-        if (!name || !email || !password || !confirmPassword || !role) {
+        if (!name || !email || !password || !confirmPassword) {
             setError('All fields are required');
             return false;
         }
@@ -33,7 +59,7 @@ export default function CreateUserForm() {
         return true;
     };
 
-    const handleSubmit = async () => {
+    const handleCreate = async () => {
         if (!validateForm()) {
             return;
         }
@@ -60,8 +86,9 @@ export default function CreateUserForm() {
                             user_id: user?.id,
                             name,
                             email,
+                            username: user?.email?.split('@')[0],
                             avatar_url: '',
-                            role: role,
+                            roles,
                         },
                     ]
                 );
@@ -75,7 +102,7 @@ export default function CreateUserForm() {
             setEmail('');
             setPassword('');
             setConfirmPassword('');
-            setRole({
+            setRoles({
                 isAdmin: false,
                 isUser: true,
             });
@@ -83,11 +110,60 @@ export default function CreateUserForm() {
             // Optionally, you can redirect the user or perform other actions after successful signup
             console.log('User created successfully:', user);
         } catch (error: any) {
-            setError(error.message);
+            if (error.code == "23505") {
+                setError("Email already exists");
+                console.error('Email already exists:', error);
+            }
+            else {
+                setError(error.message);
+                console.error('Error creating user:', error);
+            }
         } finally {
             setUserCreateLoading(false);
         }
     };
+
+    const handleUpdate = async () => {
+        if (!validateForm()) {
+            return;
+        }
+
+        setError(null);
+        setUserCreateLoading(true);
+
+        try {
+            if (profileID) {
+                const { data, error: profileError } = await supabase
+                    .from('profiles')
+                    .update(
+                        [
+                            {
+                                name,
+                                avatar_url: '',
+                                roles,
+                            },
+                        ]
+                    ).eq('id', profileID);
+
+                if (profileError) {
+                    throw profileError;
+                }
+            }
+        } catch (error: any) {
+            setError(error.message);
+            console.error('Error creating user:', error);
+        } finally {
+            setUserCreateLoading(false);
+        }
+    };
+
+    const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const files = (event as ChangeEvent<HTMLInputElement>).target.files
+
+        if (files && files.length > 0) {
+            setAvatarURL(URL.createObjectURL(files[0]));
+        }
+    }
 
     return (
         <div className="max-w-xl mx-auto w-full bg-white p-8 rounded-lg shadow-lg">
@@ -107,6 +183,7 @@ export default function CreateUserForm() {
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter user's email"
                         label="Email"
+                        readOnly={!!username}
                     />
 
                     <InputField
@@ -125,16 +202,37 @@ export default function CreateUserForm() {
                         label="Confirm Password"
                     />
 
+                    <div className='mb-4'>
+                        <input
+                            type="file"
+                            onChange={handleAvatarChange}
+                            placeholder="Upload Event Image"
+                            className="sr-only"
+                            id="profile_avatar"
+                            accept='image/png, image/jpeg, image/jpg'
+                        />
+
+                        <label htmlFor="profile_avatar">
+                            <span className='block text-sm text-gray-700 font-semibold'>Avatar</span>
+                            <div className="flex flex-col items-center justify-center cursor-pointer aspect-square w-32 border-2 border-gray-300 border-dashed rounded-md">
+                                <div className="flex flex-col items-center justify-center">
+                                    <FaUpload className="w-12 h-12 text-gray-400" />
+                                    <p className="mt-2 text-sm text-gray-500">Upload avatar</p>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
                     <div>
-                        <label className="block text-sm text-gray-700 mb-2 font-semibold">Roles</label>
+                        <label className="block text-sm text-gray-700 font-semibold">Roles</label>
 
                         <div className="flex items-center gap-4">
                             <div className="flex items-center select-none hover:bg-blue-50 rounded-md overflow-hidden">
                                 <input
                                     type="checkbox"
                                     id="isAdmin"
-                                    checked={role.isAdmin}
-                                    onChange={() => setRole({ ...role, isAdmin: !role.isAdmin })}
+                                    checked={roles.isAdmin}
+                                    onChange={() => setRoles({ ...roles, isAdmin: !roles.isAdmin })}
                                     className="form-checkbox text-blue-500 h-5 w-5"
                                 />
                                 <label htmlFor="isAdmin" className="ml-2 text-sm text-gray-700">Admin</label>
@@ -144,8 +242,8 @@ export default function CreateUserForm() {
                                 <input
                                     type="checkbox"
                                     id="isUser"
-                                    checked={role.isUser}
-                                    onChange={() => setRole({ ...role, isUser: !role.isUser })}
+                                    checked={roles.isUser}
+                                    onChange={() => setRoles({ ...roles, isUser: !roles.isUser })}
                                     className="form-checkbox text-blue-500 h-5 w-5"
                                 />
                                 <label htmlFor="isUser" className="ml-2 text-sm text-gray-700">User</label>
@@ -159,9 +257,9 @@ export default function CreateUserForm() {
                 </div>
 
                 <div className='flex items-center justify-center'>
-                    <Button onClick={handleSubmit} disabled={userCreateLoading}>
+                    <Button onClick={() => username ? handleUpdate() : handleCreate()} disabled={userCreateLoading}>
                         {
-                            userCreateLoading ? <BarLoader color="#fff" /> : 'Create User'
+                            userCreateLoading ? <BarLoader color="#fff" /> : username ? 'Update User' : 'Create User'
                         }
                     </Button>
                 </div>

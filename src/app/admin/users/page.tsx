@@ -53,7 +53,7 @@ export default function AdminUsersPage() {
                     <span className='font-bold'>{profile.email}</span>
 
                     <div className='group-hover:opacity-100 opacity-0 pointer-events-none group-hover:pointer-events-auto'>
-                      <Button variant='outline'>Edit</Button>
+                      <Button variant='outline' href={`/admin/users/edit/${profile.username}`}>Edit</Button>
                     </div>
                   </li>
                 ))
