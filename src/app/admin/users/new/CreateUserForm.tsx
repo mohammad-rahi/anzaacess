@@ -6,7 +6,11 @@ import Button from '@/components/Button';
 import { BarLoader } from 'react-spinners';
 import { supabase } from '@/config/supabase';
 import { Profile } from '@/app/(auth)/profile.types';
-import { FaUpload } from 'react-icons/fa';
+import { FaSpinner, FaTimes, FaTrash, FaUpload } from 'react-icons/fa';
+import Image from 'next/image';
+
+import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/navigation';
 
 export default function CreateUserForm({ username }: { username?: string }) {
     const [profileID, setProfileID] = useState<string | null>(null);
@@ -20,7 +24,12 @@ export default function CreateUserForm({ username }: { username?: string }) {
         isUser: true,
     });
     const [userCreateLoading, setUserCreateLoading] = useState<boolean>(false);
+    const [avatarUploadLoading, setAvatarUploadLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+
+    const [imageStoragePath, sestImageStoragePath] = useState<string | null>(null);
+
+    const router = useRouter();
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -38,6 +47,8 @@ export default function CreateUserForm({ username }: { username?: string }) {
                     setName(data.name);
                     setEmail(data.email);
                     setRoles(data.roles);
+                    setAvatarURL(data.avatar_url);
+                    sestImageStoragePath(data.avatar_url);
                 }
             }
         }
@@ -87,7 +98,7 @@ export default function CreateUserForm({ username }: { username?: string }) {
                             name,
                             email,
                             username: user?.email?.split('@')[0],
-                            avatar_url: '',
+                            avatar_url: imageStoragePath,
                             roles,
                         },
                     ]
@@ -107,6 +118,9 @@ export default function CreateUserForm({ username }: { username?: string }) {
                 isUser: true,
             });
 
+            sestImageStoragePath(null);
+            setAvatarURL('');
+
             // Optionally, you can redirect the user or perform other actions after successful signup
             console.log('User created successfully:', user);
         } catch (error: any) {
@@ -120,11 +134,13 @@ export default function CreateUserForm({ username }: { username?: string }) {
             }
         } finally {
             setUserCreateLoading(false);
+            alert('User created successfully');
+            router.back();
         }
     };
 
     const handleUpdate = async () => {
-        if (!validateForm()) {
+        if (!name && !email) {
             return;
         }
 
@@ -139,7 +155,7 @@ export default function CreateUserForm({ username }: { username?: string }) {
                         [
                             {
                                 name,
-                                avatar_url: '',
+                                avatar_url: imageStoragePath,
                                 roles,
                             },
                         ]
@@ -151,19 +167,114 @@ export default function CreateUserForm({ username }: { username?: string }) {
             }
         } catch (error: any) {
             setError(error.message);
-            console.error('Error creating user:', error);
+            console.error('Error updating user:', error);
         } finally {
             setUserCreateLoading(false);
+            alert('User updated successfully');
         }
     };
 
-    const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const uploadFile = async (file: File) => {
+        try {
+            setAvatarUploadLoading(true);
+
+            const slugifiedFileName = file.name
+                .replace(/[^a-zA-Z0-9-]/g, '-')  // Replace non-alphanumeric characters with '-'
+                .replace(/-+/g, '-')  // Replace consecutive '-' with a single '-'
+                .toLowerCase();  // Convert the slug to lowercase
+
+            const { data, error } = await supabase.storage.from('profile-images').upload(`avatars/${slugifiedFileName}-${uuidv4()}`, file);
+
+            if (error) {
+                throw error;
+            } else if (data) {
+                const { data: { publicUrl } } = supabase.storage.from('profile-images').getPublicUrl(data.path);
+
+                setAvatarUploadLoading(false);
+                return publicUrl;
+            }
+        } catch (error) {
+            console.error('Error uploading avatar:', error);
+            setAvatarUploadLoading(false);
+            setError('Error uploading avatar');
+        }
+
+        return '';
+    }
+
+    const handleAvatarChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const files = (event as ChangeEvent<HTMLInputElement>).target.files
 
-        if (files && files.length > 0) {
-            setAvatarURL(URL.createObjectURL(files[0]));
+        if (files) {
+            const eventImage = files[0];
+
+            if (eventImage) {
+                const previewURL = URL.createObjectURL(eventImage);
+                setAvatarURL(previewURL);
+
+                const imageUrl = await uploadFile(eventImage);
+                setAvatarURL(imageUrl);
+                sestImageStoragePath(imageUrl);
+            }
         }
     }
+
+    const deleteImage = async (path: string) => {
+        try {
+            const { error } = await supabase.storage.from('profile-images').remove([path]);
+
+            if (error) {
+                console.error('Error deleting image:', error);
+                return false;
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error deleting image:', error);
+            return false;
+        }
+    };
+
+    const handleRemoveImage = async (editImagePath?: string) => {
+        if (editImagePath) {
+            setAvatarUploadLoading(true);
+
+            try {
+                const isDeleted = await deleteImage(editImagePath);
+
+                if (isDeleted) {
+                    setAvatarURL('');
+                    setAvatarUploadLoading(false);
+                } else {
+                    // Handle deletion failure
+                    setAvatarUploadLoading(false);
+                    console.error('Failed to delete the image.');
+                }
+            } catch (error) {
+                console.error('Error extracting path or deleting image:', error);
+                setAvatarUploadLoading(false);
+            }
+        }
+        else if (imageStoragePath) {
+            setAvatarUploadLoading(true);
+
+            try {
+                const isDeleted = await deleteImage(imageStoragePath);
+
+                if (isDeleted) {
+                    setAvatarURL('');
+                    setAvatarUploadLoading(false);
+                } else {
+                    // Handle deletion failure
+                    setAvatarUploadLoading(false);
+                    console.error('Failed to delete the image.');
+                }
+            } catch (error) {
+                console.error('Error extracting path or deleting image:', error);
+                setAvatarUploadLoading(false);
+            }
+        }
+    };
 
     return (
         <div className="max-w-xl mx-auto w-full bg-white p-8 rounded-lg shadow-lg">
@@ -186,21 +297,27 @@ export default function CreateUserForm({ username }: { username?: string }) {
                         readOnly={!!username}
                     />
 
-                    <InputField
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter password"
-                        label="Password"
-                    />
+                    {
+                        !username && (
+                            <>
+                                <InputField
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Enter password"
+                                    label="Password"
+                                />
 
-                    <InputField
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Confirm password"
-                        label="Confirm Password"
-                    />
+                                <InputField
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Confirm password"
+                                    label="Confirm Password"
+                                />
+                            </>
+                        )
+                    }
 
                     <div className='mb-4'>
                         <input
@@ -212,15 +329,36 @@ export default function CreateUserForm({ username }: { username?: string }) {
                             accept='image/png, image/jpeg, image/jpg'
                         />
 
-                        <label htmlFor="profile_avatar">
-                            <span className='block text-sm text-gray-700 font-semibold'>Avatar</span>
-                            <div className="flex flex-col items-center justify-center cursor-pointer aspect-square w-32 border-2 border-gray-300 border-dashed rounded-md">
-                                <div className="flex flex-col items-center justify-center">
-                                    <FaUpload className="w-12 h-12 text-gray-400" />
-                                    <p className="mt-2 text-sm text-gray-500">Upload avatar</p>
+                        {
+                            avatarURL ? (
+                                <div>
+                                    <span className='block text-sm text-gray-700 font-semibold'>Avatar</span>
+                                    <div className='relative w-32 h-32 rounded-md overflow-hidden border-2 border-gray-300'>
+                                        <Image src={avatarURL} fill alt='Avatar' objectFit='cover' />
+
+                                        <button
+                                            title={avatarUploadLoading ? 'Uploading...' : 'Remove'}
+                                            disabled={avatarUploadLoading}
+                                            onClick={() => handleRemoveImage(imageStoragePath ? imageStoragePath : '')}
+                                            className="absolute top-1 right-1 bg-black/60 hover:bg-black/80 flex items-center justify-center p-1 rounded-full overflow-hidden cursor-pointer disabled:cursor-default"
+                                        >
+                                            {avatarUploadLoading ? <FaSpinner className="animate-spin text-white" /> : <FaTimes className='text-white' />}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </label>
+                            ) : (
+                                <label htmlFor="profile_avatar" title='Upload' className='w-fit'>
+                                    <span className='block text-sm text-gray-700 font-semibold'>Avatar</span>
+
+                                    <div className="flex flex-col items-center justify-center cursor-pointer aspect-square w-32 border-2 border-gray-300 border-dashed rounded-md">
+                                        <div className="flex flex-col items-center justify-center">
+                                            <FaUpload className="w-12 h-12 text-gray-400" />
+                                            <p className="mt-2 text-sm text-gray-500">Upload avatar</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            )
+                        }
                     </div>
 
                     <div>
@@ -250,7 +388,7 @@ export default function CreateUserForm({ username }: { username?: string }) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div >
 
                 <div>
                     <p className='text-red-500 text-sm'>{error}</p>
@@ -263,7 +401,7 @@ export default function CreateUserForm({ username }: { username?: string }) {
                         }
                     </Button>
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
     );
 };
