@@ -3,6 +3,7 @@
 import { TicketTypes } from '@/app/events/event.types';
 import { Button } from '@/components'
 import { supabase } from '@/config/supabase';
+import { useAuthContext } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton';
@@ -12,25 +13,31 @@ export default function ProfileTicketsPage({ params: { username } }: { params: {
     const [loading, setLoading] = useState<boolean>(true);
     const [tickets, setTickets] = useState<TicketTypes[]>([]);
 
-    const router = useRouter();
+    const { user } = useAuthContext();
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            const { data, error } = await supabase.from('event_tickets').select('*');
+        const fetchTickets = async () => {
+            try {
+                if (user?.id) {
+                    const { data, error } = await supabase.from('event_tickets').select('*').eq('profile_id', user?.id);
 
-            if (error) {
+                    if (error) {
+                        console.error('Error fetching tickets:', error);
+                    }
+
+                    if (data) {
+                        setTickets(data);
+                    }
+
+                    setLoading(false);
+                }
+            } catch (error) {
                 console.error('Error fetching tickets:', error);
             }
-
-            if (data) {
-                setTickets(data);
-            }
-
-            setLoading(false);
         };
 
-        fetchCategories();
-    }, []);
+        fetchTickets();
+    }, [user]);
 
     return (
         <div className='space-y-8'>
