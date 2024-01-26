@@ -1,9 +1,9 @@
 import React from 'react';
-import { TicketType } from '../../event.types';
+import { TicketTypes } from '../../event.types';
 import { Button } from '@/components';
 
 interface TicketCardProps {
-  ticket: TicketType;
+  ticket: TicketTypes;
 }
 
 const TicketCard: React.FC<TicketCardProps> = ({ ticket }) => {

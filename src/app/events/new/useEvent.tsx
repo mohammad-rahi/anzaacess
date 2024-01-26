@@ -75,7 +75,6 @@ export default function useEvent() {
         event_time,
         event_venue,
         venue_description,
-        tickets
     }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setTickets, setEventCategory, setEventImage } = useEventContext();
 
     const uploadFile = async (file: File) => {
@@ -191,7 +190,6 @@ export default function useEvent() {
                     event_time,
                     event_venue,
                     venue_description,
-                    tickets
                 };
 
                 if (eventId) {

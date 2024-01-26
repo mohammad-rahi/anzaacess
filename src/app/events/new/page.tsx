@@ -7,7 +7,6 @@ import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote } fro
 import useEvent from './useEvent';
 import { FaNoteSticky } from 'react-icons/fa6';
 import EventImage from './EventImage';
-import Tickets from './Tickets';
 import { BarLoader } from 'react-spinners';
 
 export default function AddEvents() {
@@ -20,7 +19,6 @@ export default function AddEvents() {
         event_time,
         event_venue,
         venue_description,
-        tickets
     }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setTickets, setEventCategory, setEventImage } = useEventContext();
 
     const { eventCategories, handleEventImageChange, handleAddEvent, eventImageUploadLoading, step, handleNextStep, handlePrevStep, handleStepClick, steps, setEventImageUploadLoading, uploadFile, createEventLoading, handleRemoveImage } = useEvent();
@@ -140,15 +138,6 @@ export default function AddEvents() {
 
                     {
                         step == 4 && (
-                            <Tickets
-                                tickets={tickets}
-                                setTickets={setTickets}
-                            />
-                        )
-                    }
-
-                    {
-                        step == 5 && (
                             <EventImage
                                 event_image={event_image}
                                 handleEventImageChange={handleEventImageChange}
@@ -171,18 +160,18 @@ export default function AddEvents() {
                             <Button onClick={handlePrevStep} variant='outline'>Previous</Button>
                         )}
                     </div>
-                    {step < 5 && (
+                    {step < 4 && (
                         <div className='flex items-center justify-center'>
                             <Button onClick={handleNextStep} variant='outline'>Next</Button>
                         </div>
                     )}
 
                     {
-                        step == 5 && (
+                        step == 4 && (
                             <div className='flex items-center justify-center'>
                                 <Button onClick={handleAddEvent} disabled={createEventLoading}>
                                     {
-                                        createEventLoading ? <BarLoader color='white' /> : "Update Event"
+                                        createEventLoading ? <BarLoader color='white' /> : "Create Event"
                                     }
                                 </Button>
                             </div>

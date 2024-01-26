@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { FaSignInAlt, FaUser, FaLock, FaShoppingCart } from 'react-icons/fa';
 import { Button } from '..';
 import { usePathname } from 'next/navigation';
@@ -9,6 +9,7 @@ import AnzaAccessLogo from './AnzaAccessLogo';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { HeaderMenues } from './HeaderLeftMenu';
 import Image from 'next/image';
+import CartModal from './CartModal';
 
 export default function Header() {
     const pathname = usePathname();
@@ -17,11 +18,13 @@ export default function Header() {
 
     const { user, authLoading } = useAuthContext();
 
-    const isAdminPath = pathname.startsWith("/admin");
+    const isFullWidth = pathname.startsWith("/admin") || pathname.startsWith(`/${user?.username}`);
+
+    const [showCardModal, setShowCartModal] = useState<boolean>(false);
 
     return (
         <header className='bg-blue-100 fixed top-0 inset-x-0 z-10'>
-            <nav className={`${isAdminPath ? 'w-11/12 mx-auto' : 'wrapper'} p-4`}>
+            <nav className={`${isFullWidth ? 'w-11/12 mx-auto' : 'wrapper'} p-4`}>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-12">
                         <Link href="/" className="flex items-center gap-1 text-blue-600 text-3xl font-bold">
@@ -53,7 +56,7 @@ export default function Header() {
 
                     <div className='flex items-center gap-8'>
                         <div className='flex items-center justify-center'>
-                            <button className="text-blue-600 hover:text-blue-800 focus:outline-none">
+                            <button className="text-blue-600 hover:text-blue-800 focus:outline-none" onClick={() => setShowCartModal(true)}>
                                 <FaShoppingCart size={24} />
                             </button>
                         </div>
@@ -109,6 +112,12 @@ export default function Header() {
                     </div>
                 </div>
             </nav>
+
+            {
+                showCardModal && (
+                    <CartModal setShowCartModal={setShowCartModal} />
+                )
+            }
         </header >
     );
 }

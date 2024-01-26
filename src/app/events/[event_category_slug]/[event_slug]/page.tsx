@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import TicketCard from './TicketCard';
-import { EventTypes } from '../../event.types';
+import { EventTypes, TicketTypes } from '../../event.types';
 import { supabase } from '@/config/supabase';
 import { notFound } from 'next/navigation';
 
@@ -28,8 +28,37 @@ const fetchEvent: (event_category_slug: string, event_slug: string) => Promise<E
     }
 }
 
+const fetchTickets: (event_id: string) => Promise<TicketTypes[]> = async (event_id: string) => {
+    try {
+        if (event_id) {
+            const { data, error } = await supabase
+                .from('event_tickets')
+                .select('*')
+                .eq('event_id', event_id);
+
+                if(error){
+                    throw new Error(error.message);
+                }
+
+                if(data){
+                    return data as TicketTypes[]
+                }
+                else {
+                    return [];
+                }
+        }
+        else {
+            return [];
+        }
+    } catch (error) {
+        console.log(`Error fetching tickets: ${error}`);
+        return [];
+    }
+}
+
 const EventDetailsPage = async ({ params: { event_category_slug, event_slug } }: { params: { event_category_slug: string, event_slug: string } }) => {
     const event = await fetchEvent(event_category_slug, event_slug);
+    const tickets: TicketTypes[] = await fetchTickets(event.id as string);
 
     if (!event) {
         notFound();
@@ -67,7 +96,7 @@ const EventDetailsPage = async ({ params: { event_category_slug, event_slug } }:
             <div className="space-y-4">
                 <h2 className="text-2xl font-bold">Ticket Types</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {event.tickets.map((ticket, index) => (
+                    {tickets.map((ticket, index) => (
                         <TicketCard key={index} ticket={ticket} />
                     ))}
                 </div>

@@ -1,11 +1,8 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
-import ProfileTabs from './ProfileTabs'
 import { supabase } from '@/config/supabase';
 import { Profile } from '../(auth)/profile.types';
-import Link from 'next/link';
 import ProfileHeader from './ProfileHeader';
-import { userAgentFromString } from 'next/server';
+import ProfileSidebar from './ProfileSidebar';
 
 const fetchUser: (username: string) => Promise<Profile> = async (username: string) => {
     try {
@@ -37,22 +34,21 @@ const fetchUser: (username: string) => Promise<Profile> = async (username: strin
 
 export default async function ProfileLayout({
     children,
-    params: { username }
+    params: { username, event_id, ticket_id }
 }: {
     children: React.ReactNode,
-    params: { username: string }
+    params: { username: string, event_id: string, ticket_id: string }
 }) {
 
-    const user = await fetchUser(username);
+    // const user = await fetchUser(username);
 
     return (
-        <div className='max-w-4xl mx-auto space-y-8'>
-            <ProfileHeader user={user} />
-            <ProfileTabs username={username} />
+        <>
+            <ProfileSidebar username={username} eventID={event_id} ticketID={ticket_id} />
 
-            <div>
+            <div className="ml-64">
                 {children}
             </div>
-        </div>
+        </>
     )
 }
