@@ -75,7 +75,7 @@ export default function useEvent() {
         event_time,
         event_venue,
         venue_description,
-    }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setTickets, setEventCategory, setEventImage } = useEventContext();
+    }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setEventCategory, setEventImage } = useEventContext();
 
     const uploadFile = async (file: File) => {
         const { data, error } = await supabase.storage.from('event-images').upload(`event-images/${file.name}-${uuidv4()}`, file);
@@ -213,7 +213,6 @@ export default function useEvent() {
                     setEventTime('');
                     setEventVenue('');
                     setVenueDescription('');
-                    setTickets([]);
 
                     setImageStoragePath('');
 
@@ -241,7 +240,6 @@ export default function useEvent() {
                         setEventTime('');
                         setEventVenue('');
                         setVenueDescription('');
-                        setTickets([]);
 
                         setImageStoragePath('');
 
