@@ -7,9 +7,23 @@ type ButtonProps = {
     disabled?: boolean;
     variant?: "outline" | "primary" | "danger";
     href?: string;
+    size?: 'sm' | 'md' | 'lg';
 }
 
-export default function Button({ children, onClick, disabled, variant = "primary", href }: ButtonProps) {
+export default function Button({ children, onClick, disabled, variant = "primary", href, size = 'md' }: ButtonProps) {
+    const getSizeClass = () => {
+        switch (size) {
+            case 'sm':
+                return 'btn-sm';
+            case 'md':
+                return 'btn-md';
+            case 'lg':
+                return 'btn-lg';
+            default:
+                return 'btn-md';
+        }
+    };
+
     return (
         <>
             {
@@ -17,7 +31,7 @@ export default function Button({ children, onClick, disabled, variant = "primary
                     href ? (
                         <Link
                             href={href}
-                            className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out"
+                            className={`w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out ${getSizeClass()}`}
                         >
                             {children}
                         </Link>
@@ -25,7 +39,7 @@ export default function Button({ children, onClick, disabled, variant = "primary
                         <button
                             onClick={onClick}
                             disabled={disabled}
-                            className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out"
+                            className={`w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out ${getSizeClass()}`}
                         >
                             {children}
                         </button>
@@ -35,7 +49,7 @@ export default function Button({ children, onClick, disabled, variant = "primary
                         href ? (
                             <Link
                                 href={href}
-                                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium hover:text-white border border-blue-600 bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out text-blue-600"
+                                className={`w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium hover:text-white border border-blue-600 bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out text-blue-600 ${getSizeClass()}`}
                             >
                                 {children}
                             </Link>
@@ -43,7 +57,7 @@ export default function Button({ children, onClick, disabled, variant = "primary
                             <button
                                 onClick={onClick}
                                 disabled={disabled}
-                                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium hover:text-white border border-blue-600 bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out text-blue-600"
+                                className={`w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium hover:text-white border border-blue-600 bg-gradient-to-r hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out text-blue-600 ${getSizeClass()}`}
                             >
                                 {children}
                             </button>
@@ -53,7 +67,7 @@ export default function Button({ children, onClick, disabled, variant = "primary
                             <button
                                 onClick={onClick}
                                 disabled={disabled}
-                                className="w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out"
+                                className={`w-full inline-flex items-center justify-center px-6 py-3 rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring focus:ring-blue-200 active:bg-blue-800 transition duration-300 ease-in-out ${getSizeClass()}`}
                             >
                                 {children}
                             </button>

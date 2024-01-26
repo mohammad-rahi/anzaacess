@@ -55,11 +55,11 @@ export default function Header() {
                     </div>
 
                     <div className='flex items-center gap-8'>
-                        <div className='flex items-center justify-center'>
+                        {/* <div className='flex items-center justify-center'>
                             <button className="text-blue-600 hover:text-blue-800 focus:outline-none" onClick={() => setShowCartModal(true)}>
                                 <FaShoppingCart size={24} />
                             </button>
-                        </div>
+                        </div> */}
 
                         {
                             (!isAuthPage && !authLoading) && (

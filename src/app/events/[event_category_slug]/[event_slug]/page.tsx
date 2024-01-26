@@ -36,16 +36,16 @@ const fetchTickets: (event_id: string) => Promise<TicketTypes[]> = async (event_
                 .select('*')
                 .eq('event_id', event_id);
 
-                if(error){
-                    throw new Error(error.message);
-                }
+            if (error) {
+                throw new Error(error.message);
+            }
 
-                if(data){
-                    return data as TicketTypes[]
-                }
-                else {
-                    return [];
-                }
+            if (data) {
+                return data as TicketTypes[]
+            }
+            else {
+                return [];
+            }
         }
         else {
             return [];
