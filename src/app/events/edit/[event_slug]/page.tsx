@@ -23,7 +23,7 @@ export default function EditEvents({ params: { event_slug } }: { params: { event
         event_time,
         event_venue,
         venue_description,
-    }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setTickets, setEventCategory, setEventImage, setEventToEdit } = useEventContext();
+    }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setEventCategory, setEventImage, setEventToEdit } = useEventContext();
 
     const { eventCategories, handleEventImageChange, handleAddEvent, eventImageUploadLoading, step, handleNextStep, handlePrevStep, handleStepClick, steps, setEventImageUploadLoading, uploadFile, createEventLoading, handleRemoveImage } = useEvent();
 
