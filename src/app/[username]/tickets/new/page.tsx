@@ -18,7 +18,7 @@ const KesIcon = () => (
 
 export default function ProfileNewTicketPage() {
     const [tickets, setTickets] = useState<TicketTypes[]>([]);
-    const [eventID, setEventID] = useState<string | null>(null);
+    const [eventID, setEventID] = useState<number | null>(null);
     const [events, setEvents] = useState<EventTypes[]>([]);
     const [ticketsSubmitLoading, setTicketSubmitLoading] = useState<boolean>(false);
 
@@ -26,7 +26,7 @@ export default function ProfileNewTicketPage() {
 
     // Function to handle adding a new ticket
     const handleAddTicket = () => {
-        setTickets([...tickets, { event_id: '', profile_id: user?.id || '', name: '', price: 0, description: '', quantity_available: 0, }]);
+        setTickets([...tickets, { event_id: eventID || 0, profile_id: user?.id || 0, name: '', price: 0, description: '', quantity_available: 0, }]);
     };
 
     const handleRemoveTicket = (indexToRemove: number) => {
@@ -119,8 +119,8 @@ export default function ProfileNewTicketPage() {
                         options={events.map((event) => ({
                             label: event.event_name,
                             value: event.id
-                        } as { label: string; value: string }))}
-                        setSelectChange={(opt) => setEventID(opt.value)}
+                        } as unknown as { label: string; value: string }))}
+                        setSelectChange={(opt) => setEventID(parseInt(opt.value))}
                     />
 
                     {tickets.map((ticket, index) => (
