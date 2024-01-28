@@ -1,6 +1,9 @@
 import { supabase } from "@/config/supabase"
 import { EventTypes } from "./events/event.types";
-import EventCard from "./events/EventCard";
+import EventsCategory from "./EventsCategory";
+import { Button } from "@/components";
+
+export const revalidate = 60
 
 const fetchEvents: () => Promise<EventTypes[]>
   = async () => {
@@ -13,8 +16,8 @@ const fetchEvents: () => Promise<EventTypes[]>
         throw error;
       }
 
-      return data as EventTypes[];
-
+      // return data as EventTypes[];
+      return [...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[])];
     } catch (error) {
       console.log(`Error fetching events: ${error}`);
       return [];
@@ -38,43 +41,30 @@ export default async function Home() {
   return (
     <div>
       {/* Hero section */}
-      <section className='bg-blue-100 min-h-[40vh]'>
-        <div className="wrapper"></div>
+      <section className='bg-blue-100 min-h-[50vh] flex items-center justify-center'>
+        <div className="wrapper text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4">
+            Discover and Book Exciting Events Near You
+          </h1>
+          <p className="text-lg md:text-xl lg:text-2xl text-blue-600 mb-8">
+            Explore a wide range of events and secure your tickets hassle-free.
+          </p>
+
+          <div className="w-fit mx-auto">
+            <Button href="/events">
+              See Events
+            </Button>
+          </div>
+        </div>
       </section>
 
       {/* Events section */}
       <section >
         <div className="wrapper py-12">
-          <div className="flex flex-col gap-8 divide-x-2">
+          <div className="flex flex-col gap-8">
             {
-              Object.keys(eventsWithCategory).map((category) => (
-                <div key={category}>
-                  <h1 className='text-3xl font-bold'>{category}</h1>
-
-                  <div className="grid grid-cols-3 gap-8">
-                    {
-                      eventsWithCategory[category].map((event) => (
-                        <EventCard event={event} key={event.id} />
-                      ))
-                    }
-                  </div>
-                </div>
-              ))
-            }
-            
-            {
-              Object.keys(eventsWithCategory).map((category) => (
-                <div key={category}>
-                  <h1 className='text-3xl font-bold'>{category}</h1>
-
-                  <div className="grid grid-cols-3 gap-8">
-                    {
-                      eventsWithCategory[category].map((event) => (
-                        <EventCard event={event} key={event.id} />
-                      ))
-                    }
-                  </div>
-                </div>
+              Object.keys(eventsWithCategory).map((category, index) => (
+                <EventsCategory key={category} category={category} eventsWithCategory={eventsWithCategory} isEnd={index === Object.keys(eventsWithCategory).length - 1} />
               ))
             }
           </div>

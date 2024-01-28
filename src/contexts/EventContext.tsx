@@ -75,7 +75,7 @@ const EventProvider: React.FC<EventContextProps> = ({ children }) => {
   const [state, dispatch] = useReducer(
     eventReducer,
     {
-      profile_id: user?.id || "",
+      profile_id: user?.id || 0,
       event_name: '',
       event_slug: '',
       event_description: '',

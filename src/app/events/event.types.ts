@@ -1,13 +1,13 @@
 export type EventCategory = {
-    id?: string;
+    id?: number;
     category_name: string;
     category_slug: string;
     created_at?: string;
 }
 
 export type TicketTypes = {
-    id?: string;
-    event_id: string;
+    id?: number;
+    event_id: number;
     profile_id: string;
     name: string;
     description: string;
@@ -17,9 +17,9 @@ export type TicketTypes = {
 }
 
 export type EventTypes = {
-    id?: string;
+    id?: number;
     created_at?: string;
-    profile_id: string;
+    profile_id: number;
     event_name: string;
     event_slug: string;
     event_description: string;

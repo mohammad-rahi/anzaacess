@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { FaSignInAlt, FaUser, FaLock, FaShoppingCart } from 'react-icons/fa';
+import { FaSignInAlt, FaLock, FaShoppingCart } from 'react-icons/fa';
+import { HiXMark, HiUser, HiLockClosed, HiArrowLeftOnRectangle } from 'react-icons/hi2';
 import { Button } from '..';
 import { usePathname } from 'next/navigation';
 import AnzaAccessLogo from './AnzaAccessLogo';
@@ -21,6 +22,7 @@ export default function Header() {
     const isFullWidth = pathname.startsWith("/admin") || pathname.startsWith(`/${user?.username}`);
 
     const [showCardModal, setShowCartModal] = useState<boolean>(false);
+    const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
 
     return (
         <header className='bg-blue-100 fixed top-0 inset-x-0 z-10'>
@@ -34,7 +36,7 @@ export default function Header() {
 
                         {
                             !isAuthPage && (
-                                <ul className="flex items-center gap-6 text-blue-600 text-lg">
+                                <ul className="hidden lg:flex items-center gap-6 text-blue-600 text-lg">
                                     {
                                         HeaderMenues.map((headerMenu) => (
                                             <li key={headerMenu.id}>
@@ -54,7 +56,7 @@ export default function Header() {
                         }
                     </div>
 
-                    <div className='flex items-center gap-8'>
+                    <div className='flex items-center gap-4'>
                         {/* <div className='flex items-center justify-center'>
                             <button className="text-blue-600 hover:text-blue-800 focus:outline-none" onClick={() => setShowCartModal(true)}>
                                 <FaShoppingCart size={24} />
@@ -65,7 +67,7 @@ export default function Header() {
                             (!isAuthPage && !authLoading) && (
                                 <div>
                                     {
-                                        (user && user.email) ? <div className='relative group'>
+                                        (user && user.email) ? <div className='relative group hidden lg:block'>
                                             <button className='relative w-8 h-8 rounded-md overflow-hidden bg-blue-200 cursor-pointer'>
                                                 {
                                                     user.avatar_url ? <Image fill src={user.avatar_url} alt={user.name || user.email.split("@")[0]} /> : <span className='text-xl font-bold'>{user.name.slice(0, 1).toUpperCase() || user.email.split("@")[0].slice(0, 1).toUpperCase()}</span>
@@ -75,13 +77,13 @@ export default function Header() {
                                             <ul className="text-blue-600 absolute top-full right-0 whitespace-nowrap bg-white shadow-md rounded-md overflow-hidden w-64 py-1 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto scale-y-0 group-hover:scale-y-100 origin-top transition duration-300">
                                                 <li>
                                                     <Link href={`/${user.username}`} className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
-                                                        <FaUser className="mr-2" />
+                                                        <HiUser className="mr-2" />
                                                         {user.name || user.username}
                                                     </Link>
                                                 </li>
                                                 <li>
                                                     <Link href="/admin/events" className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
-                                                        <FaLock className="mr-2" />
+                                                        <HiLockClosed className="mr-2" />
                                                         Admin
                                                     </Link>
                                                 </li>
@@ -94,14 +96,13 @@ export default function Header() {
                                             </ul>
                                         </div> : <ul className="flex items-center gap-4 text-blue-600">
                                             <li>
-                                                <Link href="/login" className="text-blue-600 flex items-center hover:text-blue-800 transition duration-300 text-lg">
-                                                    <FaSignInAlt className="mr-2" />
-                                                    Log in
+                                                <Link href="/login">
+                                                    <Button size='sm'>Log in</Button>
                                                 </Link>
                                             </li>
-                                            <li>
+                                            <li className='hidden lg:inline-block'>
                                                 <Link href="/signup">
-                                                    <Button>Get Started</Button>
+                                                    <Button size='sm'>Get Started</Button>
                                                 </Link>
                                             </li>
                                         </ul>
@@ -109,6 +110,12 @@ export default function Header() {
                                 </div>
                             )
                         }
+
+                        <div className="lg:hidden">
+                            <div className="cursor-pointer w-10 h-10 flex justify-center items-center hover:bg-[rgba(0_0_0_/_10%)] transition duration-200 rounded-full" onClick={() => setShowMobileMenu(true)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 rotate-180"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12H12m-8.25 5.25h16.5"></path></svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </nav>
@@ -116,6 +123,67 @@ export default function Header() {
             {
                 showCardModal && (
                     <CartModal setShowCartModal={setShowCartModal} />
+                )
+            }
+
+            {
+                showMobileMenu && (
+                    <>
+                        <div className='fixed inset-0 bg-black/25 backdrop-blur-sm' onClick={() => setShowMobileMenu(false)}>
+                            <div className='bg-white h-full w-1/2 min-w-60 fixed right-0' onClick={(ev) => ev.stopPropagation()}>
+                                <div className='border-b border-gray-100 flex items-center justify-between gap-8 px-8 py-2'>
+                                    <h3 className='text-xl font-bold'>Menu</h3>
+
+                                    <div className='cursor-pointer w-10 h-10 flex justify-center items-center hover:bg-[rgba(0_0_0_/_10%)] transition duration-200 rounded-full' onClick={() => setShowMobileMenu(false)}>
+                                        <HiXMark className='w-6 h-6' />
+                                    </div>
+                                </div>
+
+                                <div className='text-blue-600 text-base space-y-4 py-4'>
+                                    <ul>
+                                        {
+                                            HeaderMenues.map((headerMenu) => (
+                                                <li key={headerMenu.id}>
+                                                    <Link href={headerMenu.path} className={`hover:text-blue-800 flex items-center gap-2 ${headerMenu.path == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                        {headerMenu.name}
+                                                        {
+                                                            headerMenu.iconRight && (
+                                                                headerMenu.iconRight
+                                                            )
+                                                        }
+                                                    </Link>
+                                                </li>
+                                            ))
+                                        }
+                                    </ul>
+
+                                    <div className='w-full h-[1px] bg-gray-100'></div>
+
+                                    {
+                                        user && (
+                                            <ul>
+                                                <li>
+                                                    <Link href={`/${user.username}`} className={`hover:text-blue-800 flex items-center gap-2 ${`/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                        {user.name || user.username}
+                                                    </Link>
+                                                </li>
+                                                <li>
+                                                    <Link href="/admin/events" className={`hover:text-blue-800 flex items-center gap-2 ${`/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                        Admin
+                                                    </Link>
+                                                </li>
+                                                <li>
+                                                    <Link href="/logout" className={`hover:text-blue-800 flex items-center gap-2 ${`/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                        Log out
+                                                    </Link>
+                                                </li>
+                                            </ul>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </>
                 )
             }
         </header >

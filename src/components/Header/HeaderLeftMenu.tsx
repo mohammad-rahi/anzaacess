@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { FaPlus } from "react-icons/fa";
+import { HiPlus } from "react-icons/hi2";
 
 type HeaderMenuTypes = {
     id: number;
@@ -18,6 +18,6 @@ export const HeaderMenues: HeaderMenuTypes[] = [
         id: 2,
         name: "Add Events",
         path: "/events/new",
-        iconRight:  <FaPlus />
+        iconRight:  <HiPlus />
     }
 ]

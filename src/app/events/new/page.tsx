@@ -169,7 +169,7 @@ export default function AddEvents() {
                     {
                         step == 4 && (
                             <div className='flex items-center justify-center'>
-                                <Button onClick={handleAddEvent} disabled={createEventLoading}>
+                                <Button onClick={() => handleAddEvent()} disabled={createEventLoading}>
                                     {
                                         createEventLoading ? <BarLoader color='white' /> : "Create Event"
                                     }

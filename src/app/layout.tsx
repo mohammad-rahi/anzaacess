@@ -5,6 +5,7 @@ import { Header } from '@/components'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { EventProvider } from '@/contexts/EventContext'
 import MainWrapper from './MainWrapper'
+import Footer from '@/components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,6 +28,7 @@ export default function RootLayout({
             <MainWrapper>
               {children}
             </MainWrapper>
+            <Footer />
           </EventProvider>
         </AuthProvider>
       </body>

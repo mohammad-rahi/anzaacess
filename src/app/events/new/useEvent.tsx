@@ -43,7 +43,7 @@ export default function useEvent() {
         fetchEventCategories();
     }, []);
 
-    const steps = ['Details', 'Date', 'Venue', 'Tickets', 'Image'];
+    const steps = ['Details', 'Date', 'Venue', 'Image'];
 
     // Function to handle next step
     const handleNextStep = () => {
@@ -174,7 +174,7 @@ export default function useEvent() {
     }
 
     // Function to handle form submission
-    const handleAddEvent = async (eventId?: string) => {
+    const handleAddEvent = async (eventId?: number) => {
         try {
             if (user?.id) {
                 setCreateEventLoading(true);
@@ -184,49 +184,27 @@ export default function useEvent() {
                     event_name,
                     event_slug,
                     event_description,
-                    event_category,
-                    event_image,
+                    event_category: {
+                        category_name: event_category.category_name,
+                        category_slug: event_category.category_slug
+                    },
+                    event_image: imageStoragePath || event_image,
                     event_date,
                     event_time,
                     event_venue,
                     venue_description,
                 };
 
-                if (eventId) {
-                    const { data, error } = await supabase.from("events").update(event).eq("id", eventId);
 
-                    if (error) {
-                        setCreateEventLoading(false);
-                        throw error;
-                    }
+                if (event.event_name && event.event_description && event.event_date && event.event_time && event.event_venue) {
+                    if (eventId) {
+                        const { data, error } = await supabase.from("events").update(event).eq("id", eventId);
 
-                    setCreateEventLoading(false);
+                        if (error) {
+                            setCreateEventLoading(false);
+                            throw error;
+                        }
 
-                    setStep(1);
-                    setEventName('');
-                    setEventDescription('');
-                    setEventCategory({
-                        category_name: '',
-                        category_slug: '',
-                    });
-                    setEventDate('');
-                    setEventTime('');
-                    setEventVenue('');
-                    setVenueDescription('');
-
-                    setImageStoragePath('');
-
-                    alert('Event udated successfully!');
-                    router.back();
-                }
-                else {
-                    const { data, error } = await supabase.from("events").insert(event);
-
-                    if (error) {
-                        setCreateEventLoading(false);
-                        throw error;
-                    }
-                    else {
                         setCreateEventLoading(false);
 
                         setStep(1);
@@ -242,13 +220,47 @@ export default function useEvent() {
                         setVenueDescription('');
 
                         setImageStoragePath('');
+                        setEventImage('');
 
-                        alert('Event created successfully!');
+                        alert('Event udated successfully!');
+                        router.back();
+                    }
+                    else {
+                        const { data, error } = await supabase.from("events").insert(event);
+
+                        if (error) {
+                            setCreateEventLoading(false);
+                            throw error;
+                        }
+                        else {
+                            setCreateEventLoading(false);
+
+                            setStep(1);
+                            setEventName('');
+                            setEventDescription('');
+                            setEventCategory({
+                                category_name: '',
+                                category_slug: '',
+                            });
+                            setEventDate('');
+                            setEventTime('');
+                            setEventVenue('');
+                            setVenueDescription('');
+
+                            setImageStoragePath('');
+                            setEventImage('');
+
+                            alert('Event created successfully!');
+                        }
                     }
                 }
+                else {
+                    setCreateEventLoading(false);
+                    alert('Please fill all fields');
+                }
             }
-        } catch (error) {
-            console.error({ error });
+        } catch (error: any) {
+            console.error(`Error creating/updating event: ${error.message}`);
             setCreateEventLoading(false);
         }
     };
