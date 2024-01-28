@@ -29,7 +29,7 @@ export default function Header() {
             <nav className={`${isFullWidth ? 'w-11/12 mx-auto' : 'wrapper'} p-4`}>
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-12">
-                        <Link href="/" className="flex items-center gap-1 text-blue-600 text-3xl font-bold">
+                        <Link href="/" className="flex items-center gap-1 text-blue-600 text-2xl md:text-3xl font-bold">
                             <AnzaAccessLogo />
                             <span className=''>AnzaAccess</span>
                         </Link>
@@ -129,7 +129,7 @@ export default function Header() {
             {
                 showMobileMenu && (
                     <>
-                        <div className='fixed inset-0 bg-black/25 backdrop-blur-sm' onClick={() => setShowMobileMenu(false)}>
+                        <div className='fixed inset-0 bg-black/25 backdrop-blur-sm lg:hidden' onClick={() => setShowMobileMenu(false)}>
                             <div className='bg-white h-full w-1/2 min-w-60 fixed right-0' onClick={(ev) => ev.stopPropagation()}>
                                 <div className='border-b border-gray-100 flex items-center justify-between gap-8 px-8 py-2'>
                                     <h3 className='text-xl font-bold'>Menu</h3>

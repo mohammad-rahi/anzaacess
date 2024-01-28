@@ -9,6 +9,7 @@ import { EventCategory, EventTypes } from '../event.types';
 import EventCard from '../EventCard';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import MobileCategories from '../MobileCategories';
 
 export default function EventsPage({ params: { event_category_slug } }: { params: { event_category_slug: string } }) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -98,7 +99,7 @@ export default function EventsPage({ params: { event_category_slug } }: { params
 
     return (
         <div className='flex gap-8'>
-            <div className='w-64'>
+            <div className='w-64 hidden lg:block'>
                 <h2 className='text-2xl font-bold mb-6'>Categories</h2>
                 <ul>
                     {
@@ -121,15 +122,23 @@ export default function EventsPage({ params: { event_category_slug } }: { params
                 </ul>
             </div>
 
-            <div className='flex-1'>
-                {/* Search bar */}
-                <div className='mb-8'>
-                    <InputField
-                        type='text'
-                        placeholder='Search events...'
-                        value={searchQuery}
-                        onChange={handleSearchChange} // Use the debounced function here
+            <div className='flex-1 space-y-4'>
+                <div className='flex items-center gap-8'>
+                    <MobileCategories
+                        categoryLoading={categoryLoading}
+                        categories={categories}
+                        event_category_slug={event_category_slug}
                     />
+
+                    <div className='flex-1'>
+                        {/* Search bar */}
+                        <InputField
+                            type='text'
+                            placeholder='Search events...'
+                            value={searchQuery}
+                            onChange={handleSearchChange} // Use the debounced function here
+                        />
+                    </div>
                 </div>
 
                 {/* Event cards grid */}
@@ -145,7 +154,7 @@ export default function EventsPage({ params: { event_category_slug } }: { params
                             }
                         </div>
                     ) : (
-                        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+                        <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8'>
                             {
                                 eventLoading ? (
                                     <Skeleton className='h-96 rounded-md' baseColor='white' count={10} />
