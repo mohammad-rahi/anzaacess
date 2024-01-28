@@ -48,18 +48,20 @@ const EventCard: React.FC<EventCardProps> = ({ event, size = 'md' }) => {
             </div>
           </Link>
         ) : (
-          <Link href={`/events/${event.event_category.category_slug}/${event.event_slug}`} className='group'>
-            <div className="bg-white rounded-md shadow overflow-hidden group-hover:shadow-lg group-hover:bg-blue-50 transition duration-300 grid grid-cols-2 gap-1">
-              <div className="relative aspect-[16/9] h-full overflow-hidden rounded-l-md">
-                {event_image && <Image src={event_image} alt={event_name} objectFit="cover" layout="fill" />}
-              </div>
+          <>
+            <Link href={`/events/${event.event_category.category_slug}/${event.event_slug}`} className='group'>
+              <div className="group-hover:bg-blue-50 transition duration-300 grid grid-cols-1 gap-1 p-4 rounded-md">
+                <div className="relative aspect-square h-full overflow-hidden rounded-full">
+                  {event_image && <Image src={event_image} alt={event_name} objectFit="cover" layout="fill" />}
+                </div>
 
-              <div className="p-2">
-                <h3 className="text-sm font-semibold mb-1 group-hover:underline">{event_name.length > 20 ? event_name.slice(0, 20) + '...' : event_name}</h3>
-                <p className="text-gray-600 mb-3 text-sm">{event_description.slice(0, 60)}...</p>
+                <div className="p-2">
+                  <h3 className="text-xs font-semibold mb-1 group-hover:underline text-center">{event_name.length > 20 ? event_name.slice(0, 20) + '...' : event_name}</h3>
+                  {/* <p className="text-gray-600 mb-3 text-sm hidden md:block">{event_description.slice(0, 60)}...</p> */}
+                </div>
               </div>
-            </div>
-          </Link>
+            </Link>
+          </>
         )
       }
     </>
