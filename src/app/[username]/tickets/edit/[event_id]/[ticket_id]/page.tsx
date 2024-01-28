@@ -8,7 +8,7 @@ import GoBack from '@/components/GoBack';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { EventTypes, TicketTypes } from '@/app/events/event.types';
 
-const fetchTicket = async (ticket_id: string, event_id: string, profile_id: string) => {
+const fetchTicket = async (ticket_id: number, event_id: number, profile_id: number) => {
     try {
         if (ticket_id && event_id && profile_id) {
             const { data, error } = await supabase.from('event_tickets').select('*').eq('id', ticket_id).eq('event_id', event_id).eq('profile_id', profile_id).single();
@@ -28,7 +28,7 @@ const fetchTicket = async (ticket_id: string, event_id: string, profile_id: stri
     }
 }
 
-const fetchEvent = async (profile_id: string, event_id: string) => {
+const fetchEvent = async (profile_id: number, event_id: number) => {
     try {
         if (profile_id && event_id) {
             const { data, error } = await supabase.from('events').select('id, event_name').eq('profile_id', profile_id).eq('id', event_id).single();
@@ -73,7 +73,7 @@ export default function ProfileEditTicketPage({
     params: {
         username, event_id, ticket_id
     } }: {
-        params: { username: string, event_id: string, ticket_id: string }
+        params: { username: number, event_id: number, ticket_id: number }
     }) {
     const { user } = useAuthContext();
 
@@ -84,8 +84,8 @@ export default function ProfileEditTicketPage({
         const fetchData = async () => {
             if (user) {
                 const [getTicket, getEvent] = await Promise.all([
-                    fetchTicket(ticket_id, event_id, user?.id || ''),
-                    fetchEvent(user?.id || '', event_id),
+                    fetchTicket(ticket_id, event_id, user?.id || 0),
+                    fetchEvent(user?.id || 0, event_id),
                 ]);
 
                 setEvent(getEvent);
