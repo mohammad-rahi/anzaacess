@@ -28,7 +28,7 @@ const fetchEvent: (event_category_slug: string, event_slug: string) => Promise<E
     }
 }
 
-const fetchTickets: (event_id: string) => Promise<TicketTypes[]> = async (event_id: string) => {
+const fetchTickets: (event_id: number) => Promise<TicketTypes[]> = async (event_id: number) => {
     try {
         if (event_id) {
             const { data, error } = await supabase
@@ -58,7 +58,7 @@ const fetchTickets: (event_id: string) => Promise<TicketTypes[]> = async (event_
 
 const EventDetailsPage = async ({ params: { event_category_slug, event_slug } }: { params: { event_category_slug: string, event_slug: string } }) => {
     const event = await fetchEvent(event_category_slug, event_slug);
-    const tickets: TicketTypes[] = await fetchTickets(event.id as string);
+    const tickets: TicketTypes[] = await fetchTickets(event.id || 0);
 
     if (!event) {
         notFound();
