@@ -50,7 +50,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, size = 'md' }) => {
         ) : (
           <>
             <Link href={`/events/${event.event_category.category_slug}/${event.event_slug}`} className='group'>
-              <div className="group-hover:bg-blue-50 transition duration-300 grid grid-cols-1 gap-1 p-4 rounded-md">
+              <div className="group-hover:bg-blue-50 transition duration-300 grid grid-cols-1 gap-1 p-4 md:p-8 rounded-md">
                 <div className="relative aspect-square h-full overflow-hidden rounded-full">
                   {event_image && <Image src={event_image} alt={event_name} objectFit="cover" layout="fill" />}
                 </div>

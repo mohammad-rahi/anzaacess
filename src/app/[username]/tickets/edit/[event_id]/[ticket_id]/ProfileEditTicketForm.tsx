@@ -19,8 +19,8 @@ const ProfileEditTicketForm = ({ getTicket, event }: { getTicket: TicketTypes, e
     const { user } = useAuthContext();
 
     const [ticket, setTicket] = useState<TicketTypes>({
-        event_id: getTicket.id || '',
-        profile_id: user?.id || '',
+        event_id: getTicket.id || 0,
+        profile_id: user?.id || 0,
         name: '',
         description: '',
         price: 0,

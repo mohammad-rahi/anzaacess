@@ -17,7 +17,7 @@ const fetchEvents: () => Promise<EventTypes[]>
       }
 
       // return data as EventTypes[];
-      return [...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[])];
+      return [...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[]), ...(data as EventTypes[])];
     } catch (error) {
       console.log(`Error fetching events: ${error}`);
       return [];

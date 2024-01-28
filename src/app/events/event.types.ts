@@ -8,7 +8,7 @@ export type EventCategory = {
 export type TicketTypes = {
     id?: number;
     event_id: number;
-    profile_id: string;
+    profile_id: number;
     name: string;
     description: string;
     price: number;
