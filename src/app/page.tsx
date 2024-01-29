@@ -11,6 +11,7 @@ const fetchEvents: () => Promise<EventTypes[]>
       let { data, error } = await supabase
         .from('events')
         .select('*')
+        .eq('status', 'published')
 
       if (error) {
         throw error;

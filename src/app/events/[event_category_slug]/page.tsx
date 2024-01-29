@@ -10,6 +10,7 @@ import EventCard from '../EventCard';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import MobileCategories from '../MobileCategories';
+import EventCardLists from '../EventCardLists';
 
 export default function EventsPage({ params: { event_category_slug } }: { params: { event_category_slug: string } }) {
     const [searchQuery, setSearchQuery] = useState('');
@@ -71,6 +72,7 @@ export default function EventsPage({ params: { event_category_slug } }: { params
                 .select('*')
                 .textSearch('event_name', `"${searchQuery}"`, { type: 'plain', config: 'english' })
                 .eq('event_category->>category_slug', event_category_slug)
+                .eq('status', 'published');
 
             if (error) {
                 console.error('Error fetching events:', error);
@@ -141,36 +143,10 @@ export default function EventsPage({ params: { event_category_slug } }: { params
                     </div>
                 </div>
 
-                {/* Event cards grid */}
-                {
-                    eventLoading ? (
-                        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-                            {
-                                Array.from({ length: 6 }).map((_, index) => (
-                                    <div className='w-full block' key={index}>
-                                        <Skeleton className='h-96 rounded-md' baseColor='white' />
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    ) : (
-                        <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8'>
-                            {
-                                eventLoading ? (
-                                    <Skeleton className='h-96 rounded-md' baseColor='white' count={10} />
-                                ) : (
-                                    events.length > 0 ? (
-                                        events.map((event) => (
-                                            <EventCard key={event.id} event={event} />
-                                        ))
-                                    ) : (
-                                        <p>No events found.</p>
-                                    )
-                                )
-                            }
-                        </div>
-                    )
-                }
+                <EventCardLists
+                    events={events}
+                    eventLoading={eventLoading}
+                />
             </div>
         </div>
     )

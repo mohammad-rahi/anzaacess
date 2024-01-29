@@ -29,4 +29,5 @@ export type EventTypes = {
     event_time: string;
     event_venue: string;
     venue_description: string;
+    status: 'draft' | 'published';
 }

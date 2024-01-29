@@ -40,7 +40,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ ticket, onClo
                         <input
                             type="text"
                             {...register('name', { required: 'Name is required' })}
-                            className="mt-1 p-2 border border-gray-300 rounded-md w-full"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300 read-only:cursor-not-allowed read-only:opacity-50"
                         />
                         {errors.name && (
                             <span className="text-red-500 text-sm">{errors.name.message}</span>
@@ -52,7 +52,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ ticket, onClo
                         <input
                             type='email'
                             {...register('email', { required: 'Email is required' })}
-                            className='mt-1 p-2 border border-gray-300 rounded-md w-full'
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300 read-only:cursor-not-allowed read-only:opacity-50"
                         />
                         {
                             errors.email && (

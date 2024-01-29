@@ -4,6 +4,7 @@ import TicketCard from './TicketCard';
 import { EventTypes, TicketTypes } from '../../event.types';
 import { supabase } from '@/config/supabase';
 import { notFound } from 'next/navigation';
+import EventCardLists from '../../EventCardLists';
 
 export const revalidate = 60 // revalidate at most every 1 minute
 
@@ -14,6 +15,7 @@ const fetchEvent: (event_category_slug: string, event_slug: string) => Promise<E
             .select('*')
             .eq('event_category->>category_slug', event_category_slug)
             .eq('event_slug', event_slug)
+            .eq('status', 'published')
             .single();
 
         if (error) {
@@ -56,9 +58,34 @@ const fetchTickets: (event_id: number) => Promise<TicketTypes[]> = async (event_
     }
 }
 
+const fetchRelatedEvent: (event_category_slug: string, event_slug: string) => Promise<EventTypes[]> = async (event_category_slug: string, event_slug: string) => {
+    try {
+        const { data, error } = await supabase
+            .from('events')
+            .select('*')
+            .eq('event_category->>category_slug', event_category_slug)
+            .neq('event_slug', event_slug)
+            .eq('status', 'published');
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        if (data) {
+            return data;
+        } else {
+            return []
+        }
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
+
 const EventDetailsPage = async ({ params: { event_category_slug, event_slug } }: { params: { event_category_slug: string, event_slug: string } }) => {
     const event = await fetchEvent(event_category_slug, event_slug);
     const tickets: TicketTypes[] = await fetchTickets(event.id || 0);
+    const releatedEvents = await fetchRelatedEvent(event_category_slug, event_slug);
 
     if (!event) {
         notFound();
@@ -106,6 +133,22 @@ const EventDetailsPage = async ({ params: { event_category_slug, event_slug } }:
                 <h2 className="text-2xl font-bold">Event Details</h2>
                 <p>{event.event_description}</p>
             </div>
+
+            {
+                releatedEvents.length > 0 && (
+                    <>
+                        <div className='w-full h-[1px] bg-gray-200'></div>
+
+                        <div className='space-y-4'>
+                            <h2 className='text-2xl font-bold'>Releated Events</h2>
+
+                            <EventCardLists
+                                events={releatedEvents}
+                            />
+                        </div>
+                    </>
+                )
+            }
         </div>
     );
 };

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import AdminSidebar from './AdminSidebar/page'
+import AdminPrivateRoute from './AdminPrivateRoute'
 
 export const metadata: Metadata = {
     title: {
@@ -16,12 +17,12 @@ export default function AdminLayout({
     children: React.ReactNode
 }) {
     return (
-        <>
+        <AdminPrivateRoute>
             <AdminSidebar />
 
             <div className="ml-64">
                 {children}
             </div>
-        </>
+        </AdminPrivateRoute>
     )
 }

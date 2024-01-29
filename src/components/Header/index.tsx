@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { FaSignInAlt, FaLock, FaShoppingCart } from 'react-icons/fa';
-import { HiXMark, HiUser, HiLockClosed, HiArrowLeftOnRectangle } from 'react-icons/hi2';
+import { FaSignInAlt } from 'react-icons/fa';
+import { HiXMark, HiUser, HiLockClosed } from 'react-icons/hi2';
 import { Button } from '..';
 import { usePathname } from 'next/navigation';
 import AnzaAccessLogo from './AnzaAccessLogo';
@@ -19,7 +19,7 @@ export default function Header() {
 
     const { user, authLoading } = useAuthContext();
 
-    const isFullWidth = pathname.startsWith("/admin") || pathname.startsWith(`/${user?.username}`);
+    const isFullWidth = pathname.startsWith("/admin") || pathname.startsWith(`/p/${user?.username}`);
 
     const [showCardModal, setShowCartModal] = useState<boolean>(false);
     const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
@@ -76,17 +76,21 @@ export default function Header() {
 
                                             <ul className="text-blue-600 absolute top-full right-0 whitespace-nowrap bg-white shadow-md rounded-md overflow-hidden w-64 py-1 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto scale-y-0 group-hover:scale-y-100 origin-top transition duration-300">
                                                 <li>
-                                                    <Link href={`/${user.username}`} className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
+                                                    <Link href={`/p/${user.username}`} className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
                                                         <HiUser className="mr-2" />
                                                         {user.name || user.username}
                                                     </Link>
                                                 </li>
-                                                <li>
-                                                    <Link href="/admin/events" className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
-                                                        <HiLockClosed className="mr-2" />
-                                                        Admin
-                                                    </Link>
-                                                </li>
+                                                {
+                                                    user.roles.isAdmin && (
+                                                        <li>
+                                                            <Link href="/admin/events" className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
+                                                                <HiLockClosed className="mr-2" />
+                                                                Admin
+                                                            </Link>
+                                                        </li>
+                                                    )
+                                                }
                                                 <li>
                                                     <Link href="/logout" className="text-gray-800 hover:text-blue-600 flex items-center hover:bg-blue-50 transition duration-300 text-lg px-4 py-2">
                                                         <FaSignInAlt className="mr-2" />
@@ -163,17 +167,21 @@ export default function Header() {
                                         user && (
                                             <ul>
                                                 <li>
-                                                    <Link href={`/${user.username}`} className={`hover:text-blue-800 flex items-center gap-2 ${`/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                    <Link href={`/p/${user.username}`} className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
                                                         {user.name || user.username}
                                                     </Link>
                                                 </li>
+                                                {
+                                                    user.roles.isAdmin && (
+                                                        <li>
+                                                            <Link href="/admin/events" className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                                Admin
+                                                            </Link>
+                                                        </li>
+                                                    )
+                                                }
                                                 <li>
-                                                    <Link href="/admin/events" className={`hover:text-blue-800 flex items-center gap-2 ${`/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
-                                                        Admin
-                                                    </Link>
-                                                </li>
-                                                <li>
-                                                    <Link href="/logout" className={`hover:text-blue-800 flex items-center gap-2 ${`/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                    <Link href="/logout" className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
                                                         Log out
                                                     </Link>
                                                 </li>

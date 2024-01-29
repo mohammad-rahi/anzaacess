@@ -1,6 +1,6 @@
 import { supabase } from '@/config/supabase';
 import { notFound } from 'next/navigation';
-import { Profile } from '../(auth)/profile.types';
+import { Profile } from '../../(auth)/profile.types';
 import ProfileHeader from './ProfileHeader';
 
 const fetchUser: (username: string) => Promise<Profile> = async (username: string) => {

@@ -4,6 +4,7 @@ import { EventTypes } from '@/app/events/event.types';
 import { Button } from '@/components';
 import { supabase } from '@/config/supabase';
 import { useAuthContext } from '@/contexts/AuthContext';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -46,11 +47,26 @@ const ProfileEventsPage = () => {
                         ) : (
                             events.length > 0 ? (
                                 events.map((event) => (
-                                    <li key={event.id} className='bg-white p-4 rounded-md shadow-sm overflow-hidden flex items-center justify-between gap-8 group'>
-                                        <span className='font-bold'>{event.event_name}</span>
+                                    <li key={event.id} className='bg-white p-4 rounded-md shadow-sm overflow-hidden grid grid-cols-[auto_1fr_auto] place-items-center group'>
+                                        <div className='flex items-center gap-8'>
+                                            {
+                                                event.event_image && (
+                                                    <div className='relative aspect-video rounded-md overflow-hidden w-28'>
+                                                        <Image src={event.event_image} alt={event.event_name} fill />
+                                                    </div>
+                                                )
+                                            }
+                                            <span className='font-bold'>{event.event_name.length > 30 ? `${event.event_name.slice(0, 30)}...` : event.event_name}</span>
+                                        </div>
+
+                                        <span className={`text-white text-sm ${event.status == 'published' ? 'bg-green-600' : 'bg-yellow-600'} px-2 py-1 rounded`}>{event.status}</span>
 
                                         <div className='group-hover:opacity-100 opacity-0 pointer-events-none group-hover:pointer-events-auto flex items-center gap-4'>
-                                            <Button variant='outline' href={`/events/${event.event_category.category_slug}/${event.event_slug}`}>View</Button>
+                                            {
+                                                event.status == 'published' && (
+                                                    <Button variant='outline' href={`/events/${event.event_category.category_slug}/${event.event_slug}`}>View</Button>
+                                                )
+                                            }
                                             <Button variant='outline' href={`/events/edit/${event.event_slug}`}>Edit</Button>
                                         </div>
                                     </li>

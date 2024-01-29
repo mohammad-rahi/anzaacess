@@ -88,6 +88,7 @@ const EventProvider: React.FC<EventContextProps> = ({ children }) => {
       event_time: '',
       event_venue: '',
       venue_description: '',
+      status: "draft"
     },
   );
 

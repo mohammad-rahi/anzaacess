@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import { supabase } from '@/config/supabase';
-import { Profile } from '../(auth)/profile.types';
+import { Profile } from '../../(auth)/profile.types';
 import ProfileHeader from './ProfileHeader';
 import ProfileSidebar from './ProfileSidebar';
+import PrivateRoute from '@/app/PrivateRoute';
 
 const fetchUser: (username: string) => Promise<Profile> = async (username: string) => {
     try {
@@ -43,12 +44,12 @@ export default async function ProfileLayout({
     // const user = await fetchUser(username);
 
     return (
-        <>
+        <PrivateRoute>
             <ProfileSidebar username={username} eventID={event_id} ticketID={ticket_id} />
 
             <div className="ml-64">
                 {children}
             </div>
-        </>
+        </PrivateRoute>
     )
 }

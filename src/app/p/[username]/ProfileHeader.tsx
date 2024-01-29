@@ -3,13 +3,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import { Profile } from '../(auth)/profile.types'
+import { Profile } from '../../(auth)/profile.types'
 import { usePathname } from 'next/navigation'
 
 export default function ProfileHeader({ user }: { user: Profile }) {
     const pathname = usePathname();
 
-    if(pathname == `/${user.username}/edit`) {
+    if(pathname == `/p/${user.username}/edit`) {
         return null;
     }
 
@@ -30,7 +30,7 @@ export default function ProfileHeader({ user }: { user: Profile }) {
                     </div>
                 </div>
 
-                <Link href={`/${user.username}/edit`} className="text-blue-600 hover:text-blue-800 font-semibold">
+                <Link href={`/p/${user.username}/edit`} className="text-blue-600 hover:text-blue-800 font-semibold">
                     Edit Profile
                 </Link>
             </div>

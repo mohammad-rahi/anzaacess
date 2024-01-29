@@ -31,7 +31,7 @@ const fetchTicket = async (ticket_id: number, event_id: number, profile_id: numb
 const fetchEvent = async (profile_id: number, event_id: number) => {
     try {
         if (profile_id && event_id) {
-            const { data, error } = await supabase.from('events').select('id, event_name').eq('profile_id', profile_id).eq('id', event_id).single();
+            const { data, error } = await supabase.from('events').select('id, event_name').eq('profile_id', profile_id).eq('id', event_id).eq('status', 'published').single();
 
             if (error) {
                 console.error('Error fetching events:', error);

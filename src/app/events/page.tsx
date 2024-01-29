@@ -25,6 +25,7 @@ export default function EventsPage() {
         let { data, error } = await supabase
           .from('events')
           .select('*')
+          .eq('status', 'published')
 
         if (error) {
           console.error('Error fetching events:', error);
@@ -69,6 +70,7 @@ export default function EventsPage() {
       let { data, error } = await supabase
         .from('events')
         .select('*')
+        .eq('status', 'published')
         .textSearch('event_name', `"${searchQuery}"`, { type: 'plain', config: 'english' })
 
       if (error) {

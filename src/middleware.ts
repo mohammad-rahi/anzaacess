@@ -12,26 +12,46 @@ export async function middleware(req: NextRequest) {
 
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
-  // if user is signed in and the current path is auth-pages redirect the user to /app
-  if (user && ['/login', '/signup', '/forgot-password'].includes(req.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL('/', req.url))
-  }
+  const pathname = req.nextUrl.pathname;
 
-  // if user is not signed in and the current path is not /app redirect the user to /login
-  if (!user && req.nextUrl.pathname == "/events/new") {
-    return NextResponse.redirect(new URL('/login?destination=/events/new', req.url))
+  const destination = req.nextUrl.searchParams.get('destination');
+
+  // if user is signed in and the current path is auth-pages redirect the user to destination or /
+  if (user && ['/login', '/signup', '/forgot-password'].includes(pathname)) {
+    return NextResponse.redirect(new URL(destination || '/', req.url));
   }
 
   // if user is not signed in and the current path is not /logout redirect the user to /login
-  if (!user && req.nextUrl.pathname == "/logout") {
-    return NextResponse.redirect(new URL('/login', req.url))
+  if (!user && pathname == "/logout") {
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  return res
+  // if user is not signed in and the current path is private routes (/events/new, /events/edit, /p, /admin) redirect the user to /login
+  if (!user && ['/events/new', '/events/edit', '/p', '/admin'].some(path => pathname.startsWith(path))) {
+    return NextResponse.redirect(new URL(`/login?destination=${pathname}`, req.url));
+  }
+
+  // Admin routes
+  if (user) {
+    const { data, error } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
+
+    if (error) {
+      console.error('Error fetching user:', error);
+    }
+
+    if (data && data.roles.isAdmin) {
+      return res;
+    } else if (['/admin'].some(path => pathname.startsWith(path))) {
+      // Redirect to a different route if the user is not an admin
+      return NextResponse.redirect(new URL(`/p/${data.username}`, req.url));
+    }
+  }
+
+  return res;
 }
 
 export const config = {
-  matcher: ['/', '/login', '/signup', '/forgot-password', '/logout', '/events/new', '/app/:path*'],
+  matcher: ['/login', '/signup', '/forgot-password', '/logout', '/events/new', '/events/edit/:path*', '/p/:path*', '/admin/:path*'],
 }

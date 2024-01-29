@@ -10,22 +10,22 @@ export const profileSidebarItem: ProfileSidebarItemType[] = [
     {
         id: 'profile',
         name: 'Profile',
-        path: (username: string) => `/${username}`,
-        paths: (username: string) => [`/${username}`],
+        path: (username: string) => `/p/${username}`,
+        paths: (username: string) => [`/p/${username}`],
         icon: <></>
     },
     {
         id: 'events',
         name: 'Events',
-        path: (username: string) => `/${username}/events`,
-        paths: (username: string) => [`/${username}/events`],
+        path: (username: string) => `/p/${username}/events`,
+        paths: (username: string) => [`/p/${username}/events`],
         icon: <></>
     },
     {
         id: 'tickets',
         name: 'Tickets',
-        path: (username: string) => `/${username}/tickets`,
-        paths: (username: string, eventID?: string, ticketID?: string) => [`/${username}/tickets`, `/${username}/tickets/new`, `/${username}/tickets/edit/${eventID}/${ticketID}`],
+        path: (username: string) => `/p/${username}/tickets`,
+        paths: (username: string, eventID?: string, ticketID?: string) => [`/p/${username}/tickets`, `/p/${username}/tickets/new`, `/p/${username}/tickets/edit/${eventID}/${ticketID}`],
         icon: <></>
     },
 ]
