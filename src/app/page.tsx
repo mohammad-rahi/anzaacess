@@ -42,13 +42,13 @@ export default async function Home() {
   return (
     <div>
       {/* Hero section */}
-      <section className='bg-blue-100 min-h-[50vh] flex items-center justify-center'>
-        <div className="wrapper text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4">
-          Think it, Book it!
+      <section className='bg-blue-100 min-h-[60vh] flex items-center justify-center'>
+        <div className="wrapper max-w-5xl text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4 leading-[100px]">
+            Explore Events and <br /> Destinations with AnzaAccess!
           </h1>
           <p className="text-lg md:text-xl lg:text-2xl text-blue-600 mb-8">
-            Explore a wide range of events and secure your tickets hassle-free.
+            Your gateway to exciting experiences! Discover and book events effortlessly. Whether it&apos;s thrilling adventures or dreamy destinations, we&apos;ve got you covered!
           </p>
 
           <div className="w-fit mx-auto">
@@ -58,6 +58,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+
 
       {/* Events section */}
       <section >
