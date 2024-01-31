@@ -44,7 +44,7 @@ export default async function Home() {
       {/* Hero section */}
       <section className='bg-blue-100 min-h-[60vh] flex items-center justify-center'>
         <div className="wrapper max-w-5xl text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4 leading-[100px]">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4 leading-[50px]">
             Explore Events and <br /> Destinations with AnzaAccess!
           </h1>
           <p className="text-lg md:text-xl lg:text-2xl text-blue-600 mb-8">
