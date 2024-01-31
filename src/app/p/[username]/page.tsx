@@ -59,7 +59,12 @@ export default async function ProfilePage({
     notFound();
   }
   return (
-    <div>
+    <div className='space-y-8'>
+
+      <div className='flex items-center justify-between gap-8'>
+        <h1 className='text-3xl font-bold'>Profile</h1>
+      </div>
+
       <ProfileHeader user={user} />
     </div>
   );

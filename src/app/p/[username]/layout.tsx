@@ -4,6 +4,7 @@ import { Profile } from '../../(auth)/profile.types';
 import ProfileHeader from './ProfileHeader';
 import ProfileSidebar from './ProfileSidebar';
 import PrivateRoute from '@/app/PrivateRoute';
+import ProfileTabs from './ProfileTabs';
 
 const fetchUser: (username: string) => Promise<Profile> = async (username: string) => {
     try {
@@ -47,7 +48,9 @@ export default async function ProfileLayout({
         <PrivateRoute>
             <ProfileSidebar username={username} eventID={event_id} ticketID={ticket_id} />
 
-            <div className="ml-64">
+            <ProfileTabs username={username} eventID={event_id} ticketID={ticket_id} />
+
+            <div className="lg:ml-64">
                 {children}
             </div>
         </PrivateRoute>
