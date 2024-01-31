@@ -9,7 +9,7 @@ export default function AdminSidebar() {
     const pathname = usePathname();
 
     return (
-        <aside className="bg-blue-50 fixed inset-y-0 top-[72px] left-0 w-64 border-r border-blue-200">
+        <aside className="bg-blue-50 fixed inset-y-0 top-[72px] left-0 w-64 border-r border-blue-200 hidden lg:block">
             <Link href="/admin/events" className="block p-4 text-center border-b border-blue-200">
                 <h2 className="text-2xl font-bold text-blue-800">Admin Panel</h2>
             </Link>

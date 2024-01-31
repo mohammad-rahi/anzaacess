@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import AdminSidebar from './AdminSidebar/page'
 import AdminPrivateRoute from './AdminPrivateRoute'
+import AdminTabs from './AdminTabs'
 
 export const metadata: Metadata = {
     title: {
@@ -20,7 +21,9 @@ export default function AdminLayout({
         <AdminPrivateRoute>
             <AdminSidebar />
 
-            <div className="ml-64">
+            <AdminTabs />
+
+            <div className="lg:ml-64">
                 {children}
             </div>
         </AdminPrivateRoute>
