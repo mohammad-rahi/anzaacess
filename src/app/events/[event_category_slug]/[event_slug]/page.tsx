@@ -15,7 +15,7 @@ const fetchEvent: (event_category_slug: string, event_slug: string) => Promise<E
             .select('*')
             .eq('event_category->>category_slug', event_category_slug)
             .eq('event_slug', event_slug)
-            .eq('status', 'published')
+            // .eq('status', 'published')
             .single();
 
         if (error) {
@@ -27,6 +27,7 @@ const fetchEvent: (event_category_slug: string, event_slug: string) => Promise<E
         }
     } catch (error) {
         console.log(error);
+        notFound();
     }
 }
 
@@ -124,7 +125,7 @@ const EventDetailsPage = async ({ params: { event_category_slug, event_slug } }:
                 <h2 className="text-2xl font-bold">Ticket Types</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {tickets.map((ticket, index) => (
-                        <TicketCard key={index} ticket={ticket} />
+                        <TicketCard key={index} event={event} ticket={ticket} />
                     ))}
                 </div>
             </div>

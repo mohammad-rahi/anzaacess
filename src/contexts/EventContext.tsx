@@ -1,6 +1,6 @@
 "use client";
 
-import { EventTypes } from '@/app/events/event.types';
+import { EventStatus, EventTypes } from '@/app/events/event.types';
 import React, { createContext, useReducer, useContext, ReactNode } from 'react';
 import { useAuthContext } from './AuthContext';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,6 +19,7 @@ type EventAction =
   | { type: 'SET_EVENT_TIME'; payload: string }
   | { type: 'SET_EVENT_VENUE'; payload: string }
   | { type: 'SET_VENUE_DESCRIPTION'; payload: string }
+  | { type: 'SET_STATUS'; payload: EventStatus }
   | { type: 'SET_EVENT_TO_EDIT'; payload: EventTypes };
 
 // Reducer function
@@ -40,6 +41,8 @@ const eventReducer = (state: EventTypes, action: EventAction): EventTypes => {
       return { ...state, event_venue: action.payload };
     case 'SET_VENUE_DESCRIPTION':
       return { ...state, venue_description: action.payload };
+    case 'SET_STATUS':
+      return { ...state, status: action.payload };
     case 'SET_EVENT_TO_EDIT':
       return action.payload;
     default:
@@ -62,6 +65,7 @@ interface EventContextValue {
   setEventTime: (eventTime: string) => void;
   setEventVenue: (eventVenue: string) => void;
   setVenueDescription: (venueDescription: string) => void;
+  setStatus: (status: EventStatus) => void;
   setEventToEdit: (event: EventTypes) => void;
 }
 
@@ -103,6 +107,7 @@ const EventProvider: React.FC<EventContextProps> = ({ children }) => {
     setEventTime: (eventDate) => dispatch({ type: 'SET_EVENT_TIME', payload: eventDate }),
     setEventVenue: (eventVenue) => dispatch({ type: 'SET_EVENT_VENUE', payload: eventVenue }),
     setVenueDescription: (venueDescription) => dispatch({ type: 'SET_VENUE_DESCRIPTION', payload: venueDescription }),
+    setStatus: (status) => dispatch({ type: 'SET_STATUS', payload: status }),
     setEventToEdit: (event) => dispatch({ type: 'SET_EVENT_TO_EDIT', payload: event }),
   };
 

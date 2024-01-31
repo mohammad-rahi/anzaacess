@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Ticket</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .ticket {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            max-width: 600px;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .ticket-content {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+
+        .event-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: left;
+        }
+
+        .event-details {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #555;
+            text-align: left;
+        }
+
+        .ticket-number {
+            font-size: 22px;
+            font-weight: bold;
+            color: #3498db;
+            text-align: left;
+        }
+
+        .qr-code {
+            margin: 30px 30px 30px 0 /* Adjusted QR code margin */
+        }
+
+        .qr-code img {
+            max-width: 150px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket">
+        <div class="ticket-content">
+            <div>
+                <div class="event-title">Awesome Event</div>
+                <div class="event-details">Date: January 1, 2023</div>
+                <div class="event-details">Time: 7:00 PM - 10:00 PM</div>
+                <div class="event-details">Location: Venue Name, City</div>
+            </div>
+            <div>
+                <div class="ticket-number">Ticket #: 123456789</div>
+            </div>
+        </div>
+        <div class="qr-code">
+            <!-- You can add your QR code image here -->
+            <img src="https://qrcg-free-editor.qr-code-generator.com/main/assets/images/websiteQRCode_noFrame.png" alt="QR Code">
+        </div>
+    </div>
+</body>
+</html>

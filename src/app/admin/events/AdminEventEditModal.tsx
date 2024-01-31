@@ -1,18 +1,24 @@
 "use client";
 
-import InputField from '@/components/InputField';
-import Button from '@/components/Button';
-import { useEventContext } from '@/contexts/EventContext';
-import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaTicketAlt, FaStickyNote } from 'react-icons/fa';
-import { FaNoteSticky } from 'react-icons/fa6';
-import { BarLoader } from 'react-spinners';
-import useEvent from '../../new/useEvent';
-import EventImage from '../../new/EventImage';
-import { useEffect } from 'react';
-import { supabase } from '@/config/supabase';
-import PrivateRoute from '@/app/PrivateRoute';
+import { EventStatus, EventTypes } from '@/app/events/event.types'
+import EventImage from '@/app/events/new/EventImage'
+import useEvent from '@/app/events/new/useEvent'
+import { Button, Modal } from '@/components'
+import InputField from '@/components/InputField'
+import { useEventContext } from '@/contexts/EventContext'
+import React, { useEffect } from 'react'
+import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaStickyNote, FaTicketAlt } from 'react-icons/fa'
+import { FaNoteSticky } from 'react-icons/fa6'
+import { HiXMark } from 'react-icons/hi2'
+import { BarLoader } from 'react-spinners'
 
-export default function EditEvents({ params: { event_slug } }: { params: { event_slug: string } }) {
+const AdminEventEditModal = ({
+    onClose,
+    event
+}: {
+    onClose: () => void,
+    event: EventTypes
+}) => {
     const { state: {
         id: eventID,
         event_name,
@@ -23,41 +29,29 @@ export default function EditEvents({ params: { event_slug } }: { params: { event
         event_time,
         event_venue,
         venue_description,
-    }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setEventCategory, setEventImage, setEventToEdit } = useEventContext();
+        status,
+    }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setEventCategory, setEventImage, setStatus, setEventToEdit } = useEventContext();
 
     const { eventCategories, handleEventImageChange, handleAddEvent, eventImageUploadLoading, step, handleNextStep, handlePrevStep, handleStepClick, steps, setEventImageUploadLoading, uploadFile, createEventLoading, handleRemoveImage } = useEvent();
 
     useEffect(() => {
-        const fetchEvent = async () => {
-            try {
-                const { data, error } = await supabase.from('events').select('*').eq('event_slug', event_slug).single();
-
-                if (error) {
-                    console.error('Error fetching event:', error);
-                    return;
-                }
-
-                if (data) {
-                    setEventToEdit(data);
-                }
-
-            } catch (error) {
-                console.error('Error fetching event:', error);
-            }
-        };
-
-        fetchEvent();
-    }, [event_slug]);
+        if (event) {
+            setEventToEdit(event);
+        }
+    }, [event])
 
     return (
-        <PrivateRoute>
-            <div className="bg-blue-100 min-h-[650px] rounded-md px-8 py-20 mb-28 space-y-8">
-                <div className='max-w-xl mx-auto w-full'>
-                    <h1 className="text-3xl font-bold text-center text-blue-600">Edit Event: {event_name}</h1>
+        <Modal onClose={onClose}>
+            <div>
+                <div className='flex items-center gap-8 justify-between p-8 py-4 border-b border-gray-100'>
+                    <h1 className='text-lg font-bold'><span className='text-blue-500'>Edit: </span> {event.event_name.length > 32 ? event.event_name.slice(0, 32) + '...' : event.event_name}</h1>
+
+                    <div className='cursor-pointer w-10 h-10 flex justify-center items-center hover:bg-[rgba(0_0_0_/_10%)] transition duration-200 rounded-full' onClick={onClose}>
+                        <HiXMark className='w-6 h-6' />
+                    </div>
                 </div>
 
-                <div className="max-w-xl mx-auto w-full bg-white p-8 rounded-lg shadow-lg">
-                    {/* Form Content */}
+                <div className="space-y-8 p-8 max-h-[70vh] overflow-y-auto">
                     <form className="space-y-6" onSubmit={(ev) => ev.preventDefault()}>
                         <div>
                             <InputField
@@ -148,6 +142,26 @@ export default function EditEvents({ params: { event_slug } }: { params: { event
                             handleRemoveImage={handleRemoveImage}
                         />
 
+                        <div>
+                            <label htmlFor="status" className='text-gray-700 text-sm font-semibold flex items-center justify-between gap-8 w-full'>
+                                Status:
+                            </label>
+
+                            <div className='flex items-center gap-8'>
+                                <label htmlFor="draft" className='text-sm font-medium text-gray-600 flex items-center gap-1 hover:bg-blue-50 p-1 rounded-md'>
+
+                                    <input type="radio" name="status" id="draft" value="draft" checked={status === "draft"} onChange={(e) => setStatus(e.target.value as EventStatus)} className="mr-2" />
+                                    Draft
+                                </label>
+
+                                <label htmlFor="published" className='flex items-center gap-1 hover:bg-blue-50 p-1 rounded-md text-sm font-medium text-gray-600'>
+                                    <input type="radio" name="status" id="published" value="published" checked={status === "published"} onChange={(e) => setStatus(e.target.value as EventStatus)} className="mr-2" />
+
+                                    Publish
+                                </label>
+                            </div>
+                        </div>
+
                         <div className='flex items-center justify-center'>
                             <Button onClick={() => handleAddEvent(eventID)} disabled={createEventLoading}>
                                 {
@@ -158,6 +172,8 @@ export default function EditEvents({ params: { event_slug } }: { params: { event
                     </form>
                 </div>
             </div>
-        </PrivateRoute>
-    );
+        </Modal>
+    )
 }
+
+export default AdminEventEditModal

@@ -75,6 +75,7 @@ export default function useEvent() {
         event_time,
         event_venue,
         venue_description,
+        status,
     }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setEventCategory, setEventImage } = useEventContext();
 
     const uploadFile = async (file: File) => {
@@ -193,14 +194,13 @@ export default function useEvent() {
                     event_time,
                     event_venue,
                     venue_description,
-                    status: 'draft'
+                    status
                 };
 
 
                 if (event.event_name && event.event_description && event.event_date && event.event_time && event.event_venue) {
                     if (eventId) {
-                        const { status, ...restEvent } = event;
-                        const { data, error } = await supabase.from("events").update(restEvent).eq("id", eventId);
+                        const { data, error } = await supabase.from("events").update(event).eq("id", eventId);
 
                         if (error) {
                             setCreateEventLoading(false);

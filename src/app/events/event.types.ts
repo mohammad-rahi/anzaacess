@@ -16,6 +16,8 @@ export type TicketTypes = {
     created_at?: string;
 }
 
+export type EventStatus = 'draft' | 'published';
+
 export type EventTypes = {
     id?: number;
     created_at?: string;
@@ -29,5 +31,5 @@ export type EventTypes = {
     event_time: string;
     event_venue: string;
     venue_description: string;
-    status: 'draft' | 'published';
+    status: EventStatus;
 }

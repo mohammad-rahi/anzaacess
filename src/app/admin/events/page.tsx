@@ -7,10 +7,16 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import AdminEventViewModal from './AdminEventViewModal';
+import AdminEventEditModal from './AdminEventEditModal';
+
+// href={`/events/${event.event_category.category_slug}/${event.event_slug}`}
 
 export default function AdminEventsPage() {
   const [events, setEvents] = useState<EventTypes[]>([]);
   const [eventsLoading, setEventsLoading] = useState<boolean>(true);
+  const [eventForView, setShwoEventForView] = useState<EventTypes | null>(null);
+  const [eventForEdit, setShwoEventForEdit] = useState<EventTypes | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -29,6 +35,15 @@ export default function AdminEventsPage() {
 
     fetchEvents();
   }, []);
+
+  useEffect(() => {
+    if (eventForView || eventForEdit) {
+      document.body.classList.add('overflow-hidden');
+    }
+    else {
+      document.body.classList.remove('overflow-hidden');
+    }
+  }, [eventForView, eventForEdit]);
 
   return (
     <div className='space-y-8'>
@@ -63,8 +78,8 @@ export default function AdminEventsPage() {
                     <span className={`text-white text-sm ${event.status == 'published' ? 'bg-green-600' : 'bg-yellow-600'} px-2 py-1 rounded`}>{event.status}</span>
 
                     <div className='group-hover:opacity-100 opacity-0 pointer-events-none group-hover:pointer-events-auto flex items-center gap-4'>
-                      <Button variant='outline' href={`/events/${event.event_category.category_slug}/${event.event_slug}`}>View</Button>
-                      <Button variant='outline' href={`/events/edit/${event.event_slug}`}>Edit</Button>
+                      <Button size='sm' variant='outline' onClick={() => setShwoEventForView(event)}>View</Button>
+                      <Button size='sm' variant='outline' onClick={() => setShwoEventForEdit(event)}>Edit</Button>
                     </div>
                   </li>
                 ))
@@ -77,6 +92,24 @@ export default function AdminEventsPage() {
           }
         </ul>
       </div>
+
+      {
+        eventForView && (
+          <AdminEventViewModal
+            onClose={() => setShwoEventForView(null)}
+            event={eventForView}
+          />
+        )
+      }
+
+      {
+        eventForEdit && (
+          <AdminEventEditModal
+            onClose={() => setShwoEventForEdit(null)}
+            event={eventForEdit}
+          />
+        )
+      }
     </div>
   )
 }

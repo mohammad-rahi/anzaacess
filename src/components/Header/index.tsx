@@ -148,7 +148,7 @@ export default function Header() {
                                         {
                                             HeaderMenues.map((headerMenu) => (
                                                 <li key={headerMenu.id}>
-                                                    <Link href={headerMenu.path} className={`hover:text-blue-800 flex items-center gap-2 ${headerMenu.path == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                    <Link href={headerMenu.path} onClick={() => setShowMobileMenu(false)} className={`hover:text-blue-800 flex items-center gap-2 ${headerMenu.path == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
                                                         {headerMenu.name}
                                                         {
                                                             headerMenu.iconRight && (
@@ -167,21 +167,21 @@ export default function Header() {
                                         user && (
                                             <ul>
                                                 <li>
-                                                    <Link href={`/p/${user.username}`} className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                    <Link onClick={() => setShowMobileMenu(false)} href={`/p/${user.username}`} className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
                                                         {user.name || user.username}
                                                     </Link>
                                                 </li>
                                                 {
                                                     user.roles.isAdmin && (
                                                         <li>
-                                                            <Link href="/admin/events" className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                            <Link onClick={() => setShowMobileMenu(false)} href="/admin/events" className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
                                                                 Admin
                                                             </Link>
                                                         </li>
                                                     )
                                                 }
                                                 <li>
-                                                    <Link href="/logout" className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
+                                                    <Link onClick={() => setShowMobileMenu(false)} href="/logout" className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
                                                         Log out
                                                     </Link>
                                                 </li>

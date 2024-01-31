@@ -1,9 +1,14 @@
-import React from 'react';
+"use client";
+import React, { useState, useEffect } from 'react';
 import { Modal, Button } from '@/components';
-import { TicketTypes } from '../../event.types';
+import { EventTypes, TicketTypes } from '../../event.types';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import QRCode from 'react-qr-code';
 
 interface TicketCheckoutModalProps {
+    event: EventTypes;
     ticket: TicketTypes;
     onClose: () => void;
 }
@@ -13,15 +18,53 @@ type FormValues = {
     email: string;
 };
 
-const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ ticket, onClose }) => {
+const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket, onClose }) => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
+    const [qrCodeValue, setQRCodeValue] = useState<string | null>(null);
+    const [formData, setFormData] = useState<FormValues>({ name: '', email: '' });
+
+    const [pdfSrc, setPdfSrc] = useState(null);
+
+    useEffect(() => {
+        const fetchAndGeneratePDF = async () => {
+            const response = await fetch('/event_ticket_template.html');
+            const htmlTemplate = await response.text();
+
+            // You can update the dynamic values here
+            const dynamicValues = {
+                eventTitle: 'Awesome Event',
+                eventDate: 'January 1, 2023',
+                eventTime: '7:00 PM - 10:00 PM',
+                eventLocation: 'Venue Name, City',
+                ticketNumber: '123456789',
+                qrCodeValue: 'https://example.com', // Replace with your dynamic QR code value
+            };
+
+            const updatedHtml = htmlTemplate.replace(
+                /{{([^}]+)}}/g,
+                (match, p1) => dynamicValues[p1.trim()] || match
+            );
+
+            const pdf = new jsPDF();
+            pdf.fromHTML(updatedHtml, 0, 0, {}, () => {
+                setPdfSrc(pdf.output('datauri'));
+            });
+        };
+
+        fetchAndGeneratePDF();
+    }, []);
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         // Handle form submission logic here (e.g., book the ticket)
         console.log('Form data submitted:', data);
 
+        // Generate a unique QR code value based on user information
+        const qrCodeData = `${data.name}-${data.email}-${Date.now()}`;
+        setQRCodeValue(qrCodeData);
+        setFormData(data);
+
         // Close the modal after successful submission
-        onClose();
+        // onClose();
     };
 
     return (
@@ -66,6 +109,16 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ ticket, onClo
                         <Button type="submit">Book Now</Button>
                     </div>
                 </form>
+
+                {pdfSrc && (
+                    <>
+                        <div dangerouslySetInnerHTML={{ __html: pdfSrc }} />
+                        {/* Download Ticket Button */}
+                        <div className="flex justify-end mt-4">
+                            <Button onClick={() => window.open(pdfSrc, '_blank')}>Download Ticket</Button>
+                        </div>
+                    </>
+                )}
             </div>
         </Modal>
     );

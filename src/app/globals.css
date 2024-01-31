@@ -14,6 +14,34 @@
   .wrapper {
     @apply w-11/12 max-w-7xl mx-auto;
   }
+
+  .ticket {
+    @apply bg-white rounded-xl shadow-[0_0_10px_rgba(0,0,0,0.2)] overflow-hidden max-w-[600px] w-full flex;
+  }
+
+  .ticket-content {
+    @apply p-[30px] flex flex-col justify-between flex-grow;
+  }
+
+  .event-title {
+    @apply text-[32px] font-bold mb-4 text-[#2c3e50];
+  }
+
+  .event-details {
+    @apply text-[18px] mb-4 text-[#555];
+  }
+
+  .ticket-number {
+    @apply text-[22px] font-bold mb-4 text-[#3498db];
+  }
+
+  .qr-code {
+    @apply my-5 mr-5 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.2)] overflow-hidden h-fit p-3 bg-white;
+  }
+
+  .qr-code img {
+    @apply max-w-[150px] h-auto;
+  }
 }
 
 @layer utilities {

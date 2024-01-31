@@ -1,14 +1,15 @@
 "use client";
 import { Button } from "@/components";
-import { TicketTypes } from "../../event.types";
+import { EventTypes, TicketTypes } from "../../event.types";
 import { useState } from "react";
 import TicketCheckoutModal from "./TicketCheckoutModal";
 
 interface TicketCardProps {
+  event: EventTypes;
   ticket: TicketTypes;
 }
 
-const TicketCard: React.FC<TicketCardProps> = ({ ticket }) => {
+const TicketCard: React.FC<TicketCardProps> = ({ event, ticket }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleBookTicket = async () => {
@@ -70,7 +71,7 @@ const TicketCard: React.FC<TicketCardProps> = ({ ticket }) => {
       </div>
 
       {isModalOpen && (
-        <TicketCheckoutModal ticket={ticket} onClose={closeModal} />
+        <TicketCheckoutModal event={event} ticket={ticket} onClose={closeModal} />
       )}
     </div>
   );
