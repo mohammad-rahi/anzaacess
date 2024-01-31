@@ -40,15 +40,15 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                 qrCodeValue: 'https://example.com', // Replace with your dynamic QR code value
             };
 
-            const updatedHtml = htmlTemplate.replace(
-                /{{([^}]+)}}/g,
-                (match, p1) => dynamicValues[p1.trim()] || match
-            );
+            // const updatedHtml = htmlTemplate.replace(
+            //     /{{([^}]+)}}/g,
+            //     (match, p1) => dynamicValues[p1.trim()] || match
+            // );
 
-            const pdf = new jsPDF();
-            pdf.fromHTML(updatedHtml, 0, 0, {}, () => {
-                setPdfSrc(pdf.output('datauri'));
-            });
+            // const pdf = new jsPDF();
+            // pdf.fromHTML(updatedHtml, 0, 0, {}, () => {
+            //     setPdfSrc(pdf.output('datauri'));
+            // });
         };
 
         fetchAndGeneratePDF();
