@@ -45,7 +45,7 @@ export default async function Home() {
       <section className='bg-blue-100 min-h-[50vh] flex items-center justify-center'>
         <div className="wrapper text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4">
-            Discover and Book Exciting Events Near You
+          Think it, Book it!
           </h1>
           <p className="text-lg md:text-xl lg:text-2xl text-blue-600 mb-8">
             Explore a wide range of events and secure your tickets hassle-free.

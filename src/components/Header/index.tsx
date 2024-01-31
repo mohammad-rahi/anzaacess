@@ -31,7 +31,6 @@ export default function Header() {
                     <div className="flex items-center gap-12">
                         <Link href="/" className="flex items-center gap-1 text-blue-600 text-2xl md:text-3xl font-bold">
                             <AnzaAccessLogo />
-                            <span className=''>AnzaAccess</span>
                         </Link>
 
                         {
