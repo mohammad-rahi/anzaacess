@@ -163,7 +163,7 @@ const AdminEventEditModal = ({
                         </div>
 
                         <div className='flex items-center justify-center'>
-                            <Button onClick={() => handleAddEvent(eventID)} disabled={createEventLoading}>
+                            <Button onClick={() => handleAddEvent(eventID, onClose)} disabled={createEventLoading}>
                                 {
                                     createEventLoading ? <BarLoader color='white' /> : "Update Event"
                                 }

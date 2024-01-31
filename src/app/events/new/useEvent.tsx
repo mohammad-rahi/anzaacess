@@ -175,7 +175,7 @@ export default function useEvent() {
     }
 
     // Function to handle form submission
-    const handleAddEvent = async (eventId?: number) => {
+    const handleAddEvent = async (eventId?: number, onClose?: () => void) => {
         try {
             if (user?.id) {
                 setCreateEventLoading(true);
@@ -209,23 +209,29 @@ export default function useEvent() {
 
                         setCreateEventLoading(false);
 
-                        setStep(1);
-                        setEventName('');
-                        setEventDescription('');
-                        setEventCategory({
-                            category_name: '',
-                            category_slug: '',
-                        });
-                        setEventDate('');
-                        setEventTime('');
-                        setEventVenue('');
-                        setVenueDescription('');
+                        // setStep(1);
+                        // setEventName('');
+                        // setEventDescription('');
+                        // setEventCategory({
+                        //     category_name: '',
+                        //     category_slug: '',
+                        // });
+                        // setEventDate('');
+                        // setEventTime('');
+                        // setEventVenue('');
+                        // setVenueDescription('');
 
-                        setImageStoragePath('');
-                        setEventImage('');
+                        // setImageStoragePath('');
+                        // setEventImage('');
 
                         alert('Event updated successfully!');
-                        router.back();
+
+                        if (onClose) {
+                            onClose();
+                        }
+                        else {
+                            router.back();
+                        }
                     }
                     else {
                         const { data, error } = await supabase.from("events").insert(event);
