@@ -98,13 +98,13 @@ export default function Header() {
                                                     </Link>
                                                 </li>
                                             </ul>
-                                        </div> : <ul className="flex items-center gap-4 text-blue-600">
+                                        </div> : <ul className="hidden lg:flex items-center gap-4 text-blue-600">
                                             <li>
                                                 <Link href="/login">
                                                     <Button size='sm'>Log in</Button>
                                                 </Link>
                                             </li>
-                                            <li className='hidden lg:inline-block'>
+                                            <li>
                                                 <Link href="/signup">
                                                     <Button size='sm'>Get Started</Button>
                                                 </Link>
@@ -164,7 +164,7 @@ export default function Header() {
                                     <div className='w-full h-[1px] bg-gray-100'></div>
 
                                     {
-                                        user && (
+                                        user ? (
                                             <ul>
                                                 <li>
                                                     <Link onClick={() => setShowMobileMenu(false)} href={`/p/${user.username}`} className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
@@ -183,6 +183,19 @@ export default function Header() {
                                                 <li>
                                                     <Link onClick={() => setShowMobileMenu(false)} href="/logout" className={`hover:text-blue-800 flex items-center gap-2 ${`/p/${user.username}` == pathname ? 'text-gray-800' : ''} transition duration-300 px-8 py-2 hover:bg-blue-50`}>
                                                         Log out
+                                                    </Link>
+                                                </li>
+                                            </ul>
+                                        ) : (
+                                            <ul className="flex flex-col gap-4 text-blue-600 px-8">
+                                                <li>
+                                                    <Link href="/login">
+                                                        <Button size='sm'>Log in</Button>
+                                                    </Link>
+                                                </li>
+                                                <li>
+                                                    <Link href="/signup">
+                                                        <Button size='sm'>Get Started</Button>
                                                     </Link>
                                                 </li>
                                             </ul>
