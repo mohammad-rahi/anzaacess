@@ -9,7 +9,6 @@ import { EventCategory, EventTypes } from './event.types';
 import { supabase } from '@/config/supabase';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import { Button } from '@/components';
 import MobileCategories from './MobileCategories';
 
 export default function EventsPage() {

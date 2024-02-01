@@ -26,7 +26,15 @@ type EventAction =
 const eventReducer = (state: EventTypes, action: EventAction): EventTypes => {
   switch (action.type) {
     case 'SET_EVENT_NAME':
-      return { ...state, event_name: action.payload, event_slug: `${action.payload.toLowerCase().replace(/\s+/g, '-')}-${uuidv4().replace(/-/g, '').slice(0, 5)}` };
+      const sanitizedEventName = action.payload.toLowerCase().replace(/\s+/g, '-');
+      
+      const sanitizedEventSlug = sanitizedEventName.replace(/[^\w-]/g, ''); // Remove non-alphanumeric characters
+      
+      const uniqueIdentifier = uuidv4().replace(/-/g, '').slice(0, 5);
+      
+      const eventSlug = `${sanitizedEventSlug}-${uniqueIdentifier}`;
+      
+      return { ...state, event_name: action.payload, event_slug: eventSlug };
     case 'SET_EVENT_DESCRIPTION':
       return { ...state, event_description: action.payload };
     case 'SET_EVENT_CATEGORY':
