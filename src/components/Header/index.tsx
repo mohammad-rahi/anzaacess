@@ -26,9 +26,9 @@ export default function Header() {
 
     return (
         <header className='bg-blue-100 fixed top-0 inset-x-0 z-10'>
-            <nav className={`${isFullWidth ? 'w-11/12 mx-auto' : 'wrapper'} p-4`}>
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-12">
+            <nav className={`${isFullWidth ? 'w-11/12 mx-auto' : 'wrapper'} p-4 py-2`}>
+                <div className="flex items-center justify-between gap-8">
+                    <div className="flex items-center gap-16">
                         <Link href="/" className="flex items-center gap-1 text-blue-600 text-2xl md:text-3xl font-bold">
                             <AnzaAccessLogo />
                         </Link>
@@ -37,25 +37,45 @@ export default function Header() {
                             !isAuthPage && (
                                 <ul className="hidden lg:flex items-center gap-6 text-blue-600 text-lg">
                                     {
-                                        HeaderMenues.map((headerMenu) => (
-                                            <li key={headerMenu.id}>
-                                                <Link href={headerMenu.path} className={`hover:text-blue-800 flex items-center gap-2 ${headerMenu.path == pathname ? 'text-gray-800' : ''} transition duration-300`}>
-                                                    {headerMenu.name}
-                                                    {
-                                                        headerMenu.iconRight && (
-                                                            headerMenu.iconRight
-                                                        )
-                                                    }
-                                                </Link>
-                                            </li>
-                                        ))
+                                        HeaderMenues.map((headerMenu) => {
+                                            if (headerMenu.path == '/events/new') {
+                                                if (user && user.id) {
+                                                    return (
+                                                        <li key={headerMenu.id}>
+                                                            <Link href={headerMenu.path} className={`hover:text-blue-800 flex items-center gap-2 ${headerMenu.path == pathname ? 'text-gray-800' : ''} transition duration-300`}>
+                                                                {headerMenu.name}
+                                                                {
+                                                                    headerMenu.iconRight && (
+                                                                        headerMenu.iconRight
+                                                                    )
+                                                                }
+                                                            </Link>
+                                                        </li>
+                                                    )
+                                                }
+                                            }
+                                            else {
+                                                return (
+                                                    <li key={headerMenu.id}>
+                                                        <Link href={headerMenu.path} className={`hover:text-blue-800 flex items-center gap-2 ${headerMenu.path == pathname ? 'text-gray-800' : ''} transition duration-300`}>
+                                                            {headerMenu.name}
+                                                            {
+                                                                headerMenu.iconRight && (
+                                                                    headerMenu.iconRight
+                                                                )
+                                                            }
+                                                        </Link>
+                                                    </li>
+                                                )
+                                            }
+                                        })
                                     }
                                 </ul>
                             )
                         }
                     </div>
 
-                    <div className='flex items-center gap-4'>
+                    <div className="flex items-center gap-4">
                         {/* <div className='flex items-center justify-center'>
                             <button className="text-blue-600 hover:text-blue-800 focus:outline-none" onClick={() => setShowCartModal(true)}>
                                 <FaShoppingCart size={24} />

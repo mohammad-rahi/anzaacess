@@ -13,6 +13,12 @@ export const AdminSidebarItems: AdminSidebarItemType[] = [
         icon: <></>
     },
     {
+        id: 'staycations',
+        name: 'Staycations',
+        path: '/admin/staycations',
+        icon: <></>
+    },
+    {
         id: 'category',
         name: 'Category',
         path: '/admin/category',

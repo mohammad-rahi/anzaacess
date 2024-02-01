@@ -5,6 +5,7 @@ type InputFieldProps = {
     value?: string | number;
     onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
     label?: string;
+    name?: string;
     labelRight?: ReactNode;
     placeholder: string;
     type?: "text" | "password" | "email" | "date" | "time" | "file" | "select" | 'number';
@@ -22,11 +23,12 @@ type InputFieldProps = {
         value: string;
         label: string
     },
-    autoFocus?: boolean
+    autoFocus?: boolean;
+    error?: string
 };
 
-export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, readOnly, multiple, options, setSelectChange, ref, defaultSelectedValue, autoFocus }: InputFieldProps) {
-    const name = label?.toLowerCase().replace(/\s+/g, '_');
+export default function InputField({ value, onChange, label, labelRight, placeholder, type, inputLeft, children, readOnly, multiple, options, setSelectChange, ref, defaultSelectedValue, autoFocus, name: inputName, error }: InputFieldProps) {
+    const name = inputName ? inputName : label?.toLowerCase().replace(/\s+/g, '_');
 
     const inputProps = {
         id: name,
@@ -58,7 +60,7 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                 </div>
             )}
 
-            <div className="relative rounded-md shadow-sm">
+            <div className="relative rounded-md">
                 {(type != "select" && inputLeft) && (
                     <div className={`absolute left-0 ${type ? "pl-3 inset-y-0" : "pl-3 top-3"} flex items-center pointer-events-none`}>
                         {inputLeft}
@@ -101,6 +103,12 @@ export default function InputField({ value, onChange, label, labelRight, placeho
                             )
                 }
             </div>
+
+            {
+                error && (
+                    <p className='text-red-500 text-xs'>{error}</p>
+                )
+            }
         </div>
     )
 }
