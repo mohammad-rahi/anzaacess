@@ -1,4 +1,4 @@
-export default async function POST(req: Request) {
+export async function POST(req: Request) {
     if (req.method === 'POST') {
         try {
             // Implement logic to handle card payment
