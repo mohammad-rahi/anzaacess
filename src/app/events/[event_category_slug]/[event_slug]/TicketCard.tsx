@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components";
 import { EventTypes, TicketTypes } from "../../event.types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TicketCheckoutModal from "./TicketCheckoutModal";
 
 interface TicketCardProps {
@@ -54,6 +54,16 @@ const TicketCard: React.FC<TicketCardProps> = ({ event, ticket }) => {
   //     console.log('Ticket is already in the cart:', ticket);
   //   }
   // };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.classList.add('overflow-hidden');
+    }
+    else {
+      document.body.classList.remove('overflow-hidden');
+    }
+  }, [isModalOpen]);
+
 
   return (
     <div className="relative bg-gradient-to-r from-blue-200 to-blue-300 p-6 rounded-md shadow-md">

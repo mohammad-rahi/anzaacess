@@ -7,21 +7,18 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import QRCode from 'react-qr-code';
 
+import { makeMpesaPayment, makeCardPayment, FormValues } from './paymentUtils';
+
 interface TicketCheckoutModalProps {
     event: EventTypes;
     ticket: TicketTypes;
     onClose: () => void;
 }
 
-type FormValues = {
-    name: string;
-    email: string;
-};
-
 const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket, onClose }) => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
     const [qrCodeValue, setQRCodeValue] = useState<string | null>(null);
-    const [formData, setFormData] = useState<FormValues>({ name: '', email: '' });
+    const [formData, setFormData] = useState<FormValues>({ name: '', email: '', phone: '', paymentOption: 'mpesa' });
 
     const [pdfSrc, setPdfSrc] = useState(null);
 
@@ -54,17 +51,29 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
         fetchAndGeneratePDF();
     }, []);
 
-    const onSubmit: SubmitHandler<FormValues> = (data) => {
-        // Handle form submission logic here (e.g., book the ticket)
-        console.log('Form data submitted:', data);
+    const onSubmit: SubmitHandler<FormValues> = async (data) => {
+        try {
+            // Handle form submission logic here (e.g., book the ticket)
+            console.log('Form data submitted:', data);
 
-        // Generate a unique QR code value based on user information
-        const qrCodeData = `${data.name}-${data.email}-${Date.now()}`;
-        setQRCodeValue(qrCodeData);
-        setFormData(data);
+            // Generate a unique QR code value based on user information
+            const qrCodeData = `${data.name}-${data.email}-${Date.now()}`;
+            setQRCodeValue(qrCodeData);
+            setFormData(data);
 
-        // Close the modal after successful submission
-        // onClose();
+            // Process payment based on the selected payment option
+            if (data.paymentOption === 'mpesa') {
+                await makeMpesaPayment(data); // Implement makeMpesaPayment function
+            } else if (data.paymentOption === 'card') {
+                await makeCardPayment(data); // Implement makeCardPayment function
+            }
+
+            // Close the modal after successful submission and payment
+            onClose();
+        } catch (error) {
+            // Handle payment error (display error message, etc.)
+            console.error('Payment failed:', error);
+        }
     };
 
     return (
@@ -102,6 +111,39 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                                 <span className="text-red-500 text-sm">{errors.email.message}</span>
                             )
                         }
+                    </div>
+
+                    <div>
+                        <label htmlFor="phone" className="text-sm font-medium text-gray-700 block">
+                            Phone <span className='text-red-500 text-xs'>(Including country code)</span>
+                        </label>
+                        <input
+                            type='number'
+                            {...register('phone', { required: 'Phone is required' })}
+                            placeholder='Enter phone number'
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300 read-only:cursor-not-allowed read-only:opacity-50"
+                        />
+                        {
+                            errors.phone && (
+                                <span className="text-red-500 text-sm">{errors.phone.message}</span>
+                            )
+                        }
+                    </div>
+
+                    {/* Payment Option */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Payment Option</label>
+                        <select
+                            {...register('paymentOption', { required: 'Payment option is required' })}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300 read-only:cursor-not-allowed read-only:opacity-50"
+                        >
+                            <option value="">Select Payment Option</option>
+                            <option value="mpesa">M-Pesa Daraja API</option>
+                            <option value="card">Card</option>
+                        </select>
+                        {errors.paymentOption && (
+                            <span className="text-red-500 text-sm">{errors.paymentOption.message}</span>
+                        )}
                     </div>
 
                     {/* Action buttons */}

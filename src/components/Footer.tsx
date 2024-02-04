@@ -15,6 +15,7 @@ const Footer = () => {
     // Determine whether to render the footer or not based on the current pathname
     const notRenderFooter =
         pathname == "/events/new" ||
+        pathname.startsWith("/p") ||
         pathname.startsWith("/admin") ||
         pathname.startsWith("/login") ||
         pathname.startsWith("/signup") ||
