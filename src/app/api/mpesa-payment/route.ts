@@ -1,4 +1,4 @@
-export default async function handler(req: Request) {
+export default async function POST(req: Request) {
     if (req.method === 'POST') {
         try {
             // Implement logic to handle M-Pesa payment
