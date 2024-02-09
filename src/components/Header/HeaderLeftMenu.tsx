@@ -21,6 +21,11 @@ export const HeaderMenues: HeaderMenuTypes[] = [
     },
     {
         id: 3,
+        name: "Blog",
+        path: "/blog"
+    },
+    {
+        id: 4,
         name: "Add Events",
         path: "/events/new",
         iconRight:  <HiPlus />

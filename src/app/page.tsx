@@ -2,6 +2,7 @@ import { supabase } from "@/config/supabase"
 import { EventTypes } from "./events/event.types";
 import EventsCategory from "./EventsCategory";
 import { Button } from "@/components";
+import HomePageHero from "./HomePageHero";
 
 export const revalidate = 60
 
@@ -42,27 +43,10 @@ export default async function Home() {
   return (
     <div>
       {/* Hero section */}
-      <section className='bg-blue-100 min-h-[60vh] flex items-center justify-center'>
-        <div className="wrapper max-w-5xl text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-blue-800 mb-4 leading-[50px]">
-            Explore Events and <br /> Destinations with AnzaAccess!
-          </h1>
-          <p className="text-lg md:text-xl lg:text-2xl text-blue-600 mb-8">
-            Your gateway to exciting experiences! Discover and book events effortlessly. Whether it&apos;s thrilling adventures or dreamy destinations, we&apos;ve got you covered!
-          </p>
-
-          <div className="w-fit mx-auto">
-            <Button href="/events">
-              See Events
-            </Button>
-          </div>
-        </div>
-      </section>
-
-
+      <HomePageHero />
 
       {/* Events section */}
-      <section >
+      <section className="pt-16">
         <div className="wrapper py-12">
           <div className="flex flex-col gap-8">
             {

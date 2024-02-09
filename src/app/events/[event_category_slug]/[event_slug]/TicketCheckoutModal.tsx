@@ -69,7 +69,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
             }
 
             // Close the modal after successful submission and payment
-            onClose();
+            // onClose();
         } catch (error) {
             // Handle payment error (display error message, etc.)
             console.error('Payment failed:', error);
@@ -78,20 +78,21 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
 
     return (
         <Modal onClose={onClose}>
-            <div className="p-4">
-                <div className='border-b border-gray-100 flex items-center justify-between gap-8 p-4'>
+            <div>
+                <div className='border-b border-gray-100 flex items-center justify-between gap-8 p-8 py-4'>
                     <h2 className='text-2xl font-bold'>Checkout Ticket</h2>
                     <button className='text-gray-500 hover:underline' onClick={onClose}>
                         Close
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+                <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 p-8 py-4'>
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Name</label>
                         <input
                             type="text"
                             {...register('name', { required: 'Name is required' })}
+                            placeholder='Enter name'
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300 read-only:cursor-not-allowed read-only:opacity-50"
                         />
                         {errors.name && (
@@ -103,6 +104,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
                         <input
                             type='email'
+                            placeholder='Enter email address'
                             {...register('email', { required: 'Email is required' })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition duration-300 read-only:cursor-not-allowed read-only:opacity-50"
                         />
@@ -115,7 +117,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
 
                     <div>
                         <label htmlFor="phone" className="text-sm font-medium text-gray-700 block">
-                            Phone <span className='text-red-500 text-xs'>(Including country code)</span>
+                            Phone <span className='text-gray-500 text-xs'>(Including country code)</span>
                         </label>
                         <input
                             type='number'

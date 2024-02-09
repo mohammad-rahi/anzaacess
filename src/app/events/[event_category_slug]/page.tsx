@@ -6,7 +6,6 @@ import _debounce from 'lodash/debounce';
 import InputField from '@/components/InputField';
 import { supabase } from '@/config/supabase';
 import { EventCategory, EventTypes } from '../event.types';
-import EventCard from '../EventCard';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import MobileCategories from '../MobileCategories';

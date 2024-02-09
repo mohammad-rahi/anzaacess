@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import EventCardLists from '../../EventCardLists';
 import { supabase, supabaseServer } from '@/config/supabase';
 import { cookies } from 'next/headers';
+import EventDetailsHero from './EventDetailsHero';
 
 export const revalidate = 0;
 
@@ -100,64 +101,74 @@ const EventDetailsPage = async ({ params: { event_category_slug, event_slug } }:
     const releatedEvents = await fetchRelatedEvent(event_category_slug, event_slug);
 
     return (
-        <div className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="relative aspect-[16/9] rounded-md overflow-hidden bg-blue-50">
-                    {event.event_image && (
-                        <Image
-                            src={event.event_image}
-                            alt={event.event_name}
-                            objectFit="cover"
-                            layout="fill"
-                        />
-                    )}
-                </div>
+        <div>
+            <EventDetailsHero event_image={event.event_image} event_name={event.event_name} />
 
-                <div className="space-y-4">
-                    <h1 className="text-4xl font-bold">{event.event_name}</h1>
-                    <p className="text-gray-700">{event.event_description.slice(0, 200)}</p>
+            <section className="py-16 bg-blue-100">
+                <div className="wrapper">
+                    <h2 className="text-3xl font-bold mb-8">Event Highlights</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {/* Use the same image source as in EventDetailsHero */}
+                        <div className="relative aspect-[16/9] rounded-md overflow-hidden">
+                            {event.event_image && (
+                                <Image
+                                    src={event.event_image}
+                                    alt={event.event_name}
+                                    objectFit="cover"
+                                    layout="fill"
+                                />
+                            )}
+                        </div>
 
-                    <div>
-                        <p className="text-gray-800">
-                            <span className="font-bold">Date & Time:</span> {event.event_date} at {event.event_time}
-                        </p>
-                        <p className="text-gray-800">
-                            <span className="font-bold">Venue:</span> {event.event_venue}
-                        </p>
+                        <div className="space-y-4">
+                            <h1 className="text-4xl font-bold">{event.event_name}</h1>
+                            <p className="text-gray-700">{event.event_description.slice(0, 200)}</p>
+
+                            <div>
+                                <p className="text-gray-800">
+                                    <span className="font-bold">Date & Time:</span> {event.event_date} at {event.event_time}
+                                </p>
+                                <p className="text-gray-800">
+                                    <span className="font-bold">Venue:</span> {event.event_venue}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div className="space-y-4">
-                <h2 className="text-2xl font-bold">Ticket Types</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {tickets.map((ticket, index) => (
-                        <TicketCard key={index} event={event} ticket={ticket} />
-                    ))}
+            <section className="py-16 bg-blue-50">
+                <div className="wrapper">
+                    <h2 className="text-3xl font-bold mb-8">Ticket Types</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {tickets.map((ticket, index) => (
+                            <TicketCard key={index} event={event} ticket={ticket} />
+                        ))}
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <div className='w-2/3'>
-                <h2 className="text-2xl font-bold">Event Details</h2>
-                <p>{event.event_description}</p>
-            </div>
+            <section className="py-16 bg-blue-100">
+                <div className="wrapper">
+                    <h2 className="text-3xl font-bold mb-8">Event Details</h2>
+                    <div className="w-2/3">
+                        <p>{event.event_description}</p>
+                    </div>
+                </div>
+            </section>
 
-            {
-                releatedEvents.length > 0 && (
-                    <>
-                        <div className='w-full h-[1px] bg-gray-200'></div>
-
-                        <div className='space-y-4'>
-                            <h2 className='text-2xl font-bold'>Releated Events</h2>
-
-                            <EventCardLists
-                                events={releatedEvents}
-                            />
+            <section className="py-16 bg-blue-50">
+                <div className="wrapper">
+                    <h2 className="text-3xl font-bold mb-8">Related Events</h2>
+                    {releatedEvents.length > 0 && (
+                        <div className="space-y-4">
+                            <EventCardLists events={releatedEvents} />
                         </div>
-                    </>
-                )
-            }
+                    )}
+                </div>
+            </section>
         </div>
+
     );
 };
 
