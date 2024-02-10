@@ -48,7 +48,7 @@ export default async function Home() {
       {/* Events section */}
       <section className="pt-16">
         <div className="wrapper py-12">
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-4">
             {
               Object.keys(eventsWithCategory).map((category, index) => (
                 <EventsCategory key={category} category={category} eventsWithCategory={eventsWithCategory} isEnd={index === Object.keys(eventsWithCategory).length - 1} />

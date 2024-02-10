@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import AdminSidebar from './AdminSidebar/page'
+import AdminSidebar from './AdminSidebar'
 import AdminPrivateRoute from './AdminPrivateRoute'
 import AdminTabs from './AdminTabs'
 

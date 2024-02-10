@@ -148,7 +148,6 @@ export default function EventsPage() {
           </div>
 
           <div className='flex-1 max-w-[90%]'>
-
             <div className=''>
               {/* Search bar */}
               <InputField
@@ -159,52 +158,16 @@ export default function EventsPage() {
               />
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-4">
               {
                 Object.keys(eventsWithCategory).map((category, index) => (
                   <EventsCategory key={category} category={category} eventsWithCategory={eventsWithCategory} isEnd={index === Object.keys(eventsWithCategory).length - 1} />
                 ))
               }
             </div>
-
-
-            {/* Event cards grid */}
-            {
-              eventLoading ? (
-                <>
-                  {/* <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-                    {
-                      Array.from({ length: 6 }).map((_, index) => (
-                        <div className='w-full block' key={index}>
-                          <Skeleton className='h-96 rounded-md' baseColor='white' />
-                        </div>
-                      ))
-                    }
-                  </div> */}
-                </>
-              ) : (
-                <>
-                  {/* <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8'>
-                    {
-                      eventLoading ? (
-                        <Skeleton className='h-96 rounded-md' baseColor='white' count={10} />
-                      ) : (
-                        events.length > 0 ? (
-                          events.map((event) => (
-                            <EventCard key={event.id} event={event} />
-                          ))
-                        ) : (
-                          <p>No events found.</p>
-                        )
-                      )
-                    }
-                  </div> */}
-                </>
-              )
-            }
           </div>
         </div>
       </div>
     </div>
   )
-}
+};

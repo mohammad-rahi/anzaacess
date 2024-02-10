@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { EventTypes } from './event.types';
+import { Button } from '@/components';
 
 interface EventCardProps {
   event: EventTypes;
@@ -21,57 +22,40 @@ const EventCard: React.FC<EventCardProps> = ({ event, size = 'md' }) => {
   return (
     <Link
       href={`/events/${event.event_category.category_slug}/${event.event_slug}`}
-      className={`group block ${size === 'sm' ? 'md:flex' : ''} p-4 md:p-8 bg-white rounded-md shadow-md group-hover:shadow-lg group-hover:bg-blue-50 transition duration-300 hover:underline`}
+      className='block group bg-white rounded-md shadow-md group-hover:shadow-lg group-hover:bg-blue-50 transition duration-300 hover:underline overflow-hidden'
     >
-      <div
-        className={`${size === 'sm' ? 'md:w-1/2' : 'relative aspect-[4/3] overflow-hidden md:w-1/3'}`}
-      >
+      <div className={`block ${size === 'sm' ? 'md:flex' : ''} relative aspect-[4/3] group-hover:scale-105 transition duration-300`}>
         {event_image && (
           <Image src={event_image} alt={event_name} objectFit="cover" layout="fill" />
         )}
+
+        <div className="overlay p-4 text-white bg-gradient-to-b from-transparent to-black absolute top-0 bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden sm:flex flex-col gap-4 justify-end">
+          <div>
+            <div className="flex items-center gap-4 text-sm text-white">
+              <p>
+                <span className="font-semibold">Date:</span>{' '}
+                {new Date(event_date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+              <p>
+                <span className="font-semibold">Time:</span> {event_time}
+              </p>
+            </div>
+
+            <p className="text-sm">
+              <span className="font-semibold">Venue:</span> {event_venue}
+            </p>
+          </div>
+
+          <h3 className={`text-xl font-bold mb-2 ${size === 'md' ? 'line-clamp-2' : ''}`}>{event_name}</h3>
+        </div>
       </div>
 
-      <div
-        className={`flex flex-col ${size === 'sm' ? 'md:w-1/2 md:ml-4' : 'md:ml-8'} mt-4 md:mt-0`}
-      >
-        <h3
-          className={`text-xl md:text-2xl font-bold mb-2 ${size === 'sm' ? 'line-clamp-2' : ''}`}
-        >
-          {event_name}
-        </h3>
-        {size === 'md' && (
-          <p
-            className={`text-gray-600 mb-3 ${isExpanded ? 'line-clamp-none' : 'line-clamp-3'
-              } transition-max-height ease-in-out duration-300 overflow-hidden`}
-          >
-            {event_description}
-          </p>
-        )}
-
-        <div className="flex items-center text-sm mb-2">
-          <p className="text-gray-500">Category:</p>
-          <span className="ml-2 text-blue-500 font-semibold">
-            {event_category.category_name}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-4 text-sm text-gray-500">
-          <p>
-            <span className="font-semibold">Date:</span>{' '}
-            {new Date(event_date).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </p>
-          <p>
-            <span className="font-semibold">Time:</span> {event_time}
-          </p>
-        </div>
-
-        <p className="text-sm mt-2">
-          <span className="font-semibold">Venue:</span> {event_venue}
-        </p>
+      <div className='sm:hidden bg-blue-100 p-2 rounded-b-md overflow-hidden'>
+        <h3 className={`text-xl font-bold ${size === 'md' ? 'line-clamp-2' : ''}`}>{event_name}</h3>
       </div>
     </Link>
   );

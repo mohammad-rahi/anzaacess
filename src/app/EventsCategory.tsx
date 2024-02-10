@@ -46,29 +46,29 @@ const EventsCategory: React.FC<EventsCategoryProps> = ({ category, eventsWithCat
   };
 
   return (
-    <div className={`space-y-4 md:space-y-8 ${!isEnd && 'border-b sm:pb-8'} bg-white rounded-md shadow overflow-hidden p-4 md:p-8`}>
-      <h1 className='text-lg sm:text-xl md:text-2xl font-bold mb-4'>{category}</h1>
+    <div className={`space-y-4 bg-white rounded-md shadow overflow-hidden p-4`}>
+      <h1 className='text-lg md:text-xl font-bold mb-4'>{category}</h1>
 
       <div className="relative">
         {showPrevButton && (
-          <div className='absolute top-1/2 -translate-y-1/2 -left-4'>
-            <Button onClick={() => handleScroll('prev')}>
+          <div className='absolute top-1/2 -translate-y-1/2 left-0 z-10'>
+            <Button onClick={() => handleScroll('prev')} size='sm'>
               <HiChevronLeft className='w-6 h-6' />
             </Button>
           </div>
         )}
 
-        <div className="flex overflow-x-auto gap-4 md:gap-8" ref={scrollContainerRef}>
+        <div className="flex overflow-x-auto gap-4" ref={scrollContainerRef}>
           {eventsWithCategory[category].map((event) => (
-            <div key={event.id} style={{ minWidth: '280px', maxWidth: '280px' }}>
+            <div key={event.id} style={{ minWidth: '320px', maxWidth: '320px' }}>
               <EventCard event={event} />
             </div>
           ))}
         </div>
 
         {showNextButton && (
-          <div className='absolute top-1/2 -translate-y-1/2 -right-4'>
-            <Button onClick={() => handleScroll('next')}>
+          <div className='absolute top-1/2 -translate-y-1/2 right-0'>
+            <Button onClick={() => handleScroll('next')} size='sm'>
               <HiChevronRight className='w-6 h-6' />
             </Button>
           </div>

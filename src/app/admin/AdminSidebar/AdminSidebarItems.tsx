@@ -19,9 +19,9 @@ export const AdminSidebarItems: AdminSidebarItemType[] = [
         icon: <></>
     },
     {
-        id: 'blog',
-        name: 'Blog',
-        path: '/admin/blog',
+        id: 'blogs',
+        name: 'Blogs',
+        path: '/admin/blogs',
         icon: <></>
     },
     {

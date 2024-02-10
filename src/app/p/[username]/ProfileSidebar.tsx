@@ -16,9 +16,9 @@ const ProfileSidebar = ({ username, eventID, ticketID }: { username: string, eve
             <ul className="py-4">
                 {profileSidebarItem.map((item) => (
                     <li key={item.id}>
-                        <Link href={item.path(username)} className={`flex items-center py-2 px-4 hover:bg-blue-100 transition duration-300 ${item.paths(username, eventID, ticketID).includes(pathname) ? 'bg-blue-100' : ''}`}>
-                            <span className="text-gray-700">{item.icon}</span>
-                            <span className="ml-2 text-blue-800">{item.name}</span>
+                        <Link href={item.path(username)} className={`flex items-center py-2 px-4 hover:bg-blue-500 hover:text-blue-50 transition duration-300 ${item.paths(username, eventID, ticketID).includes(pathname) ? 'bg-blue-600 text-blue-50' : ''}`}>
+                            <span>{item.icon}</span>
+                            <span>{item.name}</span>
                         </Link>
                     </li>
                 ))}
