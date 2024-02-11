@@ -31,16 +31,16 @@ export default function Header() {
         <header className='bg-blue-100 fixed top-0 inset-x-0 z-50'>
             <nav className={`${isFullWidth ? 'w-11/12 mx-auto' : 'wrapper'} p-4 py-2`}>
                 <div className="flex items-center justify-between gap-8">
-                    <div className="flex items-center gap-8">
-                        <Link href="/" className="flex items-center gap-1 text-blue-600 text-2xl md:text-3xl font-bold hover:text-blue-800 transition duration-300">
-                            <AnzaAccessLogo />
-                        </Link>
+                    <Link href="/" className="flex items-center gap-1 text-blue-600 text-2xl md:text-3xl font-bold hover:text-blue-800 transition duration-300">
+                        <AnzaAccessLogo />
+                    </Link>
 
+                    <div className='flex items-center justify-center'>
                         {!isAuthPage && (
                             <ul className="hidden lg:flex items-center text-blue-600 text-lg space-x-4">
                                 {HeaderMenues.map((headerMenu) => (
                                     <li key={headerMenu.id}>
-                                        <Link href={headerMenu.path} className={`hover:bg-blue-600 hover:text-blue-50 px-3 py-1 rounded-md flex items-center gap-2 ${headerMenu.path === pathname ? 'text-gray-800' : ''} transition duration-300`}>
+                                        <Link href={headerMenu.path} className={`hover:bg-blue-200 px-3 py-1 rounded-md flex items-center gap-2 ${headerMenu.path === pathname ? 'border border-blue-600' : ''} transition duration-300`}>
                                             {headerMenu.name}
                                             {headerMenu.iconRight && <span className="ml-2">{headerMenu.iconRight}</span>}
                                         </Link>
@@ -50,12 +50,16 @@ export default function Header() {
                         )}
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-8">
                         {/* <div className='flex items-center justify-center'>
                             <button className="text-blue-600 hover:text-blue-800 focus:outline-none" onClick={() => setShowCartModal(true)}>
                                 <FaShoppingCart size={24} />
                             </button>
                         </div> */}
+
+                        <div>
+                            <button className={`hover:bg-blue-200 text-blue-600 px-3 py-1 rounded-md flex items-center gap-2 transition duration-300`}>List your property</button>
+                        </div>
 
                         {
                             (!isAuthPage && !authLoading) && (
@@ -77,7 +81,7 @@ export default function Header() {
                                                     <>
                                                         <ul className="text-blue-600 absolute top-full right-0 whitespace-nowrap bg-white shadow-md rounded-md overflow-hidden w-64 py-1 z-10" onClick={() => setShowProfileMenu(false)}>
                                                             <li>
-                                                                <Link href={`/p/${user.username}`} className="text-gray-800 hover:bg-blue-600 flex items-center hover:text-blue-50 transition duration-300 text-lg px-4 py-2">
+                                                                <Link href={`/p/${user.username}`} className="text-gray-800 hover:bg-blue-200 flex items-center transition duration-300 px-4 py-2">
                                                                     <HiUser className="mr-2" />
                                                                     {user.name || user.username}
                                                                 </Link>
@@ -85,7 +89,7 @@ export default function Header() {
                                                             {
                                                                 user.roles.isAdmin && (
                                                                     <li>
-                                                                        <Link href="/admin/events" className="text-gray-800 hover:bg-blue-600 flex items-center hover:text-blue-50 transition duration-300 text-lg px-4 py-2">
+                                                                        <Link href="/admin/events" className="text-gray-800 hover:bg-blue-200 flex items-center transition duration-300 px-4 py-2">
                                                                             <HiLockClosed className="mr-2" />
                                                                             Admin
                                                                         </Link>
@@ -93,7 +97,7 @@ export default function Header() {
                                                                 )
                                                             }
                                                             <li>
-                                                                <Link href="/logout" className="text-gray-800 hover:bg-blue-600 flex items-center hover:text-blue-50 transition duration-300 text-lg px-4 py-2">
+                                                                <Link href="/logout" className="text-gray-800 hover:bg-blue-200 flex items-center transition duration-300 px-4 py-2">
                                                                     <FaSignInAlt className="mr-2" />
                                                                     Log out
                                                                 </Link>
@@ -129,6 +133,25 @@ export default function Header() {
                         </div>
                     </div>
                 </div>
+
+                {/* {
+                    !isFullWidth && (
+                        <div className='flex items-center justify-center'>
+                            {!isAuthPage && (
+                                <ul className="hidden lg:flex items-center text-blue-600 text-lg space-x-4">
+                                    {HeaderMenues.map((headerMenu) => (
+                                        <li key={headerMenu.id}>
+                                            <Link href={headerMenu.path} className={`hover:bg-blue-200 px-3 py-1 rounded-md flex items-center gap-2 ${headerMenu.path === pathname ? 'border border-blue-600' : ''} transition duration-300`}>
+                                                {headerMenu.name}
+                                                {headerMenu.iconRight && <span className="ml-2">{headerMenu.iconRight}</span>}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    )
+                } */}
             </nav>
 
             {
