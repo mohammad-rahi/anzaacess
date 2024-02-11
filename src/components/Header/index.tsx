@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { FaSignInAlt } from 'react-icons/fa';
-import { HiXMark, HiUser, HiLockClosed, HiChevronDown } from 'react-icons/hi2';
+import { HiXMark, HiUser, HiLockClosed, HiChevronDown, HiPlus } from 'react-icons/hi2';
 import { Button } from '..';
 import { usePathname } from 'next/navigation';
 import AnzaAccessLogo from './AnzaAccessLogo';
@@ -37,10 +37,10 @@ export default function Header() {
 
                     <div className='flex items-center justify-center'>
                         {!isAuthPage && (
-                            <ul className="hidden lg:flex items-center text-blue-600 text-lg space-x-4">
+                            <ul className="hidden lg:flex items-center text-blue-600 space-x-4">
                                 {HeaderMenues.map((headerMenu) => (
                                     <li key={headerMenu.id}>
-                                        <Link href={headerMenu.path} className={`hover:bg-blue-200 px-3 py-1 rounded-md flex items-center gap-2 ${headerMenu.path === pathname ? 'border border-blue-600' : ''} transition duration-300`}>
+                                        <Link href={headerMenu.path} className={`hover:bg-blue-200 px-3 py-1 rounded-md flex items-center ${headerMenu.path === pathname ? 'border border-blue-600' : ''} transition duration-300`}>
                                             {headerMenu.name}
                                             {headerMenu.iconRight && <span className="ml-2">{headerMenu.iconRight}</span>}
                                         </Link>
@@ -58,7 +58,7 @@ export default function Header() {
                         </div> */}
 
                         <div>
-                            <button className={`hover:bg-blue-200 text-blue-600 px-3 py-1 rounded-md flex items-center gap-2 transition duration-300`}>List your property</button>
+                            <button className={`hover:bg-blue-200 text-blue-600 px-3 py-1 rounded-md flex items-center gap-2 transition duration-300`}>List your property <HiPlus /></button>
                         </div>
 
                         {

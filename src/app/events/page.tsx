@@ -147,7 +147,7 @@ export default function EventsPage() {
             </ul>
           </div>
 
-          <div className='flex-1 max-w-[90%]'>
+          <div className='flex-1 max-w-[76%]'>
             <div className=''>
               {/* Search bar */}
               <InputField
