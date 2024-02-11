@@ -164,7 +164,6 @@ export default function useEvent() {
                 const imageUrl = await uploadFile(eventImage);
                 setImageStoragePath(imageUrl || "");
 
-
                 if (!imageUrl) {
                     // Handle upload failure
                     setEventImageUploadLoading(false);

@@ -17,7 +17,7 @@ const AdminPrivateRoute: React.FC<{ children: ReactNode }> = ({ children }) => {
                     const { data, error } = await supabase
                         .from('profiles')
                         .select('*')
-                        .eq('user_id', user.id)
+                        .eq('user_id', user.user_id)
                         .single();
 
                     if (error) {

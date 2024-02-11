@@ -4,6 +4,7 @@ import { Modal } from '@/components'
 import Image from 'next/image'
 import React from 'react'
 import { HiXMark } from 'react-icons/hi2'
+import moment from 'moment'
 
 const AdminBlogViewModal = ({
     onClose,
@@ -42,7 +43,7 @@ const AdminBlogViewModal = ({
 
                             <div>
                                 <p className="text-gray-800">
-                                    <span className="font-bold">Created At:</span> {blog.created_at}
+                                    <span className="font-bold">Created At:</span> {moment(blog.created_at).fromNow()}
                                 </p>
                             </div>
                         </div>

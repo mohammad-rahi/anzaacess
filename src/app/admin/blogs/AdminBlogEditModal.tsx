@@ -1,10 +1,13 @@
 import { BlogTypes } from '@/app/blog/blog.types'
 import { Button, Modal } from '@/components'
 import InputField from '@/components/InputField'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FaStickyNote, FaTicketAlt } from 'react-icons/fa'
 import { HiXMark } from 'react-icons/hi2'
 import { BarLoader } from 'react-spinners'
+import useBlog from './useBlog'
+import { v4 as uuid4 } from 'uuid';
+import BlogImage from './BlogImage'
 
 const AdminBlogEditModal = ({
     onClose,
@@ -13,26 +16,25 @@ const AdminBlogEditModal = ({
     onClose: () => void,
     blog: BlogTypes
 }) => {
-    // const { state: {
-    //     id: eventID,
-    //     event_name,
-    //     event_description,
-    //     event_category,
-    //     event_image,
-    //     event_date,
-    //     event_time,
-    //     event_venue,
-    //     venue_description,
-    //     status,
-    // }, setEventName, setEventDescription, setEventDate, setEventTime, setEventVenue, setVenueDescription, setEventCategory, setEventImage, setStatus, setEventToEdit } = useEventContext();
+    const {
+        handleBlogImageChange,
+        blogData,
+        setBlogData,
+        validationErrors,
+        createBlogLoading,
+        handleBlogSubmit,
+        setBlogImageUploadLoading,
+        uploadFile,
+        handleRemoveImage,
+        blogImageUploadLoading } = useBlog({
+            onClose
+        });
 
-    // const { eventCategories, handleEventImageChange, handleAddEvent, eventImageUploadLoading, step, handleNextStep, handlePrevStep, handleStepClick, steps, setEventImageUploadLoading, uploadFile, createEventLoading, handleRemoveImage } = useEvent();
-
-    // useEffect(() => {
-    //     if (event) {
-    //         setEventToEdit(event);
-    //     }
-    // }, [event])
+    useEffect(() => {
+        if (blog) {
+            setBlogData(blog);
+        }
+    }, [blog])
 
     return (
         <Modal onClose={onClose}>
@@ -45,67 +47,72 @@ const AdminBlogEditModal = ({
                     </div>
                 </div>
 
-                <div className="space-y-8 p-8 max-h-[70vh] overflow-y-auto">
-                    <form className="space-y-6" onSubmit={(ev) => ev.preventDefault()}>
-                        <div>
-                            <InputField
-                                type="text"
-                                value={ }
-                                onChange={(e) => setEventName(e.target.value)}
-                                placeholder="Enter event name"
-                                label='Event Name'
-                                inputLeft={<FaTicketAlt className="text-gray-500" />}
-                            />
+                <form className="space-y-6 p-8 max-h-[70vh] overflow-y-auto" onSubmit={(ev) => ev.preventDefault()}>
+                    {/* Blog Details */}
+                    <div>
+                        <InputField
+                            type="text"
+                            value={blogData.title}
+                            onChange={(e) => setBlogData({ ...blogData, title: e.target.value, slug: `${e.target.value.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '').toLowerCase()}-${uuid4().replace('-', '').slice(0, 8)}` })}
+                            placeholder="Enter blog title"
+                            label="Blog Title"
+                            inputLeft={<FaTicketAlt className="text-gray-500" />}
+                            error={validationErrors.title}
+                        />
 
-                            <InputField
-                                value={blog.content}
-                                onChange={(e) => setEventDescription(e.target.value)}
-                                placeholder="Enter event description..."
-                                label='Description'
-                                inputLeft={<FaStickyNote className="text-gray-500" />}
+                        <InputField
+                            type="text"
+                            value={blogData.slug}
+                            readOnly
+                            placeholder="Enter blog slug"
+                            label="Blog Slug"
+                            inputLeft={<FaStickyNote className="text-gray-500" />}
+                        />
+
+                        <div className='mb-4'>
+                            <BlogImage
+                                blogImage={blogData.image_url}
+                                imageUploadLoading={blogImageUploadLoading}
+                                handleBlogImageChange={handleBlogImageChange}
+                                setBlogImage={(image_url) => setBlogData({ ...blogData, image_url })}
+                                setBlogImageUploadLoading={(loading) => setBlogImageUploadLoading(loading)}
+                                uploadFile={uploadFile}
+                                handleRemoveImage={handleRemoveImage}
                             />
                         </div>
 
-
-                        <EventImage
-                            event_image={event_image}
-                            handleEventImageChange={handleEventImageChange}
-                            eventImageUploadLoading={eventImageUploadLoading}
-                            setEventImage={setEventImage}
-                            setEventImageUploadLoading={setEventImageUploadLoading}
-                            uploadFile={uploadFile}
-                            handleRemoveImage={handleRemoveImage}
+                        <InputField
+                            value={blogData.content}
+                            onChange={(e) => setBlogData({ ...blogData, content: e.target.value })}
+                            placeholder="Enter blog content..."
+                            label="Content"
+                            inputLeft={<FaStickyNote className="text-gray-500" />}
+                            error={validationErrors.content}
                         />
 
                         <div>
-                            <label htmlFor="status" className='text-gray-700 text-sm font-semibold flex items-center justify-between gap-8 w-full'>
-                                Status:
+                            <label htmlFor="blog-status" className="block text-sm font-medium text-gray-700">
+                                Blog Status
                             </label>
-
-                            <div className='flex items-center gap-8'>
-                                <label htmlFor="draft" className='text-sm font-medium text-gray-600 flex items-center gap-1 hover:bg-blue-50 p-1 rounded-md'>
-
-                                    <input type="radio" name="status" id="draft" value="draft" checked={status === "draft"} onChange={(e) => setStatus(e.target.value as EventStatus)} className="mr-2" />
-                                    Draft
-                                </label>
-
-                                <label htmlFor="published" className='flex items-center gap-1 hover:bg-blue-50 p-1 rounded-md text-sm font-medium text-gray-600'>
-                                    <input type="radio" name="status" id="published" value="published" checked={status === "published"} onChange={(e) => setStatus(e.target.value as EventStatus)} className="mr-2" />
-
-                                    Publish
-                                </label>
-                            </div>
+                            <select
+                                id="blog-status"
+                                name="blog-status"
+                                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                value={blogData.status}
+                                onChange={(e) => setBlogData({ ...blogData, status: e.target.value })}
+                            >
+                                <option value="draft">Draft</option>
+                                <option value="published">Published</option>
+                            </select>
                         </div>
+                    </div>
 
-                        <div className='flex items-center justify-center'>
-                            <Button onClick={() => handleAddEvent(eventID, onClose)} disabled={createEventLoading}>
-                                {
-                                    createEventLoading ? <BarLoader color='white' /> : "Update Event"
-                                }
-                            </Button>
-                        </div>
-                    </form>
-                </div>
+                    <div className="flex items-center justify-center">
+                        <Button onClick={() => handleBlogSubmit(blog.id)} disabled={createBlogLoading}>
+                            {createBlogLoading ? <BarLoader color="white" /> : 'Update'}
+                        </Button>
+                    </div>
+                </form>
             </div>
         </Modal>
     )

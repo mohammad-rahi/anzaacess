@@ -4,21 +4,21 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import { FaSpinner, FaTimes, FaUpload } from 'react-icons/fa'
 
-export default function EventImage({
-    event_image,
-    eventImageUploadLoading,
-    handleEventImageChange,
-    setEventImage,
-    setEventImageUploadLoading,
+export default function BlogImage({
+    blogImage,
+    imageUploadLoading,
+    handleBlogImageChange,
+    setBlogImage,
+    setBlogImageUploadLoading,
     uploadFile,
     handleRemoveImage
 }: {
-    event_image: string,
-    eventImageUploadLoading: boolean,
-    handleEventImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-    setEventImage: (image_url: string) => void,
-    setEventImageUploadLoading: (loading: boolean) => void,
-    uploadFile: (file: File) => Promise<string | undefined>,
+    blogImage: string,
+    imageUploadLoading: boolean,
+    handleBlogImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+    setBlogImage: (image_url: string) => void,
+    setBlogImageUploadLoading: (loading: boolean) => void,
+    uploadFile: (file: File) => Promise<void>,
     handleRemoveImage: (imagePath?: string) => void
 }) {
     const [isDragging, setIsDragging] = useState(false);
@@ -35,7 +35,7 @@ export default function EventImage({
     const handleDrop = (e: React.DragEvent<HTMLDivElement | HTMLLabelElement>) => {
         e.preventDefault();
         setIsDragging(false);
-        setEventImageUploadLoading(true);
+        setBlogImageUploadLoading(true);
 
         const files = e.dataTransfer.files;
 
@@ -44,10 +44,11 @@ export default function EventImage({
 
             reader.onload = async (e) => {
                 if (e.target?.result) {
-                    setEventImage(e.target.result.toString());
+                    setBlogImage(e.target.result.toString());
 
-                    const eventImage = files[0];
-                    await uploadFile(eventImage);
+                    const blogImage = files[0];
+                    await uploadFile(blogImage);
+                    
                 }
             };
 
@@ -59,7 +60,7 @@ export default function EventImage({
         <div>
             <input
                 type="file"
-                onChange={handleEventImageChange}
+                onChange={handleBlogImageChange}
                 placeholder="Upload Event Image"
                 className="sr-only"
                 id="event_image"
@@ -68,7 +69,7 @@ export default function EventImage({
 
             <div className={`text-gray-700 text-sm font-semibold flex items-center justify-between gap-8 w-full`}>
                 <span>
-                    Upload Event Image
+                    Upload Blog Image
                     <span className="text-xs font-normal">(.png, .jpg, .jpeg)</span>
                 </span>
                 <span className="text-xs font-normal">16:9 ratio</span>
@@ -81,17 +82,17 @@ export default function EventImage({
                 onDrop={handleDrop}
                 className={`relative aspect-video w-full text-sm border-2 border-gray-300 border-dashed rounded-md overflow-hidden ${isDragging ? 'bg-blue-100' : ''}`}
             >
-                {event_image ? (
+                {blogImage ? (
                     <>
-                        <Image src={event_image} alt="Event Image Preview" fill objectFit="cover" />
+                        <Image src={blogImage} alt="Event Image Preview" fill objectFit="cover" />
 
                         <button
-                            title={eventImageUploadLoading ? 'Uploading...' : 'Remove'}
-                            disabled={eventImageUploadLoading}
-                            onClick={() => handleRemoveImage(event_image)}
+                            title={imageUploadLoading ? 'Uploading...' : 'Remove'}
+                            disabled={imageUploadLoading}
+                            onClick={() => handleRemoveImage(blogImage)}
                             className="absolute top-2 right-2 bg-white/60 hover:bg-white/80 flex items-center justify-center p-1 rounded-full overflow-hidden cursor-pointer disabled:cursor-default"
                         >
-                            {eventImageUploadLoading ? <FaSpinner className="animate-spin" /> : <FaTimes />}
+                            {imageUploadLoading ? <FaSpinner className="animate-spin" /> : <FaTimes />}
                         </button>
                     </>
                 ) : (

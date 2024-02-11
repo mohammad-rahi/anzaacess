@@ -68,7 +68,7 @@ export default function AdminEventsPage() {
                       {
                         event.event_image && (
                           <div className='relative aspect-video rounded-md overflow-hidden w-28'>
-                            <Image src={event.event_image} alt={event.event_name} fill />
+                            <Image src={event.event_image} alt={event.event_name} fill objectFit='cover' />
                           </div>
                         )
                       }

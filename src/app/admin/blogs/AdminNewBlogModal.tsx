@@ -1,78 +1,31 @@
-import { Button, Modal } from '@/components'
-import InputField from '@/components/InputField'
-import { supabase } from '@/config/supabase'
-import React, { useState } from 'react'
-import { FaStickyNote, FaTicketAlt } from 'react-icons/fa'
-import { HiXMark } from 'react-icons/hi2'
+import { Button, Modal } from '@/components';
+import InputField from '@/components/InputField';
+import React from 'react';
+import { FaStickyNote, FaTicketAlt } from 'react-icons/fa';
+import { HiXMark } from 'react-icons/hi2';
 import { BarLoader } from 'react-spinners';
 import { v4 as uuid4 } from 'uuid';
-
-const handleAddBlog = async (blogData: any) => {
-    try {
-        const { data, error } = await supabase.from('blogs').insert([blogData]);
-
-        if (error) throw error;
-
-    } catch (error) {
-        console.error('Error adding blog:', error);
-    }
-}
+import BlogImage from './BlogImage';
+import useBlog from './useBlog';
 
 const AdminNewBlogModal = ({
     onClose,
 }: {
     onClose: () => void
 }) => {
-    const [blogData, setBlogData] = useState({
-        title: '',
-        slug: '',
-        image_url: '',
-        content: '',
-        status: 'draft',
-    });
-
-    const [createBlogLoading, setCreateBlogLoading] = useState(false);
-    const [validationErrors, setValidationErrors] = useState({
-        title: '',
-        image_url: '',
-        content: '',
-    });
-
-    const handleBlogSubmit = async () => {
-        try {
-            // Simple validation
-            if (!blogData.title || !blogData.image_url || !blogData.content) {
-                setValidationErrors({
-                    title: !blogData.title ? 'Title is required' : '',
-                    image_url: !blogData.image_url ? 'Image URL is required' : '',
-                    content: !blogData.content ? 'Content is required' : '',
-                });
-                return;
-            }
-
-            setCreateBlogLoading(true);
-
-            await handleAddBlog(blogData);
-
-            // Reset form after successful submission
-            setBlogData({
-                title: '',
-                slug: '',
-                image_url: '',
-                content: '',
-                status: 'draft',
-            });
-            setValidationErrors({
-                title: '',
-                image_url: '',
-                content: '',
-            });
-        } catch (error) {
-            console.error('Error submitting blog:', error);
-        } finally {
-            setCreateBlogLoading(false);
-        }
-    };
+    const {
+        handleBlogImageChange,
+        blogData,
+        setBlogData,
+        validationErrors,
+        createBlogLoading,
+        handleBlogSubmit,
+        setBlogImageUploadLoading,
+        uploadFile,
+        handleRemoveImage,
+        blogImageUploadLoading } = useBlog({
+            onClose
+        });
 
     return (
         <Modal onClose={onClose}>
@@ -107,15 +60,17 @@ const AdminNewBlogModal = ({
                             inputLeft={<FaStickyNote className="text-gray-500" />}
                         />
 
-                        <InputField
-                            type="text"
-                            value={blogData.image_url}
-                            onChange={(e) => setBlogData({ ...blogData, image_url: e.target.value })}
-                            placeholder="Enter image URL"
-                            label="Image URL"
-                            inputLeft={<FaStickyNote className="text-gray-500" />}
-                            error={validationErrors.image_url}
-                        />
+                        <div className='mb-4'>
+                            <BlogImage
+                                blogImage={blogData.image_url}
+                                imageUploadLoading={blogImageUploadLoading}
+                                handleBlogImageChange={handleBlogImageChange}
+                                setBlogImage={(image_url) => setBlogData({ ...blogData, image_url })}
+                                setBlogImageUploadLoading={(loading) => setBlogImageUploadLoading(loading)}
+                                uploadFile={uploadFile}
+                                handleRemoveImage={handleRemoveImage}
+                            />
+                        </div>
 
                         <InputField
                             value={blogData.content}

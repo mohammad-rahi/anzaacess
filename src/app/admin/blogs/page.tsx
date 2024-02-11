@@ -37,16 +37,16 @@ export default function AdminBlogPage() {
     };
 
     fetchBlogs();
-  }, []);
+  }, [showNewBlogModal, blogForEdit]);
 
   useEffect(() => {
-    if (blogForView || blogForEdit) {
+    if (blogForView || blogForEdit || showNewBlogModal) {
       document.body.classList.add('overflow-hidden');
     }
     else {
       document.body.classList.remove('overflow-hidden');
     }
-  }, [blogForView, blogForEdit]);
+  }, [blogForView, blogForEdit, showNewBlogModal]);
 
   return (
     <div className='space-y-8'>
@@ -71,7 +71,7 @@ export default function AdminBlogPage() {
                       {
                         blog.title && (
                           <div className='relative aspect-video rounded-md overflow-hidden w-28'>
-                            <Image src={blog.image_url} alt={blog.title} fill />
+                            <Image src={blog.image_url} alt={blog.title} fill objectFit='cover' />
                           </div>
                         )
                       }
@@ -114,14 +114,14 @@ export default function AdminBlogPage() {
         )
       }
 
-      {/* {
+      {
         blogForEdit && (
           <AdminBlogEditModal
             onClose={() => setBlogForEdit(null)}
             blog={blogForEdit}
           />
         )
-      } */}
+      }
     </div>
   )
 }
