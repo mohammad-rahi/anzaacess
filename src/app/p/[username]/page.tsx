@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import OverviewMetrics from './DashboardComponents/OverviewMetrics';
-import EventAnalytics from './DashboardComponents/EventAnalytics';
-import SalesRevenue from './DashboardComponents/SalesRevenue';
-import MarketingInsights from './DashboardComponents/MarketingInsights';
+import OverviewMetrics from '../../../components/DashboardComponents/OverviewMetrics';
+import EventAnalytics from '../../../components/DashboardComponents/EventAnalytics';
+import SalesRevenue from '../../../components/DashboardComponents/SalesRevenue';
+import MarketingInsights from '../../../components/DashboardComponents/MarketingInsights';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { supabase } from '@/config/supabase';
 import { EventTypes } from '@/app/events/event.types';

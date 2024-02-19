@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react'
-import OverviewMetrics from '../p/[username]/DashboardComponents/OverviewMetrics'
-import EventAnalytics from '../p/[username]/DashboardComponents/EventAnalytics'
-import SalesRevenue from '../p/[username]/DashboardComponents/SalesRevenue'
+import OverviewMetrics from '../../components/DashboardComponents/OverviewMetrics'
+import EventAnalytics from '../../components/DashboardComponents/EventAnalytics'
+import SalesRevenue from '../../components/DashboardComponents/SalesRevenue'
 import { EventTypes } from '../events/event.types'
 import { supabase } from '@/config/supabase';
 
@@ -12,8 +12,6 @@ const AdminPage = () => {
   const [totalTicketSales, setTotalTicketSales] = useState<number>(0);
   const [events, setEvents] = useState<EventTypes[]>([]);
   const [salesData, setSalesData] = useState<any[]>([]);
-
-  // const { user } = useAuthContext();
 
 
   useEffect(() => {
@@ -88,4 +86,4 @@ const AdminPage = () => {
   )
 }
 
-export default AdminPage
+export default AdminPage;
