@@ -112,6 +112,12 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
         }
     };
 
+    const downloadTicket = () => {
+        if (typeof window !== 'undefined' && pdfSrc) {
+            window.open(pdfSrc, '_blank');
+        }
+    };
+
 
     return (
         <Modal onClose={onClose}>
@@ -207,7 +213,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                         <div dangerouslySetInnerHTML={{ __html: pdfSrc }} />
                         {/* Download Ticket Button */}
                         <div className="flex justify-end mt-4">
-                            <Button onClick={() => window.open(pdfSrc, '_blank')}>Download Ticket</Button>
+                            <Button onClick={downloadTicket}>Download Ticket</Button>
                         </div>
                     </>
                 )}

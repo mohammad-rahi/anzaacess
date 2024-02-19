@@ -61,7 +61,7 @@ const AdminPage = () => {
       {/* Overview Metrics Section */}
       <OverviewMetrics
         totalTicketSales={totalTicketSales}
-        numberOfEvents={events.length || 5}
+        numberOfEvents={events.length || 0}
         numberOfAttendees={attendeeData.length}
         topSellingEvent={null}
       />
