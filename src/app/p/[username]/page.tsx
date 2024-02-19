@@ -1,71 +1,119 @@
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import OverviewMetrics from './DashboardComponents/OverviewMetrics';
+import EventAnalytics from './DashboardComponents/EventAnalytics';
+import SalesRevenue from './DashboardComponents/SalesRevenue';
+import MarketingInsights from './DashboardComponents/MarketingInsights';
+import { useAuthContext } from '@/contexts/AuthContext';
 import { supabase } from '@/config/supabase';
-import { notFound } from 'next/navigation';
-import { Profile } from '../../(auth)/profile.types';
-import ProfileHeader from './ProfileHeader';
+import { EventTypes } from '@/app/events/event.types';
 
-const fetchUser: (username: string) => Promise<Profile> = async (username: string) => {
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('username', username)
-      .single();
+const mockAttendeeData = [
+  { id: 1, attendee_name: 'Attendee 1', /* other properties */ },
+  { id: 2, attendee_name: 'Attendee 2', /* other properties */ },
+  // ... add more sample attendees
+];
 
-    if (error) {
-      throw error;
-    }
-    if (data) {
-      return data;
-    }
-  } catch (error) {
-    console.error('Error fetching user:', error);
-  }
-};
+// Define the ProfileDashboard component
+const ProfileDashboard = () => {
+  // State variables to hold fetched data
+  const [attendeeData, setAttendeeData] = useState(mockAttendeeData);
 
-const fetchUserEvents = async (profile_id: string) => {
-  try {
-    const { data, error } = await supabase
-      .from('events')
-      .select('*')
-      .eq('profile_id', profile_id)
+  const [totalTicketSales, setTotalTicketSales] = useState<number>(0);
+  const [events, setEvents] = useState<EventTypes[]>([]);
+  const [salesData, setSalesData] = useState<any[]>([]);
 
-    if (error) {
-      throw error;
-    }
-    if (data) {
-      return data;
-    }
+  const { user } = useAuthContext();
 
-  }
-  catch (error) {
-    console.error('Error fetching user events:', error);
-  }
-};
 
-export default async function ProfilePage({
-  params: { username },
-}: {
-  params: { username: string };
-}) {
-  const user = await fetchUser(username);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (user?.id) {
+          // Fetch events
+          const { data: eventsData, error: eventsError } = await supabase
+            .from('events')
+            .select('id, event_name, event_date, event_time')
+            .eq('profile_id', user?.id)
+            .eq('status', 'published');
 
-  if (!user || !user.id) {
-    notFound();
-  }
+          if (eventsError) throw eventsError;
 
-  // const events = await fetchUserEvents(user.id);
+          if (eventsData) {
+            setEvents(eventsData as EventTypes[]);
+          }
 
-  if (!user) {
-    notFound();
-  }
+          // Fetch bookings
+          const { data: bookingsData, error: bookingsError } = await supabase
+            .from('bookings')
+            .select('event_id')
+            .eq('event_owner_id', user?.id);
+
+          if (bookingsError) throw bookingsError;
+
+          if (bookingsData) {
+            setTotalTicketSales(bookingsData.length);
+
+            // Process sales data based on fetched bookings
+            const sales = eventsData.map((event) => {
+              const ticketCount = bookingsData.filter((booking) => booking.event_id === event.id).length;
+              return { ticketCount };
+            });
+
+            setSalesData(sales);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [user?.id]);
+
+
+  // Render the dashboard components with the fetched data
   return (
     <div className='space-y-8'>
+      {/* Overview Metrics Section */}
+      <OverviewMetrics
+        totalTicketSales={totalTicketSales}
+        numberOfEvents={events.length || 5}
+        numberOfAttendees={attendeeData.length}
+        topSellingEvent={null}
+      />
 
-      <div className='flex items-center justify-between gap-8'>
-        <h1 className='text-3xl font-bold'>Profile</h1>
-      </div>
+      {/* Event Analytics Section */}
+      <EventAnalytics
+        events={events}
+        salesData={salesData}
+      />
 
-      <ProfileHeader user={user} />
+      {/* Sales & Revenue Section */}
+      <SalesRevenue
+        events={events}
+        salesData={salesData}
+      />
+
+      {/* Marketing Insights Section */}
+      {/* <MarketingInsights
+        salesData={[]}
+      /> */}
     </div>
   );
-}
+};
+
+// Helper functions for calculating metrics
+const calculateTotalTicketSales = (salesData: any) => {
+  // Implement logic to calculate total ticket sales from salesData
+  return salesData.reduce((total: number, sale: any) => total + sale.ticketCount, 0);
+};
+
+const findTopSellingEvent = (salesData: any) => {
+  // Implement logic to find the top-selling event from salesData
+  const topSelling = salesData.reduce((prev: any, current: any) => (prev.ticketCount > current.ticketCount ? prev : current), {});
+  return topSelling;
+};
+
+export default ProfileDashboard;

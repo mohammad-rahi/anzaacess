@@ -54,4 +54,4 @@ const BlogDetailsPage = async ({ params: { blog_slug } }: { params: { blog_slug:
     )
 }
 
-export default BlogDetailsPage
+export default BlogDetailsPage;

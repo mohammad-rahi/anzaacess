@@ -8,6 +8,8 @@ import html2canvas from 'html2canvas';
 import QRCode from 'react-qr-code';
 
 import { makeMpesaPayment, makeCardPayment, FormValues } from './paymentUtils';
+import { supabase } from '@/config/supabase';
+import { BarLoader } from 'react-spinners';
 
 interface TicketCheckoutModalProps {
     event: EventTypes;
@@ -18,7 +20,15 @@ interface TicketCheckoutModalProps {
 const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket, onClose }) => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
     const [qrCodeValue, setQRCodeValue] = useState<string | null>(null);
-    const [formData, setFormData] = useState<FormValues>({ name: '', email: '', phone: '', paymentOption: 'mpesa' });
+    const [bookingSubmitLoading, setBookingSubmitLoading] = useState(false);
+
+    const [bookingInfo, setBookingInfo] = useState<{
+        event_id: number;
+        ticket_id: number;
+        name: string;
+        email: string;
+        phone: string;
+    } | null>(null);
 
     const [pdfSrc, setPdfSrc] = useState(null);
 
@@ -53,28 +63,55 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
         try {
-            // Handle form submission logic here (e.g., book the ticket)
-            console.log('Form data submitted:', data);
+            if (event.id && ticket.id && data.name && data.email && data.phone) {
+                setBookingSubmitLoading(true);
 
-            // Generate a unique QR code value based on user information
-            const qrCodeData = `${data.name}-${data.email}-${Date.now()}`;
-            setQRCodeValue(qrCodeData);
-            setFormData(data);
+                // Store the booking information in the Supabase table
+                const { data: bookingData, error } = await supabase
+                    .from('bookings')
+                    .insert([
+                        {
+                            event_owner_id: event.profile_id,
+                            event_id: event.id,
+                            ticket_id: ticket.id,
+                            name: data.name,
+                            email: data.email,
+                            phone: data.phone,
+
+                        },
+                    ]);
+
+                if (error) {
+                    throw new Error('Failed to store booking information in Supabase');
+                }
+
+                // Update the local state with the stored booking information
+                setBookingInfo({
+                    event_id: event.id,
+                    ticket_id: ticket.id,
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                });
+            }
 
             // Process payment based on the selected payment option
-            if (data.paymentOption === 'mpesa') {
-                await makeMpesaPayment(data); // Implement makeMpesaPayment function
-            } else if (data.paymentOption === 'card') {
-                await makeCardPayment(data); // Implement makeCardPayment function
-            }
+            // if (data.paymentOption === 'mpesa') {
+            //     await makeMpesaPayment(data);
+            // } else if (data.paymentOption === 'card') {
+            //     await makeCardPayment(data);
+            // }
 
             // Close the modal after successful submission and payment
             // onClose();
         } catch (error) {
-            // Handle payment error (display error message, etc.)
-            console.error('Payment failed:', error);
+            console.error('Booking and payment failed:', error);
+        }
+        finally {
+            setBookingSubmitLoading(false);
         }
     };
+
 
     return (
         <Modal onClose={onClose}>
@@ -133,7 +170,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                     </div>
 
                     {/* Payment Option */}
-                    <div>
+                    {/* <div>
                         <label className="block text-sm font-medium text-gray-700">Payment Option</label>
                         <select
                             {...register('paymentOption', { required: 'Payment option is required' })}
@@ -146,13 +183,24 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                         {errors.paymentOption && (
                             <span className="text-red-500 text-sm">{errors.paymentOption.message}</span>
                         )}
-                    </div>
+                    </div> */}
 
                     {/* Action buttons */}
                     <div className="flex justify-end">
-                        <Button type="submit">Book Now</Button>
+                        <Button type="submit">
+                            {bookingSubmitLoading ? <BarLoader color="white" /> : 'Submit'}
+                        </Button>
                     </div>
                 </form>
+
+                {bookingInfo && (
+                    <div>
+                        <h2>Booking Information</h2>
+                        <p>Name: {bookingInfo.name}</p>
+                        <p>Email: {bookingInfo.email}</p>
+                        <p>Phone: {bookingInfo.phone}</p>
+                    </div>
+                )}
 
                 {pdfSrc && (
                     <>

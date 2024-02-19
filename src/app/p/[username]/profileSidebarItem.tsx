@@ -8,10 +8,17 @@ type ProfileSidebarItemType = {
 
 export const profileSidebarItem: ProfileSidebarItemType[] = [
     {
-        id: 'profile',
-        name: 'Profile',
+        id: 'dashboard',
+        name: 'Dashboard',
         path: (username: string) => `/p/${username}`,
         paths: (username: string) => [`/p/${username}`],
+        icon: <></>
+    },
+    {
+        id: 'profile',
+        name: 'Profile',
+        path: (username: string) => `/p/${username}/profile`,
+        paths: (username: string) => [`/p/${username}/profile`],
         icon: <></>
     },
     {

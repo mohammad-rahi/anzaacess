@@ -6,6 +6,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { EventProvider } from '@/contexts/EventContext'
 import MainWrapper from './MainWrapper'
 import Footer from '@/components/Footer'
+import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <NextTopLoader color='#2564eb' />
         <AuthProvider>
           <EventProvider>
             <Header />
