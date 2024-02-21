@@ -10,6 +10,7 @@ import QRCode from 'react-qr-code';
 import { makeMpesaPayment, makeCardPayment, FormValues } from './paymentUtils';
 import { supabase } from '@/config/supabase';
 import { BarLoader } from 'react-spinners';
+import Ticket from './Ticket';
 
 interface TicketCheckoutModalProps {
     event: EventTypes;
@@ -19,7 +20,6 @@ interface TicketCheckoutModalProps {
 
 const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket, onClose }) => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
-    const [qrCodeValue, setQRCodeValue] = useState<string | null>(null);
     const [bookingSubmitLoading, setBookingSubmitLoading] = useState(false);
 
     const [bookingInfo, setBookingInfo] = useState<{
@@ -30,36 +30,6 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
         phone: string;
     } | null>(null);
 
-    const [pdfSrc, setPdfSrc] = useState(null);
-
-    useEffect(() => {
-        const fetchAndGeneratePDF = async () => {
-            const response = await fetch('/event_ticket_template.html');
-            const htmlTemplate = await response.text();
-
-            // You can update the dynamic values here
-            const dynamicValues = {
-                eventTitle: 'Awesome Event',
-                eventDate: 'January 1, 2023',
-                eventTime: '7:00 PM - 10:00 PM',
-                eventLocation: 'Venue Name, City',
-                ticketNumber: '123456789',
-                qrCodeValue: 'https://example.com', // Replace with your dynamic QR code value
-            };
-
-            // const updatedHtml = htmlTemplate.replace(
-            //     /{{([^}]+)}}/g,
-            //     (match, p1) => dynamicValues[p1.trim()] || match
-            // );
-
-            // const pdf = new jsPDF();
-            // pdf.fromHTML(updatedHtml, 0, 0, {}, () => {
-            //     setPdfSrc(pdf.output('datauri'));
-            // });
-        };
-
-        fetchAndGeneratePDF();
-    }, []);
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
         try {
@@ -67,23 +37,23 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                 setBookingSubmitLoading(true);
 
                 // Store the booking information in the Supabase table
-                const { data: bookingData, error } = await supabase
-                    .from('bookings')
-                    .insert([
-                        {
-                            event_owner_id: event.profile_id,
-                            event_id: event.id,
-                            ticket_id: ticket.id,
-                            name: data.name,
-                            email: data.email,
-                            phone: data.phone,
+                // const { data: bookingData, error } = await supabase
+                //     .from('bookings')
+                //     .insert([
+                //         {
+                //             event_owner_id: event.profile_id,
+                //             event_id: event.id,
+                //             ticket_id: ticket.id,
+                //             name: data.name,
+                //             email: data.email,
+                //             phone: data.phone,
 
-                        },
-                    ]);
+                //         },
+                //     ]);
 
-                if (error) {
-                    throw new Error('Failed to store booking information in Supabase');
-                }
+                // if (error) {
+                //     throw new Error('Failed to store booking information in Supabase');
+                // }
 
                 // Update the local state with the stored booking information
                 setBookingInfo({
@@ -112,12 +82,39 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
         }
     };
 
+    // const downloadTicket = () => {
+    //     const ticketContainer = document.getElementById('ticket-container');
+
+    //     if (ticketContainer) {
+    //         html2canvas(ticketContainer)
+    //             .then((canvas) => {
+    //                 const imgData = canvas.toDataURL('image/png');
+    //                 const pdf = new jsPDF('p', 'mm', 'a4');
+    //                 pdf.addImage(imgData, 'PNG', 0, 0, 210, 297); // A4 size: 210 x 297 mm
+    //                 pdf.save(`ticket_${event.event_name.replace(/\s+/g, '_')}.pdf`);
+    //             })
+    //             .catch((error) => {
+    //                 console.error('Error generating PDF:', error);
+    //             });
+    //     }
+    // }
+
     const downloadTicket = () => {
-        if (typeof window !== 'undefined' && pdfSrc) {
-            window.open(pdfSrc, '_blank');
+        const ticketContainer = document.getElementById('ticket-container');
+
+        if (ticketContainer) {
+            html2canvas(ticketContainer)
+                .then((canvas) => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF('p', 'mm', [canvas.width, canvas.height]); // Use canvas dimensions
+                    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width - 115, canvas.height);
+                    pdf.save(`ticket_${event.event_name.replace(/\s+/g, '_')}.pdf`);
+                })
+                .catch((error) => {
+                    console.error('Error generating PDF:', error);
+                });
         }
     };
-
 
     return (
         <Modal onClose={onClose}>
@@ -200,22 +197,13 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                 </form>
 
                 {bookingInfo && (
-                    <div>
-                        <h2>Booking Information</h2>
-                        <p>Name: {bookingInfo.name}</p>
-                        <p>Email: {bookingInfo.email}</p>
-                        <p>Phone: {bookingInfo.phone}</p>
-                    </div>
-                )}
+                    <div className='p-8'>
+                        <Ticket bookingInfo={bookingInfo} event={event} />
 
-                {pdfSrc && (
-                    <>
-                        <div dangerouslySetInnerHTML={{ __html: pdfSrc }} />
-                        {/* Download Ticket Button */}
                         <div className="flex justify-end mt-4">
                             <Button onClick={downloadTicket}>Download Ticket</Button>
                         </div>
-                    </>
+                    </div>
                 )}
             </div>
         </Modal>

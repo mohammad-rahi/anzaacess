@@ -1,7 +1,8 @@
 import React from 'react';
-import ReactApexChart from 'react-apexcharts';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import { Card, Statistic, Row, Col } from 'antd';
 import { EventTypes } from '@/app/events/event.types';
+import dynamic from 'next/dynamic';
 
 export interface SaleData {
     ticketCount: number;

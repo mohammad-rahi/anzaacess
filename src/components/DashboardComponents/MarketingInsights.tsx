@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Row, Col, List, Typography } from 'antd';
-import ReactApexChart from 'react-apexcharts';
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const { Text } = Typography;
 
