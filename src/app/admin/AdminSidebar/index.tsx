@@ -16,7 +16,7 @@ export default function AdminSidebar() {
             <ul className="py-4">
                 {AdminSidebarItems.map((item) => (
                     <li key={item.id}>
-                        <Link href={item.path} className={`flex items-center py-2 px-4 hover:bg-blue-500 text-blue-600 hover:text-blue-50 transition duration-300 ${pathname === item.path ? 'bg-blue-600 text-blue-50' : ''}`}>
+                        <Link href={item.path} className={`flex items-center py-2 px-4 transition duration-300 ${pathname === item.path ? 'bg-blue-600 text-blue-50' : 'hover:bg-blue-500 text-blue-600 hover:text-blue-50'}`}>
                             <span className="">{item.icon}</span>
                             <span className="ml-2">{item.name}</span>
                         </Link>

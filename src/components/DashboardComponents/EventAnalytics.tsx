@@ -1,8 +1,6 @@
 import React from 'react';
-const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import { Card, Statistic, Row, Col } from 'antd';
 import { EventTypes } from '@/app/events/event.types';
-import dynamic from 'next/dynamic';
 
 export interface SaleData {
     ticketCount: number;
@@ -15,6 +13,14 @@ type EventAnalyticsProps = {
 };
 
 const EventAnalytics: React.FC<EventAnalyticsProps> = ({ events, salesData }) => {
+    if (!salesData.length || !events.length) {
+        // Handle the case when data is not available
+        return <div>No data available for event analytics.</div>;
+    }
+
+    // Import ApexCharts only on the client side
+    const ReactApexChart = require('react-apexcharts').default;
+
     const chartOptions: ApexCharts.ApexOptions = {
         chart: {
             type: 'line',

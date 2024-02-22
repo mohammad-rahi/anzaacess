@@ -37,23 +37,23 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                 setBookingSubmitLoading(true);
 
                 // Store the booking information in the Supabase table
-                // const { data: bookingData, error } = await supabase
-                //     .from('bookings')
-                //     .insert([
-                //         {
-                //             event_owner_id: event.profile_id,
-                //             event_id: event.id,
-                //             ticket_id: ticket.id,
-                //             name: data.name,
-                //             email: data.email,
-                //             phone: data.phone,
+                const { data: bookingData, error } = await supabase
+                    .from('bookings')
+                    .insert([
+                        {
+                            event_owner_id: event.profile_id,
+                            event_id: event.id,
+                            ticket_id: ticket.id,
+                            name: data.name,
+                            email: data.email,
+                            phone: data.phone,
 
-                //         },
-                //     ]);
+                        },
+                    ]);
 
-                // if (error) {
-                //     throw new Error('Failed to store booking information in Supabase');
-                // }
+                if (error) {
+                    throw new Error('Failed to store booking information in Supabase');
+                }
 
                 // Update the local state with the stored booking information
                 setBookingInfo({

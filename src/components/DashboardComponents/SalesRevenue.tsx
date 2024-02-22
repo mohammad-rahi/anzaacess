@@ -10,6 +10,14 @@ interface SalesRevenueProps {
 }
 
 const SalesRevenue: React.FC<SalesRevenueProps> = ({ events, salesData }) => {
+    if (!salesData.length || !events.length) {
+        // Handle the case when data is not available
+        return <div>No data available for sales and revenue.</div>;
+    }
+
+    // Import ApexCharts only on the client side
+    const ReactApexChart = require('react-apexcharts').default;
+
     const chartOptions: ApexCharts.ApexOptions = {
         chart: {
             type: 'bar',
