@@ -6,6 +6,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import QRCode from 'react-qr-code';
+import { v4 as uuidv4 } from 'uuid';
 
 import { makeMpesaPayment, makeCardPayment, FormValues } from './paymentUtils';
 import { supabase } from '@/config/supabase';
@@ -21,6 +22,7 @@ interface TicketCheckoutModalProps {
 const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket, onClose }) => {
     const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
     const [bookingSubmitLoading, setBookingSubmitLoading] = useState(false);
+    const [qrUuid, setQrUuid] = useState<string | null>(null);
 
     const [bookingInfo, setBookingInfo] = useState<{
         event_id: number;
@@ -30,11 +32,38 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
         phone: string;
     } | null>(null);
 
+    const downloadTicket = () => {
+        const ticketContainer = document.getElementById('ticket-container');
+
+        if (ticketContainer) {
+            html2canvas(ticketContainer)
+                .then((canvas) => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF('p', 'mm', [canvas.width, canvas.height]); // Use canvas dimensions
+                    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width - 115, canvas.height);
+                    pdf.save(`ticket_${event.event_name.replace(/\s+/g, '_')}.pdf`);
+
+                    onClose();
+
+                    // alert("Booking successful, check your email for the QR code");
+                    alert("Booking successful, the ticket has been downloaded");
+                })
+                .catch((error) => {
+                    console.error('Error generating PDF:', error);
+                });
+        }
+    };
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
         try {
             if (event.id && ticket.id && data.name && data.email && data.phone) {
                 setBookingSubmitLoading(true);
+
+                const qr_uuid = uuidv4();
+
+                setQrUuid(qr_uuid);
+
+                if (!qr_uuid) return;
 
                 // Store the booking information in the Supabase table
                 const { data: bookingData, error } = await supabase
@@ -47,7 +76,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                             name: data.name,
                             email: data.email,
                             phone: data.phone,
-
+                            qr_uuid
                         },
                     ]);
 
@@ -74,6 +103,10 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
 
             // Close the modal after successful submission and payment
             // onClose();
+
+            setTimeout(() => {
+                downloadTicket();
+            }, 100);
         } catch (error) {
             console.error('Booking and payment failed:', error);
         }
@@ -98,23 +131,6 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
     //             });
     //     }
     // }
-
-    const downloadTicket = () => {
-        const ticketContainer = document.getElementById('ticket-container');
-
-        if (ticketContainer) {
-            html2canvas(ticketContainer)
-                .then((canvas) => {
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF('p', 'mm', [canvas.width, canvas.height]); // Use canvas dimensions
-                    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width - 115, canvas.height);
-                    pdf.save(`ticket_${event.event_name.replace(/\s+/g, '_')}.pdf`);
-                })
-                .catch((error) => {
-                    console.error('Error generating PDF:', error);
-                });
-        }
-    };
 
     return (
         <Modal onClose={onClose}>
@@ -196,9 +212,9 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                     </div>
                 </form>
 
-                {bookingInfo && (
+                {(qrUuid && bookingInfo) && (
                     <div className='p-8'>
-                        <Ticket bookingInfo={bookingInfo} event={event} />
+                        <Ticket bookingInfo={bookingInfo} event={event} qr_uuid={qrUuid} />
 
                         <div className="flex justify-end mt-4">
                             <Button onClick={downloadTicket}>Download Ticket</Button>

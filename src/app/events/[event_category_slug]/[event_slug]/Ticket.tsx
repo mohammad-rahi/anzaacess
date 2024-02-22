@@ -3,14 +3,16 @@ import QRCode from 'react-qr-code';
 import { EventTypes } from '../../event.types';
 import AnzaAccessLogo from '@/components/Header/AnzaAccessLogo';
 
-const Ticket = ({ event, bookingInfo }: {
-    event: EventTypes, bookingInfo: {
+const Ticket = ({ event, bookingInfo, qr_uuid }: {
+    event: EventTypes,
+    bookingInfo: {
         event_id: number;
         ticket_id: number;
         name: string;
         email: string;
         phone: string;
-    } | null
+    } | null,
+    qr_uuid: string
 }) => {
     return (
         <div id='ticket-container' className="bg-gradient-to-br from-indigo-500 via-blue-500 to-blue-600 w-full p-8 rounded-lg text-white">
@@ -21,7 +23,7 @@ const Ticket = ({ event, bookingInfo }: {
 
             <div className="flex items-center justify-center gap-8">
                 <div className="bg-white p-6 rounded-lg shadow-md">
-                    <QRCode bgColor='transparent' color='white' value={`https://anzaaccess.com/qr/${bookingInfo?.ticket_id}`} size={150} />
+                    <QRCode bgColor='transparent' color='white' value={`${process.env.NEXT_PUBLIC_BASE_URL}/api/qr/${qr_uuid}`} size={150} />
                 </div>
 
                 <div className="flex flex-col text-center">
