@@ -20,7 +20,7 @@ export default function Header() {
 
     const { user, authLoading } = useAuthContext();
 
-    const isFullWidth = pathname.startsWith("/admin") || pathname.startsWith(`/p/${user?.username}`);
+    const isFullWidth = pathname.startsWith("/admin") || pathname.startsWith(`/p`);
 
     const [showCardModal, setShowCartModal] = useState<boolean>(false);
     const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
@@ -37,7 +37,7 @@ export default function Header() {
                         </Link>
 
                         <div className='flex items-center justify-center'>
-                            {!isAuthPage && (
+                            {(!isAuthPage && !isFullWidth) && (
                                 <ul className="hidden lg:flex items-center text-blue-600 space-x-4">
                                     {HeaderMenues.map((headerMenu) => (
                                         <li key={headerMenu.id}>
@@ -58,9 +58,13 @@ export default function Header() {
                             </button>
                         </div> */}
 
-                            <div>
-                                <button className={`hover:bg-blue-200 text-blue-600 px-3 py-1 rounded-md flex items-center gap-2 transition duration-300`}>List your property <HiPlus /></button>
-                            </div>
+                            {
+                                !isFullWidth && (
+                                    <div>
+                                        <button className={`hover:bg-blue-200 text-blue-600 px-3 py-1 rounded-md flex items-center gap-2 transition duration-300`}>List your property <HiPlus /></button>
+                                    </div>
+                                )
+                            }
 
                             {
                                 (!isAuthPage && !authLoading) && (

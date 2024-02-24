@@ -13,7 +13,6 @@ const AdminPage = () => {
   const [events, setEvents] = useState<EventTypes[]>([]);
   const [salesData, setSalesData] = useState<any[]>([]);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
