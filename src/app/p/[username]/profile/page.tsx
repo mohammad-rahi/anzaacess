@@ -62,7 +62,7 @@ export default async function ProfilePage({
         <div className='space-y-8'>
 
             <div className='flex items-center justify-between gap-8'>
-                <h1 className='text-3xl font-bold'>Profile</h1>
+                <h1 className='text-3xl font-bold'>Event Organizer Profile</h1>
             </div>
 
             <ProfileHeader user={user} />

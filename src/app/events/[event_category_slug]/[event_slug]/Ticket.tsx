@@ -23,7 +23,7 @@ const Ticket = ({ event, bookingInfo, qr_uuid }: {
 
             <div className="flex items-center justify-center gap-8">
                 <div className="bg-white p-6 rounded-lg shadow-md">
-                    <QRCode bgColor='transparent' color='white' value={`${process.env.NEXT_PUBLIC_BASE_URL}/api/qr/${qr_uuid}`} size={150} />
+                    <QRCode bgColor='transparent' color='white' value={`${process.env.NEXT_PUBLIC_BASE_URL || window.location.origin}/api/qr/${qr_uuid}`} size={150} />
                 </div>
 
                 <div className="flex flex-col text-center">

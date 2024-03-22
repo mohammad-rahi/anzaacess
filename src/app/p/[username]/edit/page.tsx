@@ -19,7 +19,7 @@ export default function ProfileEditPage({ params: { username } }: { params: { us
                 </button>
 
                 <div className='flex-1 text-center'>
-                    <h1 className="text-4xl font-bold text-center text-blue-600">Edit Your Profile</h1>
+                    <h1 className="text-4xl font-bold text-center text-blue-600">Edit Organizer Profile</h1>
                 </div>
             </div>
 

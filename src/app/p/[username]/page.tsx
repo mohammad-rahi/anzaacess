@@ -7,9 +7,11 @@ import SalesRevenue from '../../../components/DashboardComponents/SalesRevenue';
 import MarketingInsights from '../../../components/DashboardComponents/MarketingInsights';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { supabase } from '@/config/supabase';
-import { EventTypes } from '@/app/events/event.types';
+import { BookingInfo, EventTypes, TicketTypes } from '@/app/events/event.types';
 import { BsQrCode } from "react-icons/bs";
-import QrReader from 'react-qr-scanner'
+import QrReader from 'react-qr-scanner';
+import { FaQrcode } from 'react-icons/fa';
+import Modal from 'react-modal';
 
 const mockAttendeeData = [
   { id: 1, attendee_name: 'Attendee 1', /* other properties */ },
@@ -23,6 +25,10 @@ const ProfileDashboard = () => {
   const [attendeeData, setAttendeeData] = useState(mockAttendeeData);
   const [scanResult, setScanResult] = useState('');
 
+  const [bookingInfo, setBookingInfo] = useState<BookingInfo | null>(null);
+  const [eventInfo, setEventInfo] = useState<EventTypes | null>(null);
+  const [ticketInfo, setTicketInfo] = useState<TicketTypes | null>(null);
+
   const [totalTicketSales, setTotalTicketSales] = useState<number>(0);
   const [events, setEvents] = useState<EventTypes[]>([]);
   const [salesData, setSalesData] = useState<any[]>([]);
@@ -30,27 +36,67 @@ const ProfileDashboard = () => {
   const [activeTab, setActiveTab] = useState<'home' | 'analytics'>('home');
   const [isScanning, setIsScanning] = useState(false);
 
+  // State variable to manage the modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Function to open the modal
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   const handleScanStart = () => {
     setIsScanning(true);
+    openModal();
   };
 
   const underlineStyle = {
     transform: `translateX(${activeTab === 'home' ? '0' : '100%'})`,
   };
 
+  const handleApiCall = async (scannedUrl: string) => {
+    try {
+      // You can use the scanned URL for the API call
+      const response = await fetch(scannedUrl);
+
+      if (response.ok) {
+        const data = await response.json();
+        // Process the data as needed
+        setBookingInfo(data.data.bookingInfo);
+        setTicketInfo(data.data.ticketInfo);
+        setEventInfo(data.data.eventInfo);
+      } else {
+        console.error('API Error:', response.statusText);
+        // Handle error scenarios
+      }
+    } catch (error) {
+      console.error('Error making API call:', error);
+      // Handle error scenarios
+    }
+  };
+
+
   // Function to handle QR code scan
-  const handleScan = (data) => {
-    if (data) {
-      setScanResult(data);
+  const handleScan = (data: any) => {
+    if (data && isScanning) {
+      setScanResult(data.text);
+      setIsScanning(false);
+      closeModal();
+
+      // Call the function to handle the API call with the scanned URL
+      handleApiCall(data.text);
     }
   };
 
   // Function to handle errors during scanning
-  const handleError = (error) => {
+  const handleError = (error: any) => {
     console.error('Error scanning QR code:', error);
+    // Add additional error handling if needed
   };
-
-
 
   const { user } = useAuthContext();
 
@@ -130,36 +176,90 @@ const ProfileDashboard = () => {
       {
         activeTab === 'home' ? (
           <div>
-            <h2 className="text-2xl font-bold mb-4">Scan Ticket Options</h2>
+            {/* <h2 className="text-2xl font-bold mb-4">Scan Ticket Options</h2> */}
             <div className='grid grid-cols-2 gap-8'>
-              {/* QR Code Scanner */}
-              {isScanning ? (
-                <div className='flex items-center justify-center flex-col gap-4 w-full shadow p-4 rounded-lg bg-white cursor-pointer transition duration-300 hover:shadow-lg hover:bg-blue-600 hover:text-white'>
+              <button
+                className='flex flex-col items-center justify-center bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 max-w-40 aspect-square'
+                onClick={handleScanStart}
+              >
+                <FaQrcode className='h-20 w-20' />
+                <span>Start Scan</span>
+              </button>
+
+              {/* ... Your existing code ... */}
+
+              <Modal
+                isOpen={isModalOpen}
+                onRequestClose={closeModal}
+                contentLabel="Scan QR Code Modal"
+                style={{
+                  content: {
+                    width: '70%', // Adjust the width as needed
+                    maxHeight: '70%', // Adjust the maxHeight as needed
+                    margin: 'auto',
+                  }
+                }}
+              >
+                <div className='flex flex-col items-center'>
                   <QrReader
                     delay={300}
                     onError={handleError}
                     onScan={handleScan}
                     style={{ width: '100%' }}
                   />
-                  <p className='text-center'>Scan Ticket with QR Code</p>
+                  <button className='mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300' onClick={closeModal}>
+                    Close Scan
+                  </button>
                 </div>
-              ) : (
-                <div className='flex items-center justify-center flex-col gap-4 w-full shadow p-4 rounded-lg bg-white cursor-pointer transition duration-300 hover:shadow-lg hover:bg-blue-600 hover:text-white'>
-                  <button onClick={handleScanStart}>Start Scan</button>
-                  <p className='text-center'>Click the button to start scanning</p>
-                </div>
-              )}
-
-              {/* ... Your existing code ... */}
+              </Modal>
             </div>
 
-            {/* Display scan result */}
+
+            {/* // Display scan result */}
             {scanResult && typeof scanResult === 'string' && (
-              <div className="mt-4">
-                <p className="font-bold">Scanned QR Code:</p>
-                <p>{scanResult}</p>
+              <div className='mt-8 space-y-4'>
+                {/* Event Info Card */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Event Information</h3>
+                  {eventInfo && (
+                    <div className="bg-white shadow rounded-md p-4">
+                      <p className="text-gray-600">Event Name: {eventInfo.event_name}</p>
+                      <p className="text-gray-600">Date: {eventInfo.event_date}</p>
+                      <p className="text-gray-600">Time: {eventInfo.event_time}</p>
+                      <p className="text-gray-600">Venue: {eventInfo.event_venue}</p>
+                      {/* Add more event details here */}
+                    </div>
+                  )}
+                </div>
+
+                {/* Ticket Info Card */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Ticket Information</h3>
+                  {ticketInfo && (
+                    <div className="bg-white shadow rounded-md p-4">
+                      <p className="text-gray-600">Ticket Name: {ticketInfo.name}</p>
+                      <p className="text-gray-600">Price: ${ticketInfo.price}</p>
+                      {/* <p className="text-gray-600">Quantity Available: {ticketInfo.quantity_available}</p> */}
+                      {/* Add more ticket details here */}
+                    </div>
+                  )}
+                </div>
+
+                {/* Booking Info Card */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Booking Information</h3>
+                  {bookingInfo && (
+                    <div className="bg-white shadow rounded-md p-4">
+                      <p className="text-gray-600">Booking Name: {bookingInfo.name}</p>
+                      <p className="text-gray-600">Email: {bookingInfo.email}</p>
+                      <p className="text-gray-600">Phone: {bookingInfo.phone}</p>
+                      {/* Add more booking details here */}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
+
           </div>
         ) : (
           <div className='space-y-8'>
@@ -190,7 +290,7 @@ const ProfileDashboard = () => {
           </div>
         )
       }
-    </div>
+    </div >
   );
 };
 

@@ -33,3 +33,11 @@ export type EventTypes = {
     venue_description: string;
     status: EventStatus;
 }
+
+export type BookingInfo = {
+    event_id: number;
+    ticket_id: number;
+    name: string;
+    email: string;
+    phone: string;
+}
