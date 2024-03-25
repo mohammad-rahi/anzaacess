@@ -35,9 +35,11 @@ export type EventTypes = {
 }
 
 export type BookingInfo = {
+    id?: number;
     event_id: number;
     ticket_id: number;
     name: string;
     email: string;
     phone: string;
+    isUsed: boolean;
 }

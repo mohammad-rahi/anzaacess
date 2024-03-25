@@ -12,6 +12,8 @@ import { BsQrCode } from "react-icons/bs";
 import QrReader from 'react-qr-scanner';
 import { FaQrcode } from 'react-icons/fa';
 import Modal from 'react-modal';
+import { Button } from '@/components';
+import { Modal as AlertModal } from 'antd';
 
 const mockAttendeeData = [
   { id: 1, attendee_name: 'Attendee 1', /* other properties */ },
@@ -38,6 +40,9 @@ const ProfileDashboard = () => {
 
   // State variable to manage the modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [markAsUsedLoading, setMarkAsUsedLoading] = useState(false);
+  const [isUsedTicket, setIsUsedTicket] = useState(false);
 
   // Function to open the modal
   const openModal = () => {
@@ -69,6 +74,7 @@ const ProfileDashboard = () => {
         setBookingInfo(data.data.bookingInfo);
         setTicketInfo(data.data.ticketInfo);
         setEventInfo(data.data.eventInfo);
+        setIsUsedTicket(data.data.bookingInfo.isUsed);
       } else {
         console.error('API Error:', response.statusText);
         // Handle error scenarios
@@ -145,6 +151,30 @@ const ProfileDashboard = () => {
     fetchData();
   }, [user?.id]);
 
+  const handleMarkTicketAsUsed = async () => {
+    try {
+      setMarkAsUsedLoading(true)
+
+      if (bookingInfo?.id) {
+        const { data, error } = await supabase
+          .from('bookings')
+          .update({ isUsed: true })
+          .eq('id', bookingInfo.id).select('*');
+
+        if (error) throw error;
+
+        if (data) {
+          setIsUsedTicket(true);
+        }
+      }
+    } catch (error) {
+      console.error('Error marking ticket as used:', error);
+    } finally {
+      setIsAlertModalOpen(false);
+      setMarkAsUsedLoading(false);
+    }
+  }
+
   return (
     <div className='space-y-8'>
       <div className="flex relative rounded-md overflow-hidden border divide-x bg-white">
@@ -217,50 +247,93 @@ const ProfileDashboard = () => {
 
             {/* // Display scan result */}
             {scanResult && typeof scanResult === 'string' && (
-              <div className='mt-8 space-y-4'>
-                {/* Event Info Card */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Event Information</h3>
-                  {eventInfo && (
-                    <div className="bg-white shadow rounded-md p-4">
-                      <p className="text-gray-600">Event Name: {eventInfo.event_name}</p>
-                      <p className="text-gray-600">Date: {eventInfo.event_date}</p>
-                      <p className="text-gray-600">Time: {eventInfo.event_time}</p>
-                      <p className="text-gray-600">Venue: {eventInfo.event_venue}</p>
-                      {/* Add more event details here */}
-                    </div>
-                  )}
-                </div>
+              <div className='mt-8 space-y-4 bg-white rounded-md p-4 shadow-md divide-y'>
+                <div className='flex items-center justify-between gap-8'>
+                  <h2 className='text-xl font-bold'>Scanned Ticket:</h2>
 
-                {/* Ticket Info Card */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Ticket Information</h3>
-                  {ticketInfo && (
-                    <div className="bg-white shadow rounded-md p-4">
-                      <p className="text-gray-600">Ticket Name: {ticketInfo.name}</p>
-                      <p className="text-gray-600">Price: ${ticketInfo.price}</p>
-                      {/* <p className="text-gray-600">Quantity Available: {ticketInfo.quantity_available}</p> */}
-                      {/* Add more ticket details here */}
-                    </div>
-                  )}
-                </div>
+                  {
+                    bookingInfo?.id && (
+                      <div>
+                        <Button
+                          variant={isUsedTicket ? "danger" : "primary"}
+                          size='sm'
+                          onClick={() => setIsAlertModalOpen(true)}
+                          loading={markAsUsedLoading}
+                          disabled={isUsedTicket}
+                        >
+                          {
+                            isUsedTicket ? "Already Used" : "Mark Ticket As Used"
+                          }
+                        </Button>
 
-                {/* Booking Info Card */}
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">Booking Information</h3>
-                  {bookingInfo && (
-                    <div className="bg-white shadow rounded-md p-4">
-                      <p className="text-gray-600">Booking Name: {bookingInfo.name}</p>
-                      <p className="text-gray-600">Email: {bookingInfo.email}</p>
-                      <p className="text-gray-600">Phone: {bookingInfo.phone}</p>
-                      {/* Add more booking details here */}
-                    </div>
-                  )}
+                        <AlertModal
+                          title="Ticket Marked As Used"
+                          confirmLoading={markAsUsedLoading}
+                          open={isAlertModalOpen}
+                          onCancel={() => setIsAlertModalOpen(false)}
+                          footer={[
+                            <div key={"footer"} className="flex justify-end items-center gap-2 max-w-fit ml-auto">
+                              <Button key="back" size='sm' variant='outline' onClick={() => setIsAlertModalOpen(false)}>
+                                Cancel
+                              </Button>
+                              <Button key="submit" size='sm' loading={markAsUsedLoading} onClick={handleMarkTicketAsUsed}>
+                                Ok
+                              </Button>
+                            </div>,
+                          ]}
+                        >
+                          <p>Ticket has been marked as used.</p>
+                        </AlertModal>
+                      </div>
+                    )
+                  }
+                </div>
+                <div className='space-y-4 pt-4'>
+                  {/* Event Info Card */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Event Information</h3>
+                    {eventInfo && (
+                      <div className="bg-white shadow rounded-md p-4">
+                        <p className="text-gray-600">Event Name: {eventInfo.event_name}</p>
+                        <p className="text-gray-600">Date: {eventInfo.event_date}</p>
+                        <p className="text-gray-600">Time: {eventInfo.event_time}</p>
+                        <p className="text-gray-600">Venue: {eventInfo.event_venue}</p>
+                        {/* Add more event details here */}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Ticket Info Card */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Ticket Information</h3>
+                    {ticketInfo && (
+                      <div className="bg-white shadow rounded-md p-4">
+                        <p className="text-gray-600">Ticket Name: {ticketInfo.name}</p>
+                        <p className="text-gray-600">Price: ${ticketInfo.price}</p>
+                        {/* <p className="text-gray-600">Quantity Available: {ticketInfo.quantity_available}</p> */}
+                        {/* Add more ticket details here */}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Booking Info Card */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Booking Information</h3>
+                    {bookingInfo && (
+                      <div className="bg-white shadow rounded-md p-4">
+                        <p className="text-gray-600">Booking Name: {bookingInfo.name}</p>
+                        <p className="text-gray-600">Email: {bookingInfo.email}</p>
+                        <p className="text-gray-600">Phone: {bookingInfo.phone}</p>
+                        {/* Add more booking details here */}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            )}
+            )
+            }
 
-          </div>
+          </div >
         ) : (
           <div className='space-y-8'>
             {/* Overview Metrics Section */}

@@ -34,7 +34,7 @@ export async function GET(req: NextRequest, { params: { qr_uuid } }: { params: {
         if (profileError) throw profileError;
 
         // Get booking data
-        const { data: bookingInfo, error: bookingError } = await supabase.from("bookings").select("event_id, ticket_id, name, email, phone, event_owner_id").eq("qr_uuid", qr_uuid).eq('event_owner_id', profileData.id).single();
+        const { data: bookingInfo, error: bookingError } = await supabase.from("bookings").select("id, event_id, ticket_id, name, email, phone, event_owner_id, isUsed").eq("qr_uuid", qr_uuid).eq('event_owner_id', profileData.id).single();
         if (bookingError) throw bookingError;
         if (!bookingInfo) throw new Error('QR Code not found');
 
