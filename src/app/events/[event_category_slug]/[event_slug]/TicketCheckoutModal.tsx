@@ -157,12 +157,12 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
             //     await makeCardPayment(data);
             // }
 
-            // Close the modal after successful submission and payment
-            onClose();
-
             setTimeout(() => {
                 downloadTicket();
             }, 100);
+
+            // Close the modal after successful submission and payment
+            onClose();
         } catch (error) {
             console.error('Booking and payment failed:', error);
         }
