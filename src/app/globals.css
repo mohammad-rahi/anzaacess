@@ -57,3 +57,7 @@
     @apply px-8 py-4; /* Adjust these values based on your design */
   }
 }
+
+#ticket-container p {
+  font-size: 0.8em; /* Reduce font size if needed */
+}

@@ -44,7 +44,7 @@ const fetchTickets: (event_id: number) => Promise<TicketTypes[]> = async (event_
                 .from('event_tickets')
                 .select('*')
                 .eq('event_id', event_id);
-
+ 
             if (error) {
                 throw error;
             }

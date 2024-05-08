@@ -2,7 +2,7 @@ import { supabase } from '@/config/supabase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 
-export type AuthType = 'login' | 'signup' | 'forgotpassword';
+export type AuthType = 'login' | 'signup' | 'forgotpassword' | 'updatepassword';
 
 interface AuthHook {
     email: string;
@@ -106,7 +106,20 @@ export default function useAuth(type: AuthType): AuthHook {
                 }
             }
             else if (type == "forgotpassword") {
-                const { error } = await supabase.auth.resetPasswordForEmail(email);
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${window.location.origin}/update-password`,
+                });
+
+                if (error) {
+                    setAuthLoading(false);
+                    throw error;
+                }
+            }
+            else if (type == "updatepassword") {
+                const { error } = await supabase.auth.updateUser({
+                    password: password,
+                })
+
                 if (error) {
                     setAuthLoading(false);
                     throw error;

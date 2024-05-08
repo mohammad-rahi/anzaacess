@@ -39,13 +39,23 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
             html2canvas(ticketContainer)
                 .then((canvas) => {
                     const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF('p', 'mm', [canvas.width, canvas.height]); // Use canvas dimensions
-                    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width - 115, canvas.height);
+
+                    // Set predefined dimensions for the PDF ticket
+                    const pdfWidth = 150; // Width in mm
+
+                    // Calculate aspect ratio to maintain the same ratio as the canvas
+                    const aspectRatio = canvas.width / canvas.height;
+                    const pdfHeightAdjusted = pdfWidth / aspectRatio;
+
+                    // Create PDF
+                    const pdf = new jsPDF('p', 'mm', [pdfWidth, pdfHeightAdjusted]);
+                    pdf.addImage(imgData, 'PNG', 5, 5, pdfWidth - 48, pdfHeightAdjusted - 20); // Leave some margin
+
+                    // Save PDF
                     pdf.save(`ticket_${event.event_name.replace(/\s+/g, '_')}.pdf`);
 
                     onClose();
 
-                    // alert("Booking successful, check your email for the QR code");
                     alert("Booking successful, the ticket has been downloaded");
                 })
                 .catch((error) => {
@@ -55,6 +65,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
     };
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
+
         try {
             if (event.id && ticket.id && data.name && data.email && data.phone) {
                 setBookingSubmitLoading(true);
@@ -66,23 +77,23 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                 if (!qr_uuid) return;
 
                 // Store the booking information in the Supabase table
-                const { data: bookingData, error } = await supabase
-                    .from('bookings')
-                    .insert([
-                        {
-                            event_owner_id: event.profile_id,
-                            event_id: event.id,
-                            ticket_id: ticket.id,
-                            name: data.name,
-                            email: data.email,
-                            phone: data.phone,
-                            qr_uuid
-                        },
-                    ]);
+                // const { data: bookingData, error } = await supabase
+                //     .from('bookings')
+                //     .insert([
+                //         {
+                //             event_owner_id: event.profile_id,
+                //             event_id: event.id,
+                //             ticket_id: ticket.id,
+                //             name: data.name,
+                //             email: data.email,
+                //             phone: data.phone,
+                //             qr_uuid
+                //         },
+                //     ]);
 
-                if (error) {
-                    throw new Error('Failed to store booking information in Supabase');
-                }
+                // if (error) {
+                //     throw new Error('Failed to store booking information in Supabase');
+                // }
 
                 // Update the local state with the stored booking information
                 setBookingInfo({
@@ -105,7 +116,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
             // onClose();
 
             setTimeout(() => {
-                downloadTicket();
+                // downloadTicket();
             }, 100);
         } catch (error) {
             console.error('Booking and payment failed:', error);
@@ -115,26 +126,9 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
         }
     };
 
-    // const downloadTicket = () => {
-    //     const ticketContainer = document.getElementById('ticket-container');
-
-    //     if (ticketContainer) {
-    //         html2canvas(ticketContainer)
-    //             .then((canvas) => {
-    //                 const imgData = canvas.toDataURL('image/png');
-    //                 const pdf = new jsPDF('p', 'mm', 'a4');
-    //                 pdf.addImage(imgData, 'PNG', 0, 0, 210, 297); // A4 size: 210 x 297 mm
-    //                 pdf.save(`ticket_${event.event_name.replace(/\s+/g, '_')}.pdf`);
-    //             })
-    //             .catch((error) => {
-    //                 console.error('Error generating PDF:', error);
-    //             });
-    //     }
-    // }
-
     return (
-        <Modal onClose={onClose}>
-            <div>
+        <Modal onClose={onClose} onlyCloseBtn>
+            <div className='overflow-y-auto max-h-[700px]'>
                 <div className='border-b border-gray-100 flex items-center justify-between gap-8 p-8 py-4'>
                     <h2 className='text-2xl font-bold'>Checkout Ticket</h2>
                     <button className='text-gray-500 hover:underline' onClick={onClose}>

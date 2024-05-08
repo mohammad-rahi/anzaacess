@@ -54,7 +54,7 @@ export default function FormAuth({ type }: FormProps) {
                         setError(null);
                         setShowPasswordField(true);
                     }
-                    else if (type == "forgotpassword") {
+                    else if (type == "forgotpassword" || type == "updatepassword") {
                         handleSubmit();
                     }
                 }
@@ -75,7 +75,7 @@ export default function FormAuth({ type }: FormProps) {
     }
 
     const handleValidateSubmit = () => {
-        if (type == "signup") {
+        if (type == "signup" || type == "updatepassword") {
             if (password) {
                 if (password !== confirmPassword) {
                     setError('Passwords do not match');
@@ -109,7 +109,7 @@ export default function FormAuth({ type }: FormProps) {
                     }
 
                     <h2 className="text-3xl font-extrabold text-center text-gray-800 flex-1">
-                        {type === 'signup' ? 'Sign up' : type == "login" ? 'Log in' : "Forgot Password"}
+                        {type === 'signup' ? 'Sign up' : type == "login" ? 'Log in' : type == "forgotpassword" ? "Forgot Password" : "Reset Password"}
                     </h2>
                 </div>
 
@@ -143,78 +143,112 @@ export default function FormAuth({ type }: FormProps) {
                         // )
                     }
 
-                    <div className='space-y-4'>
-                        <InputField
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder='Enter your email address...'
-                            label="Email"
-                        />
+                    {
+                        type != "updatepassword" ? (
+                            <div>
+                                <div className='space-y-4'>
+                                    <InputField
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder='Enter your email address...'
+                                        label="Email"
+                                    />
 
-                        {showPasswordField && (
-                            <InputField
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                label="Password"
-                                placeholder="Enter you password..."
-                                labelRight={
-                                    <>
-                                        {
-                                            // type == "login" && (
-                                            //     <Link href="/forgot-password" className="text-sm text-gray-700 hover:underline">
-                                            //         Forgot password?
-                                            //     </Link>
-                                            // )
-                                        }
-                                    </>
-                                }
-                            />
-                        )}
+                                    {showPasswordField && (
+                                        <InputField
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            label="Password"
+                                            placeholder="Enter you password..."
+                                            labelRight={
+                                                <>
+                                                    {
+                                                        type == "login" && (
+                                                            <Link href="/forgot-password" className="text-sm text-gray-700 hover:underline whitespace-nowrap">
+                                                                Forgot password?
+                                                            </Link>
+                                                        )
+                                                    }
+                                                </>
+                                            }
+                                        />
+                                    )}
 
-                        {(type == "signup" && showPasswordField) && (
-                            <InputField
-                                type="password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                label="Confirm Password"
-                                placeholder="Confirm your password..."
-                            />
-                        )}
+                                    {(type == "signup" && showPasswordField) && (
+                                        <InputField
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            label="Confirm Password"
+                                            placeholder="Confirm your password..."
+                                        />
+                                    )}
 
-                        {error && (
-                            <div className="text-red-500 text-sm">{error}</div>
-                        )}
+                                    {error && (
+                                        <div className="text-red-500 text-sm">{error}</div>
+                                    )}
 
-                        {
-                            (!showPasswordField) && (
-                                <Button onClick={handleCheckEmail}>
                                     {
-                                        emailCheckLoading ? <BarLoader color='white' /> : type == "forgotpassword" ? "Reset Password" : "Continue with Email"
+                                        (!showPasswordField) && (
+                                            <Button onClick={handleCheckEmail}>
+                                                {
+                                                    emailCheckLoading ? <BarLoader color='white' /> : type == "forgotpassword" ? "Reset Password" : "Continue with Email"
+                                                }
+                                            </Button>
+                                        )
                                     }
-                                </Button>
-                            )
-                        }
 
-                        {
-                            (showPasswordField) && (
+                                    {
+                                        (showPasswordField) && (
+                                            <Button onClick={handleValidateSubmit}>
+                                                {
+                                                    authLoading ? <BarLoader color='white' /> : <>
+                                                        {type === 'signup' ? 'Sign up' : 'Log in'}
+                                                    </>
+                                                }
+                                            </Button>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                <InputField
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    label="Password"
+                                    placeholder="Enter you password..."
+                                />
+
+                                <InputField
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    label="Confirm Password"
+                                    placeholder="Confirm your password..."
+                                />
+
+                                {error && (
+                                    <div className="text-red-500 text-sm">{error}</div>
+                                )}
+
                                 <Button onClick={handleValidateSubmit}>
                                     {
-                                        authLoading ? <BarLoader color='white' /> : <>
-                                            {type === 'signup' ? 'Sign up' : 'Log in'}
-                                        </>
+                                        authLoading ? <BarLoader color='white' /> : "Update Password"
                                     }
                                 </Button>
-                            )
-                        }
-                    </div>
+                            </div>
+                        )
+                    }
                 </div>
 
                 <div className="mt-8">
                     <p className="text-sm text-gray-700 text-center">
                         {type === 'signup' ? 'Already have an account?' : type === 'login' ? "Don't have an account?" : 'Remember your password?'}
-                        {type === 'signup' && (
+                        {(type === 'signup' || type === 'forgotpassword' || type === "updatepassword") && (
                             <Link href="/login" className="text-blue-500 ml-1 hover:underline">
                                 Log in
                             </Link>
@@ -222,11 +256,6 @@ export default function FormAuth({ type }: FormProps) {
                         {type === 'login' && (
                             <Link href="/signup" className="text-blue-500 ml-1 hover:underline">
                                 Sign up
-                            </Link>
-                        )}
-                        {type === 'forgotpassword' && (
-                            <Link href="/login" className="text-blue-500 ml-1 hover:underline">
-                                Log in
                             </Link>
                         )}
                     </p>
