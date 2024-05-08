@@ -60,7 +60,7 @@ export default function Header() {
 
                             {
                                 !isFullWidth && (
-                                    <div>
+                                    <div className='hidden sm:block'>
                                         <button className={`hover:bg-blue-200 text-blue-600 px-3 py-1 rounded-md flex items-center gap-2 transition duration-300`}>List your property <HiPlus /></button>
                                     </div>
                                 )

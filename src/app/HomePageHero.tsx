@@ -4,7 +4,7 @@ import React from 'react';
 
 const HomePageHero = () => {
     return (
-        <section className='relative bg-blue-800 min-h-[60vh] flex items-center justify-center overflow-hidden'>
+        <section className='relative bg-blue-800 min-h-[80vh] sm:min-h-[60vh] flex items-center justify-center overflow-hidden'>
             <div className="wrapper max-w-5xl text-center relative z-20 text-white">
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 space-y-5">
