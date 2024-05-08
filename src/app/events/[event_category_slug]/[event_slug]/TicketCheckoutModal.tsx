@@ -98,9 +98,9 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                     // Save PDF
                     pdf.save(`ticket_${event.event_name.replace(/\s+/g, '_')}.pdf`);
 
-                    onClose();
-
                     alert("Booking successful, the ticket has been downloaded");
+
+                    onClose();
                 })
                 .catch((error) => {
                     console.error('Error generating PDF:', error);
@@ -160,9 +160,6 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
             setTimeout(() => {
                 downloadTicket();
             }, 100);
-
-            // Close the modal after successful submission and payment
-            onClose();
         } catch (error) {
             console.error('Booking and payment failed:', error);
         }
