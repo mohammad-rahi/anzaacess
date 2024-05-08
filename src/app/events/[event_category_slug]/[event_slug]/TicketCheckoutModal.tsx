@@ -33,6 +33,43 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
     } | null>(null);
 
 
+    // const downloadTicket = () => {
+    //     const ticketContainer = document.getElementById('ticket-container');
+
+    //     if (ticketContainer) {
+    //         html2canvas(ticketContainer)
+    //             .then((canvas) => {
+    //                 const imgData = canvas.toDataURL('image/png');
+
+    //                 // Set predefined dimensions for the PDF ticket
+    //                 const pdfWidth = 150; // Width in mm
+
+    //                 // Calculate aspect ratio to maintain the same ratio as the canvas
+    //                 const aspectRatio = canvas.width / canvas.height;
+    //                 const pdfHeightAdjusted = pdfWidth / aspectRatio;
+
+    //                 // Determine margin based on device size
+    //                 const isSmallDevice = window.innerWidth < 768; // Example threshold for small devices
+
+    //                 // Create PDF
+    //                 const pdf = new jsPDF('p', 'mm', [pdfWidth, pdfHeightAdjusted]);
+    //                 pdf.addImage(imgData, 'PNG', 5, 5, pdfWidth - 10, pdfHeightAdjusted - 20); // Leave some margin
+
+
+    //                 // Save PDF
+    //                 pdf.save(`ticket_${event.event_name.replace(/\s+/g, '_')}.pdf`);
+
+    //                 onClose();
+
+    //                 alert("Booking successful, the ticket has been downloaded");
+    //             })
+    //             .catch((error) => {
+    //                 console.error('Error generating PDF:', error);
+    //             });
+    //     }
+    // };
+
+
     const downloadTicket = () => {
         const ticketContainer = document.getElementById('ticket-container');
 
@@ -42,19 +79,21 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                     const imgData = canvas.toDataURL('image/png');
 
                     // Set predefined dimensions for the PDF ticket
-                    const pdfWidth = 150; // Width in mm
+                    const pdfWidth = 100; // Width in mm (adjust as needed for smaller size)
 
                     // Calculate aspect ratio to maintain the same ratio as the canvas
                     const aspectRatio = canvas.width / canvas.height;
                     const pdfHeightAdjusted = pdfWidth / aspectRatio;
 
                     // Determine margin based on device size
-                    const isSmallDevice = window.innerWidth < 768; // Example threshold for small devices
+                    const marginLeft = 5; // Left margin in mm
+                    const marginRight = 5; // Right margin in mm
+                    const marginTop = 5; // Top margin in mm
+                    const marginBottom = 5; // Bottom margin in mm
 
                     // Create PDF
-                    const pdf = new jsPDF('p', 'mm', [pdfWidth, pdfHeightAdjusted]);
-                    pdf.addImage(imgData, 'PNG', 5, 5, pdfWidth - 10, pdfHeightAdjusted - 20); // Leave some margin
-
+                    const pdf = new jsPDF('p', 'mm', [pdfWidth + marginLeft + marginRight, pdfHeightAdjusted + marginTop + marginBottom]);
+                    pdf.addImage(imgData, 'PNG', marginLeft, marginTop, pdfWidth, pdfHeightAdjusted); // Leave some margin
 
                     // Save PDF
                     pdf.save(`ticket_${event.event_name.replace(/\s+/g, '_')}.pdf`);
@@ -68,6 +107,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                 });
         }
     };
+
 
     const onSubmit: SubmitHandler<FormValues> = async (data) => {
 
@@ -100,7 +140,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                     throw new Error('Failed to store booking information in Supabase');
                 }
 
-                // Update the local state with the stored booking information
+                // // Update the local state with the stored booking information
                 setBookingInfo({
                     event_id: event.id,
                     ticket_id: ticket.id,
@@ -118,7 +158,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
             // }
 
             // Close the modal after successful submission and payment
-            // onClose();
+            onClose();
 
             setTimeout(() => {
                 downloadTicket();
