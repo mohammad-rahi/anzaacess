@@ -32,6 +32,7 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
         phone: string;
     } | null>(null);
 
+
     const downloadTicket = () => {
         const ticketContainer = document.getElementById('ticket-container');
 
@@ -47,9 +48,13 @@ const TicketCheckoutModal: React.FC<TicketCheckoutModalProps> = ({ event, ticket
                     const aspectRatio = canvas.width / canvas.height;
                     const pdfHeightAdjusted = pdfWidth / aspectRatio;
 
+                    // Determine margin based on device size
+                    const isSmallDevice = window.innerWidth < 768; // Example threshold for small devices
+
                     // Create PDF
                     const pdf = new jsPDF('p', 'mm', [pdfWidth, pdfHeightAdjusted]);
-                    pdf.addImage(imgData, 'PNG', 5, 5, pdfWidth - 48, pdfHeightAdjusted - 20); // Leave some margin
+                    pdf.addImage(imgData, 'PNG', 5, 5, pdfWidth - 10, pdfHeightAdjusted - 20); // Leave some margin
+
 
                     // Save PDF
                     pdf.save(`ticket_${event.event_name.replace(/\s+/g, '_')}.pdf`);

@@ -38,7 +38,7 @@ const Ticket = ({ event, bookingInfo, qr_uuid }: {
                 <p className="text-gray-300 text-sm md:text-base">{event.event_date} - {event.event_time}</p>
             </div>
 
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+            <div className="flex flex-col items-center justify-center gap-4 md:gap-8">
                 <div className="bg-white p-4 md:p-6 rounded-lg shadow-md">
                     <QRCode bgColor='transparent' color='white' value={`${process.env.NEXT_PUBLIC_BASE_URL || window.location.origin}/api/qr/${qr_uuid}`} size={qrCodeSize} />
                 </div>
